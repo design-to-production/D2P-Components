@@ -1,0 +1,39 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="D2P_GrasshopperTools.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="DefaultRootLayerName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">D2P</Value>
+    </Setting>
+    <Setting Name="DefaultRootLayerColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">220, 75, 58</Value>
+    </Setting>
+    <Setting Name="DefaultDimensionStyleName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">D2P_COMPONENTS</Value>
+    </Setting>
+    <Setting Name="DefaultTypeDelimiter" Type="System.Char" Scope="User">
+      <Value Profile="(Default)">:</Value>
+    </Setting>
+    <Setting Name="DefaultLayerDelimiter" Type="System.Char" Scope="User">
+      <Value Profile="(Default)">_</Value>
+    </Setting>
+    <Setting Name="DefaultNameDelimiter" Type="System.Char" Scope="User">
+      <Value Profile="(Default)">.</Value>
+    </Setting>
+    <Setting Name="DefaultLayerDescriptionDelimiter" Type="System.Char" Scope="User">
+      <Value Profile="(Default)">-</Value>
+    </Setting>
+    <Setting Name="DefaultJointDelimiter" Type="System.Char" Scope="User">
+      <Value Profile="(Default)">+</Value>
+    </Setting>
+    <Setting Name="DefaultLayerNameDelimiter" Type="System.Char" Scope="User">
+      <Value Profile="(Default)">:</Value>
+    </Setting>
+    <Setting Name="DefaultCountDelimiter" Type="System.Char" Scope="User">
+      <Value Profile="(Default)">#</Value>
+    </Setting>
+    <Setting Name="DefaultCloneDelimiter" Type="System.Char" Scope="User">
+      <Value Profile="(Default)">$</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
