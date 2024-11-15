@@ -1,4 +1,6 @@
 ﻿using D2P_Core.Interfaces;
+using D2P_Core.Utility;
+using Rhino.DocObjects;
 using System.Drawing;
 
 namespace D2P_Core
@@ -21,6 +23,24 @@ namespace D2P_Core
             LabelSize = component.LabelSize;
             LayerColor = component.LayerColor;
             Settings = component.Settings;
+        }
+
+        public ComponentType(Layer layer, Settings settings)
+        {
+            TypeID = Layers.GetComponentTypeID(layer, settings);
+            TypeName = Layers.GetComponentTypeName(layer, settings);
+            LabelSize = Layers.GetComponentTypeLabelSize(layer, settings);
+            LayerColor = layer.Color;
+            Settings = settings;
+        }
+
+        public ComponentType(TextObject textObj, Settings settings)
+        {
+            TypeID = Objects.ComponentTypeIDFromObject(textObj, settings);
+            TypeName = Objects.ComponentTypeNameFromObject(textObj, settings);
+            LabelSize = textObj.TextGeometry.TextHeight;
+            LayerColor = Objects.ComponentTypeLayerColorFromObject(textObj, settings);
+            Settings = settings;
         }
 
         public string TypeID { get; set; }

@@ -70,7 +70,7 @@ namespace D2P_GrasshopperTools.GH.Components
                     AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
                     return;
                 }
-                typeName = D2P_Core.Utility.Layers.GetComponentLayerDescription(componentLayer);
+                typeName = D2P_Core.Utility.Layers.GetComponentTypeName(componentLayer, settings);
             }
 
             if (labelSize <= 0)
