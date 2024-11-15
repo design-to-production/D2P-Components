@@ -18,12 +18,12 @@ namespace D2P_Core.Utility
         }
         public static List<IComponent> InstancesByName(IComponent component, RhinoDoc doc = null) => InstancesByName(component.Name, component.Settings, doc);
 
-        public static List<IComponent> InstancesByType(string type, Settings settings, RhinoDoc doc = null, char typeDelimiter = ':', string filter = "")
+        public static List<IComponent> InstancesByType(string type, Settings settings, RhinoDoc doc = null, string filter = "")
         {
             doc = doc ?? RhinoDoc.ActiveDoc;
-            var nameFilter = string.IsNullOrEmpty(filter) ? "*" : $"{type}{typeDelimiter}{filter}";
+            var nameFilter = string.IsNullOrEmpty(filter) ? "*" : $"{type}{settings.TypeDelimiter}{filter}";
             var objEnumSettings = new ObjectEnumeratorSettings() { HiddenObjects = true, LockedObjects = true, NameFilter = nameFilter, ObjectTypeFilter = ObjectType.Annotation };
-            var reg = new Regex($"(^{type}{typeDelimiter}.*)");
+            var reg = new Regex($"(^{type}{settings.TypeDelimiter}.*)");
             var rhObjects = doc.Objects.GetObjectList(objEnumSettings).Where(rhObj => reg.IsMatch(rhObj.Name));
             return InstancesFromObjects(rhObjects, settings, doc);
         }

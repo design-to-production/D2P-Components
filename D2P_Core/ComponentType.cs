@@ -31,7 +31,7 @@ namespace D2P_Core
             TypeName = Layers.GetComponentTypeName(layer, settings);
             LabelSize = Layers.GetComponentTypeLabelSize(layer, settings);
             LayerColor = layer.Color;
-            Settings = settings;
+            Settings = Layers.GetComponentTypeSettings(layer, settings);
         }
 
         public ComponentType(TextObject textObj, Settings settings)
@@ -40,7 +40,8 @@ namespace D2P_Core
             TypeName = Objects.ComponentTypeNameFromObject(textObj, settings);
             LabelSize = textObj.TextGeometry.TextHeight;
             LayerColor = Objects.ComponentTypeLayerColorFromObject(textObj, settings);
-            Settings = settings;
+            Settings = Layers.GetComponentTypeSettings(textObj, settings);
+
         }
 
         public string TypeID { get; set; }

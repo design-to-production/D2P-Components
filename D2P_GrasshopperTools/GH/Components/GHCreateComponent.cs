@@ -1,5 +1,7 @@
 ﻿using D2P_Core;
+using D2P_Core.Interfaces;
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using System;
 
@@ -25,6 +27,8 @@ namespace D2P_GrasshopperTools.GH.Components
             pManager.AddGenericParameter("Type", "T", "The type definition for this component instance. This will define where the component will be baked into the layer-tree of the Rhino document", GH_ParamAccess.item);
             pManager.AddTextParameter("Name", "N", "The name of the component instance. This will define the name of all objects within this component after baking it to the Rhino document", GH_ParamAccess.item);
             pManager.AddPlaneParameter("Plane", "P", "The plane used to create the text-label for the component after baking to the Rhino Document", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Parent", "C", "The parent component or name used to create the inherent name of this component", GH_ParamAccess.item);
+            pManager[3].Optional = true;
         }
 
         /// <summary>
@@ -44,10 +48,15 @@ namespace D2P_GrasshopperTools.GH.Components
             ComponentType componentType = null;
             var name = string.Empty;
             var plane = Plane.Unset;
+            GH_ObjectWrapper parent = null;
 
             DA.GetData(0, ref componentType);
             DA.GetData(1, ref name);
             DA.GetData(2, ref plane);
+            DA.GetData(3, ref parent);
+
+            var parentName = (parent?.Value as IComponent)?.ShortName ?? parent?.Value?.ToString();
+            name = string.IsNullOrEmpty(parentName) ? name : $"{parentName}{componentType.Settings.NameDelimiter}{name}";
 
             var component = new Component(componentType, name, plane);
             _components.Add(component);

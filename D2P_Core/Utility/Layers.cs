@@ -178,6 +178,23 @@ namespace D2P_Core.Utility
                 return (compObj.Geometry as TextEntity).TextHeight;
             return settings.DimensionStyle.TextHeight;
         }
+        public static Settings GetComponentTypeSettings(Layer componentLayer, Settings settings)
+        {
+            var compObj = Objects.ObjectsByLayer(componentLayer).FirstOrDefault();
+            return GetComponentTypeSettings(compObj, settings);
+        }
+        public static Settings GetComponentTypeSettings(RhinoObject rhObj, Settings settings)
+        {
+            var componentLayer = GetComponentTypeRootLayer(rhObj, settings);
+            var compTypeSettings = settings.ShallowCopy();
+            if (IsComponentTypeTopLayer(componentLayer, settings) && rhObj?.Geometry is TextEntity)
+            {
+                var txtObj = rhObj.Geometry as TextEntity;
+                var dimStyleName = txtObj.DimensionStyle.Name ?? txtObj.ParentDimensionStyle.Name;
+                compTypeSettings.DimensionStyleName = dimStyleName;
+            }
+            return compTypeSettings;
+        }
 
         public static IEnumerable<Layer> GetComponentLayers(IComponentType componentType, bool includeAncestorLayers = false, RhinoDoc doc = null)
         {
