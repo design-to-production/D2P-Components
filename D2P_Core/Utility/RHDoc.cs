@@ -83,7 +83,7 @@ namespace D2P_Core.Utility
             foreach (var layerInfo in layerInfos)
             {
                 var rhLayer = Layers.FindLayer(component, layerInfo.RawLayerName, out int _);
-                if (rhLayer == null || rhLayer.Color == layerInfo.LayerColor || Layers.IsComponentTypeTopLayer(rhLayer, component.Settings.LayerDescriptionDelimiter))
+                if (rhLayer == null || rhLayer.Color == layerInfo.LayerColor || Layers.IsComponentTypeTopLayer(rhLayer, component.Settings))
                     continue;
                 rhLayer.Color = layerInfo.LayerColor;
             }

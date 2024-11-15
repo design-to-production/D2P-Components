@@ -1,6 +1,7 @@
 ﻿using D2P_Core.Interfaces;
 using Rhino;
 using Rhino.DocObjects;
+using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -43,12 +44,12 @@ namespace D2P_Core.Utility
             return TraverseLayers(component, ref layerNames, rootLayerID);
         }
 
-        public static IEnumerable<Layer> FindAllExistentComponentTypeRootLayers(string rootLayerName, RhinoDoc doc = null)
+        public static IEnumerable<Layer> FindAllExistentComponentTypeRootLayers(Settings settings, RhinoDoc doc = null)
         {
             doc = doc ?? RhinoDoc.ActiveDoc;
-            var rootLayer = GetRootLayer(doc, rootLayerName);
+            var rootLayer = GetRootLayer(doc, settings.RootLayerName);
             var childLayers = GetChildLayers(rootLayer, doc);
-            return childLayers.Where(layer => IsComponentTypeTopLayer(layer));
+            return childLayers.Where(layer => IsComponentTypeTopLayer(layer, settings));
         }
         public static Layer FindComponentLayerByType(string type, string rootLayerName)
         {
@@ -69,7 +70,7 @@ namespace D2P_Core.Utility
             return layerFound;
         }
 
-        public static int[] CreateStagingLayers(IComponent component, char layerNameDelimiter = ':')
+        public static int[] CreateStagingLayers(IComponent component)
         {
             var createdLayerIndices = new List<int>();
             var componentLayer = GetComponentTypeRootLayer(component);
@@ -80,7 +81,7 @@ namespace D2P_Core.Utility
             foreach (var kv in sortedStagingLayers)
             {
                 var rawLayerName = kv.Key.RawLayerName;
-                var layerNames = new Queue<string>(rawLayerName.Split(layerNameDelimiter).Where(s => !string.IsNullOrEmpty(s)));
+                var layerNames = new Queue<string>(rawLayerName.Split(component.Settings.LayerNameDelimiter).Where(s => !string.IsNullOrEmpty(s)));
                 var layer = layerNames.Any() && component.IsInitialized ? TraverseLayers(component, ref layerNames, componentLayer.Id, kv.Key) : componentLayer;
 
                 var geometryIds = new List<Guid>(kv.Value.Keys);
@@ -97,11 +98,11 @@ namespace D2P_Core.Utility
         {
             return layerName.Split(component.Settings.LayerDescriptionDelimiter).FirstOrDefault() == component.TypeID;
         }
-        public static bool IsComponentTypeTopLayer(Layer layer, char layerDescriptionDelimiter = '-')
+        public static bool IsComponentTypeTopLayer(Layer layer, Settings settings)
         {
             if (layer == null)
                 return false;
-            var regex = new Regex($".*(?<!/s){layerDescriptionDelimiter}(?<!/s).*");
+            var regex = new Regex($".*(?<!/s){settings.LayerDescriptionDelimiter}(?<!/s).*");
             return regex.IsMatch(layer.Name);
         }
         public static string ComposeComponentLayerName(IComponent component, string rawLayerName)
@@ -130,17 +131,17 @@ namespace D2P_Core.Utility
 
         public static Layer GetRootLayer(RhinoDoc doc, string rootLayerName) => FindLayerByName(doc, rootLayerName, rootLayerName);
         public static Guid GetRootLayerID(IComponent component) => GetRootLayer(component.ActiveDoc, component.Settings.RootLayerName)?.Id ?? Guid.Empty;
-        public static Layer GetComponentTypeRootLayer(RhinoObject obj, char layerDescriptionDelimiter = '-', RhinoDoc doc = null)
+        public static Layer GetComponentTypeRootLayer(RhinoObject obj, Settings settings, RhinoDoc doc = null)
         {
             doc = doc ?? RhinoDoc.ActiveDoc;
             var objLayer = FindLayer(obj.Attributes.LayerIndex);
-            if (IsComponentTypeTopLayer(objLayer, layerDescriptionDelimiter))
+            if (IsComponentTypeTopLayer(objLayer, settings))
                 return objLayer;
 
             var componentTypeAncestorLayers = new List<Layer>();
             TraverseAncestorLayers(objLayer.Id, doc, ref componentTypeAncestorLayers);
 
-            return componentTypeAncestorLayers.Find(l => IsComponentTypeTopLayer(l, layerDescriptionDelimiter));
+            return componentTypeAncestorLayers.Find(l => IsComponentTypeTopLayer(l, settings));
         }
         public static Layer GetComponentTypeRootLayer(IComponentType componentType, RhinoDoc doc = null)
         {
@@ -150,25 +151,34 @@ namespace D2P_Core.Utility
         }
 
         public static Guid GetComponentLayerID(IComponent component) => GetComponentTypeRootLayer(component)?.Id ?? Guid.Empty;
-        public static string GetComponentType(Layer componentLayer, char layerDescriptionDelimiter = '-')
+
+        public static string GetComponentTypeID(Layer componentLayer, Settings settings)
         {
-            if (!IsComponentTypeTopLayer(componentLayer))
+            if (!IsComponentTypeTopLayer(componentLayer, settings))
                 return string.Empty;
-            var substringStartIdx = componentLayer.Name.IndexOf(layerDescriptionDelimiter);
+            var substringStartIdx = componentLayer.Name.IndexOf(settings.LayerDescriptionDelimiter);
             return componentLayer.Name.Substring(0, substringStartIdx - 1);
         }
-        public static string GetComponentLayerDescription(Layer componentLayer, char layerDescriptionDelimiter = '-')
+        public static string GetComponentTypeName(Layer componentLayer, Settings settings)
         {
-            if (!IsComponentTypeTopLayer(componentLayer))
+            if (!IsComponentTypeTopLayer(componentLayer, settings))
                 return string.Empty;
-            var substringStartIdx = componentLayer.Name.IndexOf(layerDescriptionDelimiter);
+            var substringStartIdx = componentLayer.Name.IndexOf(settings.LayerDescriptionDelimiter);
             return componentLayer.Name.Substring(substringStartIdx + 2);
         }
-        public static string GetComponentLayerDescription(RhinoObject obj, char layerDescriptionDelimiter = '-')
+        public static string GetComponentTypeName(RhinoObject rhObj, Settings settings)
         {
-            var layer = GetComponentTypeRootLayer(obj, layerDescriptionDelimiter);
-            return GetComponentLayerDescription(layer, layerDescriptionDelimiter);
+            var layer = GetComponentTypeRootLayer(rhObj, settings);
+            return GetComponentTypeName(layer, settings);
         }
+        public static double GetComponentTypeLabelSize(Layer componentLayer, Settings settings)
+        {
+            var compObj = Objects.ObjectsByLayer(componentLayer).FirstOrDefault();
+            if (IsComponentTypeTopLayer(componentLayer, settings) && compObj?.Geometry is TextEntity)
+                return (compObj.Geometry as TextEntity).TextHeight;
+            return settings.DimensionStyle.TextHeight;
+        }
+
         public static IEnumerable<Layer> GetComponentLayers(IComponentType componentType, bool includeAncestorLayers = false, RhinoDoc doc = null)
         {
             doc = doc ?? RhinoDoc.ActiveDoc;
