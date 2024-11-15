@@ -57,6 +57,7 @@
     <Compile Include="Component.cs" />
     <Compile Include="ComponentType.cs" />
     <Compile Include="ComponentMember.cs" />
+    <Compile Include="FilterOptions.cs" />
     <Compile Include="Interfaces\IComponent.cs" />
     <Compile Include="Interfaces\IComponentType.cs" />
     <Compile Include="Interfaces\ILayerInfo.cs" />

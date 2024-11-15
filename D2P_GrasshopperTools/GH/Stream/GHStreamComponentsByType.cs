@@ -6,11 +6,14 @@ using Grasshopper.Kernel.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace D2P_GrasshopperTools.GH.Stream
 {
     public class GHStreamComponentsByType : GHVariableParameterComponent
     {
+        bool reverseRegex = false;
+
         /// <summary>
         /// Initializes a new instance of the GH_StreamTypes class.
         /// </summary>
@@ -53,10 +56,11 @@ namespace D2P_GrasshopperTools.GH.Stream
             DA.GetData(2, ref settings);
 
             settings = settings ?? DefaultSettings.Create();
+            var filterOptions = new FilterOptions() { RegexPattern = filter, ReversePattern = reverseRegex };
             foreach (var componentType in componentTypes)
             {
                 var typeID = (componentType?.Value as IComponentType)?.TypeID ?? componentType?.Value?.ToString();
-                _components.AddRange(D2P_Core.Utility.Instantiation.InstancesByType(typeID, settings, null, filter));
+                _components.AddRange(D2P_Core.Utility.Instantiation.InstancesByType(typeID, settings, filterOptions));
             }
 
             var componentGroups = _components.GroupBy(comp => comp.TypeID);
@@ -75,6 +79,19 @@ namespace D2P_GrasshopperTools.GH.Stream
                     DA.SetDataList(group.Key, group);
                 }
             }
+        }
+
+        protected override void AppendAdditionalComponentMenuItems(ToolStripDropDown menu)
+        {
+            base.AppendAdditionalComponentMenuItems(menu);
+            var menuItem = Menu_AppendItem(menu, "NegateRegexFilter", NegateRegexFilterHandler, true, reverseRegex);
+            menuItem.ToolTipText = "When true the name-filter will be negated";
+        }
+
+        private void NegateRegexFilterHandler(object sender, EventArgs e)
+        {
+            reverseRegex = !reverseRegex;
+            ExpireSolution(true);
         }
 
         /// <summary>
