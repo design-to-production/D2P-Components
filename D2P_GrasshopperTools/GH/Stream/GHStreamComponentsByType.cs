@@ -1,6 +1,8 @@
 ﻿using D2P_Core;
+using D2P_Core.Interfaces;
 using D2P_GrasshopperTools.Utility;
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +26,7 @@ namespace D2P_GrasshopperTools.GH.Stream
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddTextParameter("TypeID", "T", "The type-id of the component-type", GH_ParamAccess.item);
+            pManager.AddGenericParameter("TypeIDs", "T", "The component-type or its type-id used to stream specific types", GH_ParamAccess.list);
             pManager.AddTextParameter("NameFilter", "F", "The regex pattern used to filter by specific component-names", GH_ParamAccess.item, string.Empty);
             pManager.AddGenericParameter("Settings", "S", "The settings define the basic root-layer for all components being streamed and a collection of specific delimiters", GH_ParamAccess.item);
             pManager[2].Optional = true;
@@ -43,23 +45,36 @@ namespace D2P_GrasshopperTools.GH.Stream
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            var type = string.Empty;
+            var componentTypes = new List<GH_ObjectWrapper>();
             var filter = string.Empty;
             Settings settings = null;
-            DA.GetData(0, ref type);
+            DA.GetDataList(0, componentTypes);
             DA.GetData(1, ref filter);
             DA.GetData(2, ref settings);
 
             settings = settings ?? DefaultSettings.Create();
-            _components = D2P_Core.Utility.Instantiation.InstancesByType(type, settings, null, ':', filter);
+            foreach (var componentType in componentTypes)
+            {
+                var typeID = (componentType?.Value as IComponentType)?.TypeID ?? componentType?.Value?.ToString();
+                _components.AddRange(D2P_Core.Utility.Instantiation.InstancesByType(typeID, settings, null, filter));
+            }
+
+            var componentGroups = _components.GroupBy(comp => comp.TypeID);
 
             if (DA.Iteration == 0)
-                _properties = new Dictionary<string, Type>() { { type, typeof(Enumerable) } };
+            {
+                _properties = componentGroups.ToDictionary(grp => grp.First().TypeID, c => typeof(Enumerable));
+            }
 
             if (OutputMismatch() && DA.Iteration == 0)
                 OnPingDocument().ScheduleSolution(5, d => CreateOutputParams(false));
             else
-                DA.SetDataList(type, _components);
+            {
+                foreach (var group in componentGroups)
+                {
+                    DA.SetDataList(group.Key, group);
+                }
+            }
         }
 
         /// <summary>
