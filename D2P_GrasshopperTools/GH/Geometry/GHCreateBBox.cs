@@ -4,7 +4,7 @@ using System;
 
 namespace D2P_GrasshopperTools.GH.Geometry
 {
-    public class GHCreateBBox : GH_Component
+    public class GHCreateBBox : GHComponentBase
     {
 
         /// <summary>

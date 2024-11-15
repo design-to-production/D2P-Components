@@ -4,7 +4,7 @@ using System;
 
 namespace D2P_GrasshopperTools.GH.Components
 {
-    public class GHDeconstructComponentType : GH_Component
+    public class GHDeconstructComponentType : GHComponentBase
     {
         /// <summary>
         /// Initializes a new instance of the GH_DeconstructComponentType class.

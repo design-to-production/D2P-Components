@@ -8,6 +8,14 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "D2P_GrasshopperTools", "D2P_GrasshopperTools\D2P_GrasshopperTools.csproj", "{929D58A7-2EEA-4C41-A436-EBB2435F5515}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Projektmappenelemente", "{FDD78E62-D895-457D-A123-D7353A424094}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		CHANGELOG.md = CHANGELOG.md
+		CONTRIBUTION.md = CONTRIBUTION.md
+		D2PModellingGuideline.md = D2PModellingGuideline.md
+		LICENSE.md = LICENSE.md
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
