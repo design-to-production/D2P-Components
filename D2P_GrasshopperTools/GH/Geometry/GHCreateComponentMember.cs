@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace D2P_GrasshopperTools.GH.Geometry
 {
-    public class GHCreateComponentMember : GH_Component
+    public class GHCreateComponentMember : GHComponentBase
     {
         /// <summary>
         /// Initializes a new instance of the Geometry_AddToComponent class.

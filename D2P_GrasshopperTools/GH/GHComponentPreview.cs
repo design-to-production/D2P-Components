@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace D2P_GrasshopperTools.GH
 {
-    public abstract class GHComponentPreview : GH_Component
+    public abstract class GHComponentPreview : GHComponentBase
     {
 
         protected BoundingBox _box;

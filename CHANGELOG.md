@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GH_StreamComponentTypes is a new Grasshopper component to stream existing component-types
 - GH_StreamComponentsByType has an additional MenuItem to reverse the result of the regex-pattern
 - GH_CreateComponent has an additional (optional) input parameter to create a parent-child relationship for a new component
-- GH_Changelog is a new Grasshopper component to show this changelog in the Canvas
+- ShowChangelog menu item for all GH Components opens the Changelog in the browser
 
 ### Changed
 
