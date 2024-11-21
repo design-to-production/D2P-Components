@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace D2P_GrasshopperTools
 {
-    public class D2PGrasshopperToolsInfo : GH_AssemblyInfo
+    public class D2P_GrasshopperToolsInfo : GH_AssemblyInfo
     {
         public override string Name => "d2p-components";
 
@@ -22,7 +22,7 @@ namespace D2P_GrasshopperTools
         //Return a string representing your preferred contact details.
         public override string AuthorContact => "components@designtoproduction.com";
 
-        public D2PGrasshopperToolsInfo()
+        public D2P_GrasshopperToolsInfo()
         { }
     }
 }
