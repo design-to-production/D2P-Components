@@ -4,9 +4,11 @@ using System.Drawing;
 
 namespace D2P_GrasshopperTools
 {
-    public class D2P_GrasshopperToolsInfo : GH_AssemblyInfo
+    public class D2PGrasshopperToolsInfo : GH_AssemblyInfo
     {
         public override string Name => "d2p-components";
+
+        public override string Version => "1.0.0";
 
         //Return a 24x24 pixel bitmap to represent this GHA library.
         public override Bitmap Icon => Properties.Resources.Logo;
@@ -22,7 +24,7 @@ namespace D2P_GrasshopperTools
         //Return a string representing your preferred contact details.
         public override string AuthorContact => "components@designtoproduction.com";
 
-        public D2P_GrasshopperToolsInfo()
+        public D2PGrasshopperToolsInfo()
         { }
     }
 }

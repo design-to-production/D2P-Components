@@ -16,10 +16,10 @@
   
   <PropertyGroup>
     <!-- Specifies information for Assembly and Yak -->
-    <Version>1.0</Version>
-    <Title>D2P_GrasshopperTools</Title>
-    <Company>D2P_GrasshopperTools Authors</Company>
-    <Description>Description of D2P_GrasshopperTools</Description>
+    <Version>1.0</Version>	  
+    <Title>d2p-components</Title>
+    <Company>Design-to-Production</Company>
+    <Description>D2P Components for Grasshopper</Description>	 
   </PropertyGroup>
   
   <ItemGroup>
@@ -41,10 +41,14 @@
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" ExcludeAssets="all" GeneratePathProperty="true" />
     <Reference Include="$(PkgMicrosoft_NETFramework_ReferenceAssemblies_net48)\build\.NETFramework\v4.8\System.Windows.Forms.dll" Private="False" />
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" ExcludeAssets="runtime" />
+	<PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" ExcludeAssets="runtime" />
   </ItemGroup>
+	
   <ItemGroup>
-    <ProjectReference Include="..\D2P_Core\D2P_Core.csproj" />
+    <ProjectReference Include="..\D2P_Core\D2P_Core.csproj" />	  
+	<PackageReference Include="System.Resources.Extensions" Version="7.0.0" Condition="!$(TargetFramework.StartsWith('net4'))" ExcludeAssets="runtime"/>
   </ItemGroup>
+	
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
