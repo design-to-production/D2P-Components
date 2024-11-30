@@ -1,0 +1,14 @@
+﻿name: d2p-components
+version: $version
+authors:
+  - Design-To-Production
+description: D2P Components for Grasshopper
+url: "https://github.com/design-to-production/D2P-Components"
+icon: Logo.png
+keywords:
+  - components
+  - rhino
+  - grasshopper
+  - architecture
+  - layers
+  - structure
