@@ -18,7 +18,7 @@ namespace D2P_GrasshopperTools.GH.IO
         /// Initializes a new instance of the IO_BakeComponents class.
         /// </summary>
         public GHBakeComponents()
-          : base("BakeComponents", "Bake",
+          : base("BakeComponents", "BakeComp",
               "Bake component-instances to the Rhino document",
               "D2P", "IO")
         {
