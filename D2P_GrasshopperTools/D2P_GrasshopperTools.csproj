@@ -77,7 +77,7 @@
     <Copy SourceFiles="Assets/Logo.png;manifest.yml" DestinationFolder="$(OutputPath)net48/" />
     
 
-	<!-- Rhino 7 -->    
+	<!-- Rhino 7 -->    	  
     <Exec Command="&quot;$(YakExecutable)&quot; build --platform=win" WorkingDirectory="$(OutputPath)net48\" Condition="$(BuildYakPackage) == 'True'" />
 	<ItemGroup>
 		<YakPackageToMove Include="$(BaseOutputPath)$(Configuration)\net48\*.yak" />
@@ -86,7 +86,7 @@
 	<Move SourceFiles="@(YakPackageToMove);@(AssetsToMove)" DestinationFolder="$(BaseOutputPath)$(Configuration)\" Condition="$(BuildYakPackage) == 'True'" />
 
 	<!-- Rhino 8 -->	
-    <Exec Command="&quot;$(YakExecutable)&quot; build --platform=any" WorkingDirectory="$(OutputPath)" Condition="$(BuildYakPackage) == 'True'" />
+    <Exec Command="&quot;$(YakExecutable)&quot; build --platform=any" WorkingDirectory="$(OutputPath)" Condition="$(BuildYakPackage) == 'True'" />	
   </Target>
 
 </Project>
