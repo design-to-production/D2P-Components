@@ -54,7 +54,7 @@ namespace D2P_GrasshopperTools.GH.Components
                 return;
             }
 
-            var children = Instantiation.GetChildren(component, filterTypes);
+            var children = Instantiation.GetChildren(component, filterTypes, component.Settings);
             if (children == null || !children.Any())
             {
                 var msg = $"Children of component {component.Name} not found !";
