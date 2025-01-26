@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace D2P_GrasshopperTools.GH.Components
 {
-    public class GHCreateComponentType : GH_Component
+    public class GHCreateComponentType : GHComponentBase
     {
         /// <summary>
         /// Initializes a new instance of the Layers_CreateLayer class.
@@ -70,7 +70,7 @@ namespace D2P_GrasshopperTools.GH.Components
                     AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
                     return;
                 }
-                typeName = D2P_Core.Utility.Layers.GetComponentLayerDescription(componentLayer);
+                typeName = D2P_Core.Utility.Layers.GetComponentTypeName(componentLayer, settings);
             }
 
             if (labelSize <= 0)

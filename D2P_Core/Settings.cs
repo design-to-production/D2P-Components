@@ -24,6 +24,11 @@ namespace D2P_Core
         public char CountDelimiter { get; set; } = '#';
         public char JointDelimiter { get; set; } = '+';
 
+        public Settings ShallowCopy()
+        {
+            return (Settings)MemberwiseClone();
+        }
+
         public Dictionary<string, string> ToDictionary()
         {
             var settings = new Dictionary<string, string>();

@@ -6,7 +6,7 @@ using System;
 
 namespace D2P_GrasshopperTools.GH.Geometry
 {
-    public class GHRetrieveGeometry : GH_Component
+    public class GHRetrieveGeometry : GHComponentBase
     {
         /// <summary>
         /// Initializes a new instance of the Component_LayerObjects class.

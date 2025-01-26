@@ -17,18 +17,9 @@ namespace D2P_Core.Utility
             IncludeChildren
         }
 
-        public static string ComponentTypeIDFromObject(RhinoObject obj, char typeDelimiter = ':') => obj.Name.Split(typeDelimiter).FirstOrDefault();
-        public static string ComponentTypeNameFromObject(RhinoObject obj, char layerDescriptionDelimiter = '-') => Layers.GetComponentLayerDescription(obj, layerDescriptionDelimiter);
-        public static Color ComponentTypeLayerColorFromObject(RhinoObject obj, char layerDescriptionDelimiter = '-') => Layers.GetComponentTypeRootLayer(obj, layerDescriptionDelimiter).Color;
-
-        public static ComponentType ComponentTypeFromObject(TextObject obj, char typeDelimiter = ':', char layerDescriptionDelimiter = '-')
-        {
-            var typeID = ComponentTypeIDFromObject(obj, typeDelimiter);
-            var typeName = ComponentTypeNameFromObject(obj, layerDescriptionDelimiter);
-            var labelSize = obj.TextGeometry.TextHeight;
-            var layerColor = ComponentTypeLayerColorFromObject(obj, layerDescriptionDelimiter);
-            return new ComponentType(typeID, typeName, new Settings(), labelSize, layerColor);
-        }
+        public static string ComponentTypeIDFromObject(RhinoObject obj, Settings settings) => obj.Name.Split(settings.TypeDelimiter).FirstOrDefault();
+        public static string ComponentTypeNameFromObject(RhinoObject obj, Settings settings) => Layers.GetComponentTypeName(obj, settings);
+        public static Color ComponentTypeLayerColorFromObject(RhinoObject obj, Settings settings) => Layers.GetComponentTypeRootLayer(obj, settings).Color;
 
         public static IEnumerable<T> ObjectsByLayer<T>(int layerIdx, IComponent component, LayerScope layerScope) where T : GeometryBase
         {

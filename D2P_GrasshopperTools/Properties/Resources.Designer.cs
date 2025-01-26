@@ -273,6 +273,16 @@ namespace D2P_GrasshopperTools.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap GH_StreamComponentTypes {
+            get {
+                object obj = ResourceManager.GetObject("GH_StreamComponentTypes", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap GH_StreamGate {
             get {
                 object obj = ResourceManager.GetObject("GH_StreamGate", resourceCulture);

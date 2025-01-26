@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace D2P_GrasshopperTools.GH.Components
 {
-    public class GHComponentSettings : GH_Component
+    public class GHComponentSettings : GHComponentBase
     {
         /// <summary>
         /// Initializes a new instance of the GH_Settings class.

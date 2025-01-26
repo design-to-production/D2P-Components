@@ -1,14 +1,14 @@
 ﻿name: d2p-components
-version: 1.0.0-beta
-authors: 
-- Design-To-Production
+version: $version
+authors:
+  - Design-To-Production
 description: D2P Components for Grasshopper
 url: "https://github.com/design-to-production/D2P-Components"
-icon: Assets/Logo.png
+icon: Logo.png
 keywords:
-- components
-- rhino
-- grasshopper
-- architecture
-- layers
-- structure
+  - components
+  - rhino
+  - grasshopper
+  - architecture
+  - layers
+  - structure

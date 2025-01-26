@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace D2P_GrasshopperTools.GH.Geometry
 {
-    public class GHCreateComponentLayerInfo : GH_Component
+    public class GHCreateComponentLayerInfo : GHComponentBase
     {
         /// <summary>
         /// Initializes a new instance of the GH_CreateComponentLayerInfo class.
