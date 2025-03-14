@@ -36,9 +36,8 @@ namespace D2P_Core.Interfaces
         IComponent Clone();
         IComponent VirtualClone();
         bool Transform(Transform xform);
-        Guid[] ReplaceGeometries(ComponentMember objects);
-        Guid[] ReplaceGeometries(ILayerInfo layerInfo, IEnumerable<GeometryBase> geometries, ObjectAttributes objectAttributes = null);
-        Guid ReplaceGeometry(GeometryBase geometry, ILayerInfo layerInfo, ObjectAttributes objectAttributes = null);
+        IList<Guid> AddMember(ComponentMember member);
+        IList<Guid> ReplaceMember(ComponentMember member);
         void ClearStagingLayerCollection();
     }
 }

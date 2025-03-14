@@ -83,8 +83,8 @@ namespace D2P_GrasshopperTools.GH.Geometry
                 }
             }
 
-            var geometry = Objects.ObjectsByLayer(layerIdx, component, (Objects.LayerScope)layerScope);
-            DA.SetDataList(0, geometry);
+            var geometries = Objects.ObjectsByLayer(layerIdx, component, (Objects.LayerScope)layerScope);
+            DA.SetDataList(0, geometries);
         }
 
         /// <summary>
