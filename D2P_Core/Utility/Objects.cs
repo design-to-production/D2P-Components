@@ -51,8 +51,21 @@ namespace D2P_Core.Utility
             doc = doc ?? RhinoDoc.ActiveDoc;
             return doc.Objects.FindByLayer(layer);
         }
+        public static IEnumerable<Guid> ObjectIDsByLayer(IComponent component, int layerIdx, RhinoDoc doc = null)
+        {
+            doc = doc ?? RhinoDoc.ActiveDoc;
+            var filter = new ObjectEnumeratorSettings()
+            {
+                LayerIndexFilter = layerIdx,
+                HiddenObjects = true,
+                LockedObjects = true,
+                NameFilter = component.Name
+            };
+            return doc.Objects.FindByFilter(filter).Select(rhObj => rhObj.Id);
+        }
+
         public static IEnumerable<RhinoObject> ObjectsByGroup(int grpIdx, RhinoDoc doc) => doc.Groups.GroupMembers(grpIdx);
-        public static IEnumerable<RhinoObject> ObjectsByGroup(int grpIdx, Layer layer, RhinoDoc doc) => ObjectsByGroup(grpIdx, doc).Where(rh => rh.Attributes.LayerIndex == layer.Index);
+        public static IEnumerable<RhinoObject> ObjectsByGroup(int grpIdx, Layer layer, RhinoDoc doc) => ObjectsByGroup(grpIdx, doc).Where(rh => rh.Attributes.LayerIndex == layer?.Index);
 
         public static int DeleteObjects(IComponent component, Layer layer)
         {
