@@ -30,7 +30,7 @@ namespace D2P_Core
         public string ShortName => Label.PlainText;
 
         // State
-        public bool IsInitialized => ActiveDoc == null || ActiveDoc.Layers.FindName(Layers.ComposeComponentTypeLayerName(this)) != null;
+        public bool IsInitialized => ActiveDoc != null && ActiveDoc.Layers.FindName(Layers.ComposeComponentTypeLayerName(this)) != null;
         public bool IsVirtual => ActiveDoc == null || ActiveDoc.Objects.FindId(ID) == null;
         public bool IsVirtualClone { get; private set; }
 
