@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed [[Bug] Member-Geometry is not replaced](https://github.com/design-to-production/D2P-Components/issues/23)
+- Fixed [[BUG] ShowChangelog not working netcore7](https://github.com/design-to-production/D2P-Components/issues/21)
 
 ## (1.0.0) - 2024-12-02
 
