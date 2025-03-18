@@ -7,22 +7,19 @@ namespace D2P_Core
 {
     public class ComponentType : IComponentType
     {
-        public ComponentType(string typeID, string typeName, Settings settings, double? labelSize, Color? layerColor)
+        public string TypeID { get; set; }
+        public string TypeName { get; set; }
+        public double LabelSize { get; set; }
+        public Color LayerColor { get; set; }
+        public Settings Settings { get; set; }
+
+        public ComponentType(string typeID, string typeName, Settings settings = null, double? labelSize = null, Color? layerColor = null)
         {
             TypeID = typeID;
             TypeName = typeName;
             LabelSize = labelSize ?? Rhino.RhinoDoc.ActiveDoc.DimStyles.Current.TextHeight;
             LayerColor = layerColor ?? Color.Black;
-            Settings = settings;
-        }
-
-        public ComponentType(IComponent component)
-        {
-            TypeID = component.TypeID;
-            TypeName = component.TypeName;
-            LabelSize = component.LabelSize;
-            LayerColor = component.LayerColor;
-            Settings = component.Settings;
+            Settings = settings ?? Settings.Default;
         }
 
         public ComponentType(Layer layer, Settings settings)
@@ -41,13 +38,15 @@ namespace D2P_Core
             LabelSize = textObj.TextGeometry.TextHeight;
             LayerColor = Objects.ComponentTypeLayerColorFromObject(textObj, settings);
             Settings = Layers.GetComponentTypeSettings(textObj, settings);
-
         }
 
-        public string TypeID { get; set; }
-        public string TypeName { get; set; }
-        public double LabelSize { get; set; }
-        public Color LayerColor { get; set; }
-        public Settings Settings { get; set; }
+        public ComponentType(IComponent component)
+        {
+            TypeID = component.TypeID;
+            TypeName = component.TypeName;
+            LabelSize = component.LabelSize;
+            LayerColor = component.LayerColor;
+            Settings = component.Settings;
+        }
     }
 }

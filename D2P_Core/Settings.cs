@@ -24,6 +24,8 @@ namespace D2P_Core
         public char CountDelimiter { get; set; } = '#';
         public char JointDelimiter { get; set; } = '+';
 
+        public static Settings Default => new Settings();
+
         public Settings ShallowCopy()
         {
             return (Settings)MemberwiseClone();

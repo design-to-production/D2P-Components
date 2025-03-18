@@ -58,7 +58,6 @@ namespace D2P_Core
         {
             get => Label.Plane;
             set => (GeometryCollection[ID] as TextEntity).Plane = value;
-
         }
         public GeometryCollection GeometryCollection
         {
