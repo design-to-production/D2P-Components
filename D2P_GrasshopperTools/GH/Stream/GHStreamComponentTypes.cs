@@ -1,5 +1,6 @@
 ﻿using D2P_Core;
 using Grasshopper.Kernel;
+using Rhino;
 using System;
 using System.Linq;
 
@@ -41,7 +42,7 @@ namespace D2P_GrasshopperTools.GH.Stream
         {
             Settings settings = null;
             DA.GetData(0, ref settings);
-            settings = settings ?? new Settings();
+            settings = settings ?? new Settings(RhinoDoc.ActiveDoc);
 
             var componentTypes = D2P_Core.Utility.Instantiation.GetComponentTypes(settings);
 

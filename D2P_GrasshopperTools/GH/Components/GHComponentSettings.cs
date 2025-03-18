@@ -85,7 +85,7 @@ namespace D2P_GrasshopperTools.GH.Components
             DA.GetData(8, ref countDelimiter);
             DA.GetData(9, ref jointDelimiter);
 
-            var settings = new Settings()
+            var settings = new Settings(null)
             {
                 RootLayerName = !string.IsNullOrEmpty(rootLayerName) ? rootLayerName : Properties.Settings.Default.DefaultRootLayerName,
                 RootLayerColor = rootLayerColor != Color.Empty ? rootLayerColor : Properties.Settings.Default.DefaultRootLayerColor,

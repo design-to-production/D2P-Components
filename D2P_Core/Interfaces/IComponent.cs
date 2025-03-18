@@ -8,7 +8,7 @@ namespace D2P_Core.Interfaces
 {
     public interface IComponent : IComponentType
     {
-        RhinoDoc ActiveDoc { get; set; }
+        RhinoDoc ActiveDoc { get; }
         ComponentType ComponentType { get; }
 
         // IDs
