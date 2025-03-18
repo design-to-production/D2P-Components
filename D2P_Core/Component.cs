@@ -16,15 +16,12 @@ namespace D2P_Core
 
     public class Component : IComponent
     {
-
         GeometryCollection _geometryCollection = new GeometryCollection();
         AttributeCollection _attributeCollection = new AttributeCollection();
         LayerCollection _stagingLayerCollection = new LayerCollection();
 
-        protected ComponentType _componentType;
-
         // Doc
-        public RhinoDoc ActiveDoc { get; set; } = RhinoDoc.ActiveDoc;
+        public RhinoDoc ActiveDoc { get; } = null;
 
         // IDs
         public Guid ID { get; set; }
@@ -33,16 +30,16 @@ namespace D2P_Core
         public string ShortName => Label.PlainText;
 
         // State
-        public bool IsInitialized => ActiveDoc.Layers.FindName(Layers.ComposeComponentTypeLayerName(this)) != null;
-        public bool IsVirtual => ActiveDoc.Objects.FindId(ID) == null;
+        public bool IsInitialized => ActiveDoc == null || ActiveDoc.Layers.FindName(Layers.ComposeComponentTypeLayerName(this)) != null;
+        public bool IsVirtual => ActiveDoc == null || ActiveDoc.Objects.FindId(ID) == null;
         public bool IsVirtualClone { get; private set; }
 
         // Type
-        public ComponentType ComponentType => _componentType;
-        public string TypeID => _componentType.TypeID;
-        public string TypeName => _componentType.TypeName;
-        public Color LayerColor => _componentType.LayerColor;
-        public Settings Settings => _componentType.Settings;
+        public ComponentType ComponentType { get; }
+        public string TypeID => ComponentType.TypeID;
+        public string TypeName => ComponentType.TypeName;
+        public Color LayerColor => ComponentType.LayerColor;
+        public Settings Settings => ComponentType.Settings;
 
         // Geometry
         public double LabelSize => Label.TextHeight;
@@ -77,7 +74,7 @@ namespace D2P_Core
         public Component(ComponentType componentType, string name, Plane plane)
         {
             ID = Guid.NewGuid();
-            _componentType = componentType;
+            ComponentType = componentType;
             var label = TextEntity.Create(name, plane, Settings.DimensionStyle, false, 0, 0);
             label.TextHeight = componentType.LabelSize;
             GeometryCollection.Add(ID, label);
@@ -88,16 +85,16 @@ namespace D2P_Core
         public Component(ComponentType componentType, Guid id)
         {
             ID = id;
-            _componentType = componentType;
+            ComponentType = componentType;
         }
 
-        protected Component(IComponent component)
+        private Component(IComponent component)
         {
             ID = component.ID;
-            _componentType = new ComponentType(component);
+            ComponentType = new ComponentType(component);
             GeometryCollection = new GeometryCollection(component.GeometryCollection);
             var label = TextEntity.Create(ShortName, Plane, Settings.DimensionStyle, false, 0, 0);
-            label.TextHeight = _componentType.LabelSize;
+            label.TextHeight = ComponentType.LabelSize;
             GeometryCollection[ID] = label;
             AttributeCollection = new AttributeCollection(component.AttributeCollection);
             StagingLayerCollection = new LayerCollection(component.StagingLayerCollection);
@@ -174,12 +171,12 @@ namespace D2P_Core
             return ids;
         }
 
-        void CacheCollections()
+        private void CacheCollections()
         {
             _geometryCollection = GeometryCollection;
             _attributeCollection = AttributeCollection;
         }
-        void RemoveObjectFromCollections(Guid objID)
+        private void RemoveObjectFromCollections(Guid objID)
         {
             _geometryCollection.Remove(objID);
             _attributeCollection.Remove(objID);

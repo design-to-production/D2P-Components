@@ -9,17 +9,14 @@ namespace D2P_Core
     {
         public string TypeID { get; set; }
         public string TypeName { get; set; }
-        public double LabelSize { get; set; }
-        public Color LayerColor { get; set; }
-        public Settings Settings { get; set; }
+        public double LabelSize { get; set; } = 50;
+        public Color LayerColor { get; set; } = Color.Black;
+        public Settings Settings { get; set; } = Settings.Default;
 
-        public ComponentType(string typeID, string typeName, Settings settings = null, double? labelSize = null, Color? layerColor = null)
+        public ComponentType(string typeID, string typeName)
         {
             TypeID = typeID;
             TypeName = typeName;
-            LabelSize = labelSize ?? Rhino.RhinoDoc.ActiveDoc.DimStyles.Current.TextHeight;
-            LayerColor = layerColor ?? Color.Black;
-            Settings = settings ?? Settings.Default;
         }
 
         public ComponentType(Layer layer, Settings settings)
