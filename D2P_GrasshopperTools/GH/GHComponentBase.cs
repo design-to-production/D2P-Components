@@ -1,5 +1,7 @@
 ﻿using Grasshopper.Kernel;
 using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace D2P_GrasshopperTools.GH
@@ -17,10 +19,30 @@ namespace D2P_GrasshopperTools.GH
             menuItem.ToolTipText = "The changelog for this project lists all changes made in previous versions";
         }
 
-        private static void ChangelogHandler(object sender, EventArgs e)
+        private void ChangelogHandler(object sender, EventArgs e)
         {
             var url = "https://github.com/design-to-production/D2P-Components/blob/main/CHANGELOG.md";
-            System.Diagnostics.Process.Start(url);
+            try { OpenURL(url); }
+            catch (Exception ex)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, ex.Message);
+            }
+        }
+
+        private static void OpenURL(string url)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                Process.Start("open", url);
+            }
         }
     }
 }
