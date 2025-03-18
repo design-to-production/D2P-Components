@@ -109,63 +109,88 @@ namespace D2P_Core
         public IComponent VirtualClone() => new Component(this) { IsVirtualClone = true };
         public IComponent Clone() => new Component(this);
 
-        public Guid[] ReplaceGeometries(ComponentMember objects) => ReplaceGeometries(objects.LayerInfo, objects.GeometryBases, objects.ObjectAttributes);
-        public Guid[] ReplaceGeometries(ILayerInfo layerInfo, IEnumerable<GeometryBase> geometries, ObjectAttributes objectAttributes = null)
+        public IList<Guid> AddMember(ComponentMember member)
         {
-            if (!_geometryCollection.Any())
-                CacheGeometry();
-            if (!_attributeCollection.Any())
-                CacheAttributes();
+            if (member == null) return new List<Guid>();
 
-            var rawLayerName = layerInfo.RawLayerName;
-            var layerIdx = Layers.FindLayerIndexByFullPath(this, rawLayerName);
-            if (layerIdx <= 0)
+            CacheCollections();
+
+            if (!StagingLayerCollection.ContainsKey(member.LayerInfo))
+                StagingLayerCollection.Add(member.LayerInfo, new Dictionary<Guid, int>());
+
+            return AddObjectToCollections(member);
+        }
+
+        public IList<Guid> ReplaceMember(ComponentMember member)
+        {
+            if (member == null) return new List<Guid>();
+
+            CacheCollections();
+
+            if (StagingLayerCollection.TryGetValue(member.LayerInfo, out Dictionary<Guid, int> value))
             {
-                layerIdx = Layers.FindLayerIndex(this, rawLayerName, out int layersFound);
-                if (layersFound > 1)
-                    return new Guid[0];
+                foreach (var objID in value.Select(kv => kv.Key))
+                {
+                    RemoveObjectFromCollections(objID);
+                }
+            }
+            else StagingLayerCollection.Add(member.LayerInfo, new Dictionary<Guid, int>());
+
+            var layerIdx = Layers.FindLayerIndex(this, member.LayerInfo.RawLayerName, out int layersFound);
+            if (layerIdx < 0 || layersFound > 1) return new List<Guid>();
+
+            foreach (var objID in Objects.ObjectIDsByLayer(this, layerIdx))
+            {
+                if (Guid.Empty == objID) continue;
+                RemoveObjectFromCollections(objID);
             }
 
+            return AddObjectToCollections(member);
+        }
+
+        IList<Guid> AddObjectToCollections(ComponentMember member)
+        {
             var ids = new List<Guid>();
-            objectAttributes = objectAttributes ?? new ObjectAttributes();
+            var layerIdx = Layers.FindLayerIndex(this, member.LayerInfo.RawLayerName, out int layersFound);
+            if (layersFound > 1)
+                return ids;
+
+            var objectAttributes = member.ObjectAttributes ?? new ObjectAttributes();
             objectAttributes.Name = Name;
-
-            if (!StagingLayerCollection.ContainsKey(layerInfo))
-                StagingLayerCollection.Add(layerInfo, new Dictionary<Guid, int>());
-
             if (layerIdx > 0)
                 objectAttributes.LayerIndex = layerIdx;
 
-            foreach (var geometry in geometries)
+            foreach (var geometry in member.GeometryBases)
             {
                 if (geometry == null)
                     continue;
                 var newID = Guid.NewGuid();
+                ids.Add(newID);
                 if (layerIdx <= 0)
-                    StagingLayerCollection[layerInfo][newID] = -1;
+                    StagingLayerCollection[member.LayerInfo][newID] = -1;
                 GeometryCollection.Add(newID, geometry);
                 AttributeCollection.Add(newID, objectAttributes);
             }
 
-            return ids.ToArray();
-        }
-        public Guid ReplaceGeometry(GeometryBase geometry, ILayerInfo layerInfo, ObjectAttributes objectAttributes = null)
-        {
-            var geometries = new List<GeometryBase>() { geometry };
-            return ReplaceGeometries(layerInfo, geometries, objectAttributes).FirstOrDefault();
+            return ids;
         }
 
-        void CacheGeometry() => _geometryCollection = GeometryCollection;
-        void CacheAttributes() => _attributeCollection = AttributeCollection;
+        void CacheCollections()
+        {
+            _geometryCollection = GeometryCollection;
+            _attributeCollection = AttributeCollection;
+        }
+        void RemoveObjectFromCollections(Guid objID)
+        {
+            _geometryCollection.Remove(objID);
+            _attributeCollection.Remove(objID);
+        }
+
         public void ClearStagingLayerCollection()
         {
-            foreach (var kv in StagingLayerCollection)
+            foreach (var objID in StagingLayerCollection.Values.SelectMany(x => x.Keys))
             {
-                foreach (var objID in kv.Value.Keys.ToList())
-                {
-                    GeometryCollection.Remove(objID);
-                    AttributeCollection.Remove(objID);
-                }
+                RemoveObjectFromCollections(objID);
             }
             StagingLayerCollection.Clear();
         }

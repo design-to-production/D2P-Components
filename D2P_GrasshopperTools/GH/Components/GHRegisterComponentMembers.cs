@@ -4,11 +4,14 @@ using D2P_Core.Interfaces;
 using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace D2P_GrasshopperTools.GH.Components
 {
     public class GHRegisterComponentMembers : GHComponentPreview
     {
+        bool _replaceExisting = true;
+
         /// <summary>
         /// Initializes a new instance of the Component_AddGeometryWithLayer class.
         /// </summary>
@@ -73,11 +76,25 @@ namespace D2P_GrasshopperTools.GH.Components
                         return;
                     }
                 }
-                componentClone.ReplaceGeometries(obj);
+                if (_replaceExisting)
+                    componentClone.ReplaceMember(obj);
+                else componentClone.AddMember(obj);
             }
 
             _components.Add(componentClone);
             DA.SetData(0, componentClone);
+        }
+
+        protected override void AppendAdditionalComponentMenuItems(ToolStripDropDown menu)
+        {
+            base.AppendAdditionalComponentMenuItems(menu);
+            Menu_AppendItem(menu, "Replace Existing", ClickOnReplaceExisting, true, _replaceExisting);
+        }
+
+        private void ClickOnReplaceExisting(object sender, EventArgs e)
+        {
+            _replaceExisting = !_replaceExisting;
+            ExpireSolution(true);
         }
 
         /// <summary>
