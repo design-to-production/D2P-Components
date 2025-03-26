@@ -41,7 +41,7 @@ namespace D2P_Core.Utility
 
         public static int GetGroupIndex(Guid componentID, RhinoDoc doc)
         {
-            if (componentID.Equals(Guid.Empty)) return -1;
+            if (doc == null || componentID.Equals(Guid.Empty)) return -1;
             var rhObj = doc.Objects.FindId(componentID);
             if (rhObj?.GroupCount != 1)
                 return -1;

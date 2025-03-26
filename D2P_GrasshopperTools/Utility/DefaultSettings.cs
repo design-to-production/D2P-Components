@@ -4,7 +4,7 @@
     {
         internal static D2P_Core.Settings Create()
         {
-            return new D2P_Core.Settings()
+            return new D2P_Core.Settings(null)
             {
                 RootLayerName = Properties.Settings.Default.DefaultRootLayerName,
                 RootLayerColor = Properties.Settings.Default.DefaultRootLayerColor,

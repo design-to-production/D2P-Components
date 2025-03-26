@@ -1,5 +1,6 @@
 ﻿using D2P_Core;
 using Grasshopper.Kernel;
+using Rhino;
 using System;
 using System.Drawing;
 
@@ -60,7 +61,7 @@ namespace D2P_GrasshopperTools.GH.Components
             DA.GetData(4, ref settings);
 
             if (settings == null)
-                settings = new Settings();
+                settings = new Settings(RhinoDoc.ActiveDoc);
             if (string.IsNullOrEmpty(typeName))
             {
                 var componentLayer = D2P_Core.Utility.Layers.FindComponentLayerByType(typeID, settings.RootLayerName);
@@ -76,7 +77,12 @@ namespace D2P_GrasshopperTools.GH.Components
             if (labelSize <= 0)
                 labelSize = Rhino.RhinoDoc.ActiveDoc.DimStyles.Current.TextHeight;
 
-            var cls = new ComponentType(typeID, typeName, settings, labelSize, layerColor);
+            var cls = new ComponentType(typeID, typeName)
+            {
+                Settings = settings,
+                LayerColor = layerColor,
+                LabelSize = labelSize,
+            };
             DA.SetData(0, cls);
         }
 

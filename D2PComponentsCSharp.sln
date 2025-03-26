@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "D2P_GrasshopperTools", "D2P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "D2P_Core", "D2P_Core\D2P_Core.csproj", "{173BFE75-42C2-4E14-B0EC-EF0ECC1BDDF3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "D2P_CoreTests", "D2P_CoreTests\D2P_CoreTests.csproj", "{97ECF6D3-0083-4E79-8F7B-5EFCACC66432}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{173BFE75-42C2-4E14-B0EC-EF0ECC1BDDF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{173BFE75-42C2-4E14-B0EC-EF0ECC1BDDF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{173BFE75-42C2-4E14-B0EC-EF0ECC1BDDF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97ECF6D3-0083-4E79-8F7B-5EFCACC66432}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97ECF6D3-0083-4E79-8F7B-5EFCACC66432}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97ECF6D3-0083-4E79-8F7B-5EFCACC66432}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97ECF6D3-0083-4E79-8F7B-5EFCACC66432}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

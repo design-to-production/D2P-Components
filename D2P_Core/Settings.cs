@@ -12,8 +12,8 @@ namespace D2P_Core
         public Color RootLayerColor { get; set; } = Color.FromArgb(220, 75, 58);
 
         // Style        
-        public string DimensionStyleName { get; set; } = RhinoDoc.ActiveDoc.DimStyles.Current.Name;
-        public DimensionStyle DimensionStyle => RhinoDoc.ActiveDoc.DimStyles.FindName(DimensionStyleName) ?? RhinoDoc.ActiveDoc.DimStyles.Current;
+        public string DimensionStyleName { get; set; }
+        public DimensionStyle DimensionStyle { get; }
 
         // Delimiter
         public char TypeDelimiter { get; set; } = ':';
@@ -23,6 +23,14 @@ namespace D2P_Core
         public char LayerNameDelimiter { get; set; } = ':';
         public char CountDelimiter { get; set; } = '#';
         public char JointDelimiter { get; set; } = '+';
+
+        public Settings(RhinoDoc doc)
+        {
+            DimensionStyleName = doc?.DimStyles.Current.Name ?? string.Empty;
+            DimensionStyle = doc?.DimStyles.FindName(DimensionStyleName) ?? doc?.DimStyles.Current ?? new DimensionStyle();
+        }
+
+        public static Settings Default => new Settings(null);
 
         public Settings ShallowCopy()
         {
