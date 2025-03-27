@@ -173,6 +173,16 @@ namespace D2P_GrasshopperTools.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap GH_GetComponentIndex {
+            get {
+                object obj = ResourceManager.GetObject("GH_GetComponentIndex", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap GH_ObjectAttributes {
             get {
                 object obj = ResourceManager.GetObject("GH_ObjectAttributes", resourceCulture);
