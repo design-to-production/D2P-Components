@@ -68,7 +68,7 @@ namespace D2P_GrasshopperTools.GH.Components
                 var rawLayerName = obj.LayerInfo.RawLayerName;
                 if (D2P_Core.Utility.Layers.FindLayerIndexByFullPath(componentClone, rawLayerName) < 0)
                 {
-                    D2P_Core.Utility.Layers.FindLayerIndex(componentClone, rawLayerName, out int layersFound);
+                    D2P_Core.Utility.Layers.FindLayer(componentClone, rawLayerName, out int layersFound);
                     if (layersFound > 1)
                     {
                         var msg = $"Found {layersFound} layers with name {rawLayerName}, specify full path !";
