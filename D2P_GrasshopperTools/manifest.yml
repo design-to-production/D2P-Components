@@ -2,7 +2,7 @@
 version: $version
 authors:
   - Design-To-Production
-description: D2P Components for Grasshopper
+description: D2P Components streamline parametric modeling in Grasshopper, helping you manage complex data trees, reduce recomputations, and maintain a structured, scalable workflow from concept to fabrication.
 url: "https://github.com/design-to-production/D2P-Components"
 icon: Logo.png
 keywords:

@@ -136,13 +136,14 @@ namespace D2P_Core
             }
             else StagingLayerCollection.Add(member.LayerInfo, new Dictionary<Guid, int>());
 
-            var layerIdx = Layers.FindLayerIndex(this, member.LayerInfo.RawLayerName, out int layersFound);
-            if (layerIdx < 0 || layersFound > 1) return new List<Guid>();
-
-            foreach (var objID in Objects.ObjectIDsByLayer(this, layerIdx))
+            var layerIdx = Layers.FindLayerIndexByFullPath(this, member.LayerInfo.RawLayerName);
+            if (layerIdx > 0)
             {
-                if (Guid.Empty == objID) continue;
-                RemoveObjectFromCollections(objID);
+                foreach (var objID in Objects.ObjectIDsByLayer(this, layerIdx))
+                {
+                    if (Guid.Empty == objID) continue;
+                    RemoveObjectFromCollections(objID);
+                }
             }
 
             return AddObjectToCollections(member);
@@ -150,16 +151,13 @@ namespace D2P_Core
 
         IList<Guid> AddObjectToCollections(ComponentMember member)
         {
-            var ids = new List<Guid>();
-            var layerIdx = Layers.FindLayerIndex(this, member.LayerInfo.RawLayerName, out int layersFound);
-            if (layersFound > 1)
-                return ids;
-
+            var layerIdx = Layers.FindLayerIndexByFullPath(this, member.LayerInfo.RawLayerName);
             var objectAttributes = member.ObjectAttributes ?? new ObjectAttributes();
             objectAttributes.Name = Name;
             if (layerIdx > 0)
                 objectAttributes.LayerIndex = layerIdx;
 
+            var ids = new List<Guid>();
             foreach (var geometry in member.GeometryBases)
             {
                 if (geometry == null)

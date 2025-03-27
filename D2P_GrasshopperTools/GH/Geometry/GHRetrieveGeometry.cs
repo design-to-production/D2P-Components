@@ -68,7 +68,7 @@ namespace D2P_GrasshopperTools.GH.Geometry
             var layerIdx = Layers.FindLayerIndexByFullPath(component, layerName);
             if (layerIdx < 0)
             {
-                layerIdx = Layers.FindLayerIndex(component, layerName, out int layersFound);
+                layerIdx = Layers.FindLayer(component, layerName, out int layersFound)?.Index ?? -1;
                 if (layerIdx < 0)
                 {
                     var msg = $"Layer {layerName} not found !";
