@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - GH_CreateJoint is a new Grasshopper component to define joint components based on input components
+- GH_GetComponentIndex is a new Grasshopper component to retrieve the index of a connected component within a joint name
 
 ## (1.0.2) - 2025-03-27
 ### Fixed

@@ -1,7 +1,5 @@
 ﻿using D2P_Core;
-using D2P_Core.Interfaces;
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
@@ -47,13 +45,13 @@ namespace D2P_GrasshopperTools.GH.Components
         {
             ComponentType componentType = null;
             var plane = Plane.Unset;
-            var components = new List<GH_ObjectWrapper>();
+            var components = new List<Component>();
 
             DA.GetData(0, ref componentType);
             DA.GetData(1, ref plane);
             DA.GetDataList(2, components);
 
-            var componentNames = components.Select(c => (c.Value as IComponent)?.ShortName ?? string.Empty);
+            var componentNames = components.Select(c => c?.ShortName ?? string.Empty);
             var name = String.Join(componentType.Settings.JointDelimiter.ToString(), componentNames);
             if (!componentNames.Any() || componentNames.Contains(string.Empty))
             {
