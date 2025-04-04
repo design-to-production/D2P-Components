@@ -3,7 +3,7 @@ using Grasshopper.Kernel;
 using Rhino.Geometry;
 using System;
 
-namespace D2P_GrasshopperTools.GH.Components
+namespace D2P_GrasshopperTools.GH.Create
 {
     public class GHCreateComponent : GHComponentPreview
     {
@@ -13,7 +13,7 @@ namespace D2P_GrasshopperTools.GH.Components
         public GHCreateComponent()
           : base("CreateComponent", "Component",
               "Creates a component instance based on a specific type",
-              "D2P", "Components")
+              "D2P", "01 Create")
         {
         }
 

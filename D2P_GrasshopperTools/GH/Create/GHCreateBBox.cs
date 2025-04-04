@@ -2,7 +2,7 @@
 using Rhino.Geometry;
 using System;
 
-namespace D2P_GrasshopperTools.GH.Geometry
+namespace D2P_GrasshopperTools.GH.Create
 {
     public class GHCreateBBox : GHComponentBase
     {
@@ -13,7 +13,7 @@ namespace D2P_GrasshopperTools.GH.Geometry
         public GHCreateBBox()
           : base("CreateBBox", "BBox",
               "Creates an oriented Bounding Box based on the input geometry and plane",
-              "D2P", "Geometry")
+              "D2P", "01 Create")
         { }
 
         /// <summary>

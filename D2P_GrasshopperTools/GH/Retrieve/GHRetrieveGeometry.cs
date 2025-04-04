@@ -4,7 +4,7 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using System;
 
-namespace D2P_GrasshopperTools.GH.Geometry
+namespace D2P_GrasshopperTools.GH.Retrieve
 {
     public class GHRetrieveGeometry : GHComponentBase
     {
@@ -14,7 +14,7 @@ namespace D2P_GrasshopperTools.GH.Geometry
         public GHRetrieveGeometry()
           : base("RetrieveGeometry", "RetrieveGeo",
               "Retrieves geometry of a component-instance",
-              "D2P", "Geometry")
+              "D2P", "02 Retrieve")
         {
         }
 

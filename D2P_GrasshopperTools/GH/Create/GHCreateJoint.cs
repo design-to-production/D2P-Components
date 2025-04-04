@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace D2P_GrasshopperTools.GH.Components
+namespace D2P_GrasshopperTools.GH.Create
 {
     public class GHCreateJoint : GHComponentPreview
     {
@@ -15,14 +15,14 @@ namespace D2P_GrasshopperTools.GH.Components
         public GHCreateJoint()
           : base("CreateJoint", "Joint",
               "Creates a joint-component instance based on a specific type and related components",
-              "D2P", "Components")
+              "D2P", "01 Create")
         {
         }
 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Type", "T", "The type definition for this component instance. This will define where the component will be baked into the layer-tree of the Rhino document", GH_ParamAccess.item);
             pManager.AddPlaneParameter("Plane", "P", "The plane used to create the text-label for the component after baking to the Rhino Document", GH_ParamAccess.item);
@@ -32,7 +32,7 @@ namespace D2P_GrasshopperTools.GH.Components
         /// <summary>
         /// Registers all the output parameters for this component.
         /// </summary>
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddGenericParameter("Component", "C", "The in-memory representation of the defined component instance", GH_ParamAccess.item);
         }
@@ -52,7 +52,7 @@ namespace D2P_GrasshopperTools.GH.Components
             DA.GetDataList(2, components);
 
             var componentNames = components.Select(c => c?.ShortName ?? string.Empty);
-            var name = String.Join(componentType.Settings.JointDelimiter.ToString(), componentNames);
+            var name = string.Join(componentType.Settings.JointDelimiter.ToString(), componentNames);
             if (!componentNames.Any() || componentNames.Contains(string.Empty))
             {
                 var msg = $"Invalid Joint Name {name} !";

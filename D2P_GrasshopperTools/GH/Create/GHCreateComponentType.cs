@@ -3,7 +3,7 @@ using Grasshopper.Kernel;
 using System;
 using System.Drawing;
 
-namespace D2P_GrasshopperTools.GH.Components
+namespace D2P_GrasshopperTools.GH.Create
 {
     public class GHCreateComponentType : GHComponentBase
     {
@@ -13,7 +13,7 @@ namespace D2P_GrasshopperTools.GH.Components
         public GHCreateComponentType()
           : base("CreateComponentType", "ComponentType",
               "Creates a component type which can be used to define components of that specific type",
-              "D2P", "Components")
+              "D2P", "01 Create")
         {
         }
 

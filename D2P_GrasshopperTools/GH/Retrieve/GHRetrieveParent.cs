@@ -3,7 +3,7 @@ using D2P_Core.Utility;
 using Grasshopper.Kernel;
 using System;
 
-namespace D2P_GrasshopperTools.GH.Components
+namespace D2P_GrasshopperTools.GH.Retrieve
 {
     public class GHRetrieveParent : GHComponentPreview
     {
@@ -13,7 +13,7 @@ namespace D2P_GrasshopperTools.GH.Components
         public GHRetrieveParent()
           : base("RetrieveParentComponent", "Parent",
               "Retrieves the parent component of a given input component. E.g. If the component-instance is named “aa.01”, “aa.02”, “aa.03”, ... the parent-instance is named “aa”",
-              "D2P", "Components")
+              "D2P", "02 Retrieve")
         {
         }
 
