@@ -1,5 +1,4 @@
 ﻿using D2P_Core;
-using D2P_GrasshopperTools.GH.Eto;
 using Grasshopper.Kernel;
 using Rhino;
 using Rhino.UI;
@@ -8,23 +7,23 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace D2P_GrasshopperTools.GH.Components
+namespace D2P_GrasshopperTools.GH.Create
 {
-    public class GHComponentSettings : GHComponentBase
+    public class GHCreateSettings : GHComponentBase
     {
         /// <summary>
         /// Initializes a new instance of the GH_Settings class.
         /// </summary>
-        public GHComponentSettings()
-          : base("ComponentSettings", "Settings",
+        public GHCreateSettings()
+          : base("CreateSettings", "Settings",
               "Defines the delimiter settings being used for a component-instance",
-              "D2P", "Components")
+              "D2P", "01 Create")
         { }
 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddTextParameter("RootLayerName", "R", "Specifies the root layer for the components", GH_ParamAccess.item);
             pManager.AddColourParameter("RootLayerColor", "C", "Specifies the root layer color for the components", GH_ParamAccess.item);
@@ -52,7 +51,7 @@ namespace D2P_GrasshopperTools.GH.Components
         /// <summary>
         /// Registers all the output parameters for this component.
         /// </summary>
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddGenericParameter("ComponentSettings", "S", "Settings being used for the components", GH_ParamAccess.item);
         }
@@ -118,12 +117,12 @@ namespace D2P_GrasshopperTools.GH.Components
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon
+        protected override Bitmap Icon
         {
             get
             {
                 //You can add image files to your project resources and access them like this:                
-                return Properties.Resources.GH_Settings;
+                return Properties.Resources.GH_CreateSettings;
             }
         }
 

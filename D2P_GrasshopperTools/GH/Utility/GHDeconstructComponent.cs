@@ -2,7 +2,7 @@
 using Grasshopper.Kernel;
 using System;
 
-namespace D2P_GrasshopperTools.GH.Components
+namespace D2P_GrasshopperTools.GH.Utility
 {
     public class GHDeconstructComponent : GHComponentPreview
     {
@@ -12,7 +12,7 @@ namespace D2P_GrasshopperTools.GH.Components
         public GHDeconstructComponent()
           : base("DeconstructComponent", "DeComp",
               "Deconstructs a component",
-              "D2P", "Components")
+              "D2P", "04 Utility")
         {
         }
 

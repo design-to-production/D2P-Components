@@ -3,7 +3,7 @@ using D2P_Core.Interfaces;
 using Grasshopper.Kernel;
 using System;
 
-namespace D2P_GrasshopperTools.GH.Geometry
+namespace D2P_GrasshopperTools.GH.Retrieve
 {
     public class GHGetComponentIndex : GH_Component
     {
@@ -13,7 +13,7 @@ namespace D2P_GrasshopperTools.GH.Geometry
         public GHGetComponentIndex()
           : base("GetComponentIndex", "IndexOf",
               "Gets the index of a component within a joint name",
-              "D2P", "Geometry")
+              "D2P", "02 Retrieve")
         {
         }
 

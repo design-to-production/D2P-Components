@@ -15,7 +15,7 @@ namespace D2P_GrasshopperTools.GH.Stream
         public GHComponentGate()
           : base("ComponentGate", "Gate",
               "Sorts the input component-instances by their type-ids and automatically populates the output parameters",
-              "D2P", "Stream")
+              "D2P", "00 Stream")
         {
         }
 

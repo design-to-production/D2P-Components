@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace D2P_GrasshopperTools.GH.Components
+namespace D2P_GrasshopperTools.GH.Retrieve
 {
     public class GHRetrieveChildren : GHComponentPreview
     {
@@ -15,7 +15,7 @@ namespace D2P_GrasshopperTools.GH.Components
         public GHRetrieveChildren()
           : base("RetrieveChildComponents", "Children",
               "Retrieves child components of a given input component. E.g. If the parent-instance is named “aa” all child-instances are named “aa.01”, “aa.02”, “aa.03”, etc.",
-              "D2P", "Components")
+              "D2P", "02 Retrieve")
         { }
 
         /// <summary>

@@ -20,7 +20,7 @@ namespace D2P_GrasshopperTools.GH.Stream
         public GHStreamComponentsByType()
           : base("StreamComponentsByType", "StreamByType",
               "Stream component-instances from the Rhino document by providing a type-id. Sorts them by their type-ids and automatically populates the output parameters",
-              "D2P", "Stream")
+              "D2P", "00 Stream")
         {
         }
 
@@ -102,7 +102,7 @@ namespace D2P_GrasshopperTools.GH.Stream
             get
             {
                 //You can add image files to your project resources and access them like this:
-                return Properties.Resources.GH_StreamByType;
+                return Properties.Resources.GH_TypeStream;
             }
         }
 

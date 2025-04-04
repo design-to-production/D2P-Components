@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace D2P_GrasshopperTools.GH.Components
+namespace D2P_GrasshopperTools.GH.Retrieve
 {
     public class GHRetrieveConnectedComponents : GHComponentPreview
     {
@@ -14,14 +14,14 @@ namespace D2P_GrasshopperTools.GH.Components
         public GHRetrieveConnectedComponents()
           : base("RetrieveConnectedComponents", "RetrieveConnected",
               "Retrieves all the components connected to the input components by a joint",
-              "D2P", "Components")
+              "D2P", "02 Retrieve")
         {
         }
 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Component", "C", "The in-memory representation of a component instance", GH_ParamAccess.item);
             pManager.AddTextParameter("TypeIDFilter", "F", "A list of type-ids to return only children of specific component-types", GH_ParamAccess.list);
@@ -31,7 +31,7 @@ namespace D2P_GrasshopperTools.GH.Components
         /// <summary>
         /// Registers all the output parameters for this component.
         /// </summary>
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddGenericParameter("ConnectedComponents", "C", "The in-memory representation of the components connected to the input components", GH_ParamAccess.list);
         }
