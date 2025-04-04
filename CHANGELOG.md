@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GH_CreateJoint is a new Grasshopper component to define joint components based on input components
 - GH_GetComponentIndex is a new Grasshopper component to retrieve the index of a connected component within a joint name
 
+### Changed
+- The categories of the plugin have been reorganized to better reflect the functionality of the components (CRUD analogy)
+
 ## (1.0.2) - 2025-03-27
 ### Fixed
 - Fixed [[Bug] Baking on Sublayer](https://github.com/design-to-production/D2P-Components/issues/33)
