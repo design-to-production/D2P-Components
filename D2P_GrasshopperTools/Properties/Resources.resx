@@ -127,9 +127,6 @@
   <data name="GH_CreateComponent" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Assets\GH_CreateComponent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="GH_CreateComponentLayerInfo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Assets\GH_CreateComponentLayerInfo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="GH_CreateComponentObjects" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Assets\GH_CreateComponentObjects.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -138,6 +135,12 @@
   </data>
   <data name="GH_CreateJoint" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Assets\GH_CreateJoint.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="GH_CreateLayerObject" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Assets\GH_CreateLayerObject.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="GH_CreateSettings" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Assets\GH_CreateSettings.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="GH_DeconstructComponent" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Assets\GH_DeconstructComponent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -160,9 +163,6 @@
   <data name="GH_RegisterComponentObjects" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Assets\GH_RegisterComponentObjects.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="GH_RegisterComponents" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Assets\GH_RegisterComponents.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="GH_RetrieveChildren" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Assets\GH_RetrieveChildren.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -178,14 +178,8 @@
   <data name="GH_RetrieveParent" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Assets\GH_RetrieveParent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="GH_Settings" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Assets\GH_Settings.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="GH_Stream" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Assets\GH_Stream.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="GH_StreamByType" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Assets\GH_StreamByType.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="GH_StreamComponentTypes" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Assets\GH_StreamComponentTypes.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -195,6 +189,9 @@
   </data>
   <data name="GH_Transform" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Assets\GH_Transform.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="GH_TypeStream" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Assets\GH_TypeStream.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Assets\Logo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

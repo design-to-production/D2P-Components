@@ -93,16 +93,6 @@ namespace D2P_GrasshopperTools.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap GH_CreateComponentLayerInfo {
-            get {
-                object obj = ResourceManager.GetObject("GH_CreateComponentLayerInfo", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap GH_CreateComponentObjects {
             get {
                 object obj = ResourceManager.GetObject("GH_CreateComponentObjects", resourceCulture);
@@ -126,6 +116,26 @@ namespace D2P_GrasshopperTools.Properties {
         public static System.Drawing.Bitmap GH_CreateJoint {
             get {
                 object obj = ResourceManager.GetObject("GH_CreateJoint", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap GH_CreateLayerObject {
+            get {
+                object obj = ResourceManager.GetObject("GH_CreateLayerObject", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap GH_CreateSettings {
+            get {
+                object obj = ResourceManager.GetObject("GH_CreateSettings", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -203,16 +213,6 @@ namespace D2P_GrasshopperTools.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap GH_RegisterComponents {
-            get {
-                object obj = ResourceManager.GetObject("GH_RegisterComponents", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap GH_RetrieveChildren {
             get {
                 object obj = ResourceManager.GetObject("GH_RetrieveChildren", resourceCulture);
@@ -263,29 +263,9 @@ namespace D2P_GrasshopperTools.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap GH_Settings {
-            get {
-                object obj = ResourceManager.GetObject("GH_Settings", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap GH_Stream {
             get {
                 object obj = ResourceManager.GetObject("GH_Stream", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap GH_StreamByType {
-            get {
-                object obj = ResourceManager.GetObject("GH_StreamByType", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -316,6 +296,16 @@ namespace D2P_GrasshopperTools.Properties {
         public static System.Drawing.Bitmap GH_Transform {
             get {
                 object obj = ResourceManager.GetObject("GH_Transform", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap GH_TypeStream {
+            get {
+                object obj = ResourceManager.GetObject("GH_TypeStream", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

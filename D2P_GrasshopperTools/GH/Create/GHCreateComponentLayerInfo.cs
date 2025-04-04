@@ -59,7 +59,7 @@ namespace D2P_GrasshopperTools.GH.Create
             get
             {
                 //You can add image files to your project resources and access them like this:                
-                return Properties.Resources.GH_CreateComponentLayerInfo;
+                return Properties.Resources.GH_CreateLayerObject;
             }
         }
 
