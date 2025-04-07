@@ -1,21 +1,23 @@
 ﻿using D2P_Core;
 using D2P_Core.Interfaces;
-
 using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
-namespace D2P_GrasshopperTools.GH.Components
+namespace D2P_GrasshopperTools.GH.Modify
 {
     public class GHRegisterComponentMembers : GHComponentPreview
     {
+        bool _replaceExisting = true;
+
         /// <summary>
         /// Initializes a new instance of the Component_AddGeometryWithLayer class.
         /// </summary>
         public GHRegisterComponentMembers()
           : base("RegisterComponentMembers", "RegisterMembers",
               "Registers geometry and attributes to an in-memory representation of a component instance",
-              "D2P", "Components")
+              "D2P", "03 Modify")
         {
         }
 
@@ -65,7 +67,7 @@ namespace D2P_GrasshopperTools.GH.Components
                 var rawLayerName = obj.LayerInfo.RawLayerName;
                 if (D2P_Core.Utility.Layers.FindLayerIndexByFullPath(componentClone, rawLayerName) < 0)
                 {
-                    D2P_Core.Utility.Layers.FindLayerIndex(componentClone, rawLayerName, out int layersFound);
+                    D2P_Core.Utility.Layers.FindLayer(componentClone, rawLayerName, out int layersFound);
                     if (layersFound > 1)
                     {
                         var msg = $"Found {layersFound} layers with name {rawLayerName}, specify full path !";
@@ -73,11 +75,25 @@ namespace D2P_GrasshopperTools.GH.Components
                         return;
                     }
                 }
-                componentClone.ReplaceGeometries(obj);
+                if (_replaceExisting)
+                    componentClone.ReplaceMember(obj);
+                else componentClone.AddMember(obj);
             }
 
             _components.Add(componentClone);
             DA.SetData(0, componentClone);
+        }
+
+        protected override void AppendAdditionalComponentMenuItems(ToolStripDropDown menu)
+        {
+            base.AppendAdditionalComponentMenuItems(menu);
+            Menu_AppendItem(menu, "Replace Existing", ClickOnReplaceExisting, true, _replaceExisting);
+        }
+
+        private void ClickOnReplaceExisting(object sender, EventArgs e)
+        {
+            _replaceExisting = !_replaceExisting;
+            ExpireSolution(true);
         }
 
         /// <summary>

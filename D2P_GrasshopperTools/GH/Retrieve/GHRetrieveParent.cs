@@ -2,39 +2,35 @@
 using D2P_Core.Utility;
 using Grasshopper.Kernel;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace D2P_GrasshopperTools.GH.Components
+namespace D2P_GrasshopperTools.GH.Retrieve
 {
-    public class GHRetrieveJoints : GHComponentPreview
+    public class GHRetrieveParent : GHComponentPreview
     {
         /// <summary>
-        /// Initializes a new instance of the GH_RetrieveJoints class.
+        /// Initializes a new instance of the Component_RetrieveParentComponent class.
         /// </summary>
-        public GHRetrieveJoints()
-          : base("RetrieveJoints", "Joints",
-              "Retrieves all joint-components of a given input component",
-              "D2P", "Components")
+        public GHRetrieveParent()
+          : base("RetrieveParentComponent", "Parent",
+              "Retrieves the parent component of a given input component. E.g. If the component-instance is named “aa.01”, “aa.02”, “aa.03”, ... the parent-instance is named “aa”",
+              "D2P", "02 Retrieve")
         {
         }
 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Component", "C", "The in-memory representation of a component instance", GH_ParamAccess.item);
-            pManager.AddTextParameter("TypeIDFilter", "F", "A list of type-ids to return only children of a specific component-type", GH_ParamAccess.list);
-            pManager[1].Optional = true;
         }
 
         /// <summary>
         /// Registers all the output parameters for this component.
         /// </summary>
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("JointComponents", "C", "The in-memory representation of the component-joint instances", GH_ParamAccess.list);
+            pManager.AddGenericParameter("ParentComponent", "C", "The in-memory representation of the component-parent instance", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -44,9 +40,7 @@ namespace D2P_GrasshopperTools.GH.Components
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             IComponent component = null;
-            List<string> filterTypes = new List<string>();
             DA.GetData(0, ref component);
-            DA.GetDataList(1, filterTypes);
 
             if (component == null)
             {
@@ -55,21 +49,22 @@ namespace D2P_GrasshopperTools.GH.Components
                 return;
             }
 
-            var joints = Instantiation.GetJoints(component, filterTypes);
-            if (joints == null || !joints.Any())
+            var parent = Instantiation.GetParentComponent(component, out int parentsFound);
+            if (parent == null)
             {
-                var msg = $"Joints of component {component.Name} not found !";
+                var msg = $"Parent of component {component.Name} not found !";
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, msg);
                 return;
             }
-
-            foreach (var joint in joints)
+            if (parentsFound > 1)
             {
-                if (!_components.Contains(joint))
-                    _components.Add(joint);
+                var msg = $"Found {parentsFound} parents for component {component.Name} !";
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
+                return;
             }
 
-            DA.SetDataList(0, joints);
+            _components.Add(parent);
+            DA.SetData(0, parent);
         }
 
         /// <summary>
@@ -79,8 +74,8 @@ namespace D2P_GrasshopperTools.GH.Components
         {
             get
             {
-                //You can add image files to your project resources and access them like this:                                
-                return Properties.Resources.GH_RetrieveJoints;
+                //You can add image files to your project resources and access them like this:                
+                return Properties.Resources.GH_RetrieveParent;
             }
         }
 
@@ -89,7 +84,7 @@ namespace D2P_GrasshopperTools.GH.Components
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("0D9BB504-81E8-439E-8F3F-74904EE834E1"); }
+            get { return new Guid("92F56E9E-C2DA-4ADE-9D04-061A6F88C739"); }
         }
     }
 }

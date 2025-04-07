@@ -4,7 +4,7 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using System;
 
-namespace D2P_GrasshopperTools.GH.Geometry
+namespace D2P_GrasshopperTools.GH.Retrieve
 {
     public class GHRetrieveGeometry : GHComponentBase
     {
@@ -14,7 +14,7 @@ namespace D2P_GrasshopperTools.GH.Geometry
         public GHRetrieveGeometry()
           : base("RetrieveGeometry", "RetrieveGeo",
               "Retrieves geometry of a component-instance",
-              "D2P", "Geometry")
+              "D2P", "02 Retrieve")
         {
         }
 
@@ -68,7 +68,7 @@ namespace D2P_GrasshopperTools.GH.Geometry
             var layerIdx = Layers.FindLayerIndexByFullPath(component, layerName);
             if (layerIdx < 0)
             {
-                layerIdx = Layers.FindLayerIndex(component, layerName, out int layersFound);
+                layerIdx = Layers.FindLayer(component, layerName, out int layersFound)?.Index ?? -1;
                 if (layerIdx < 0)
                 {
                     var msg = $"Layer {layerName} not found !";
@@ -83,8 +83,8 @@ namespace D2P_GrasshopperTools.GH.Geometry
                 }
             }
 
-            var geometry = Objects.ObjectsByLayer(layerIdx, component, (Objects.LayerScope)layerScope);
-            DA.SetDataList(0, geometry);
+            var geometries = Objects.ObjectsByLayer(layerIdx, component, (Objects.LayerScope)layerScope);
+            DA.SetDataList(0, geometries);
         }
 
         /// <summary>

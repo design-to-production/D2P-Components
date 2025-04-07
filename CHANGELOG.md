@@ -5,7 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+
+## (1.1.0) - Ongoing
+
+### Added
+- GH_CreateJoint is a new Grasshopper component to define joint components based on input components
+- GH_GetComponentIndex is a new Grasshopper component to retrieve the index of a connected component within a joint name
+
+### Changed
+- The categories of the plugin have been reorganized to better reflect the functionality of the components (CRUD analogy)
+
+## (1.0.2) - 2025-03-27
+### Fixed
+- Fixed [[Bug] Baking on Sublayer](https://github.com/design-to-production/D2P-Components/issues/33)
+ 
+## (1.0.1) - 2025-03-18
+
+### Changed
+- GHRegisterComponentMembers got a MenuItem "Replace Existing" which is true by default. When true it replaces the member-geometry of a component; When false it adds to the existing member-geometries.
+
+### Fixed
+- Fixed [[Bug] Member-Geometry is not replaced](https://github.com/design-to-production/D2P-Components/issues/23)
+- Fixed [[BUG] ShowChangelog not working netcore7](https://github.com/design-to-production/D2P-Components/issues/21)
+
+## (1.0.0) - 2024-12-02
 
 ### Added
 
@@ -23,9 +46,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - GH_StreamComponentsByType now accepts real regex-patterns to filter component names
 
-
-## [1.0.0-beta] - 2024-09-15
-
+## (1.0.0-beta) - 2024-09-15
 
 [unreleased]: https://github.com/design-to-production/D2P-Components/tree/v1.0.0
+
 [1.0.0-beta]: https://github.com/design-to-production/D2P-Components/tree/c1305e7056bfe2cb6514c94fada562b278fbf244

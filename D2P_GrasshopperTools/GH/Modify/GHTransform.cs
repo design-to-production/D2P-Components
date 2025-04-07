@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace D2P_GrasshopperTools.GH.Components
+namespace D2P_GrasshopperTools.GH.Modify
 {
     public class GHTransform : GHComponentPreview
     {
@@ -15,7 +15,7 @@ namespace D2P_GrasshopperTools.GH.Components
         public GHTransform()
           : base("TransformComponent", "XformComp",
               "Transforms a component and all geometries inside",
-              "D2P", "Components")
+              "D2P", "03 Modify")
         {
         }
 

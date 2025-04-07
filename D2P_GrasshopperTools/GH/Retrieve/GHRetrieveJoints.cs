@@ -5,26 +5,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace D2P_GrasshopperTools.GH.Components
+namespace D2P_GrasshopperTools.GH.Retrieve
 {
-    public class GHRetrieveChildren : GHComponentPreview
+    public class GHRetrieveJoints : GHComponentPreview
     {
         /// <summary>
-        /// Initializes a new instance of the Component_RetrieveParentComponent class.
+        /// Initializes a new instance of the GH_RetrieveJoints class.
         /// </summary>
-        public GHRetrieveChildren()
-          : base("RetrieveChildComponents", "Children",
-              "Retrieves child components of a given input component. E.g. If the parent-instance is named “aa” all child-instances are named “aa.01”, “aa.02”, “aa.03”, etc.",
-              "D2P", "Components")
-        { }
+        public GHRetrieveJoints()
+          : base("RetrieveJoints", "Joints",
+              "Retrieves all joint-components of a given input component",
+              "D2P", "02 Retrieve")
+        {
+        }
 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("Component", "C", "The in-memory representation of a component instance to process", GH_ParamAccess.item);
-            pManager.AddTextParameter("TypeIDFilter", "F", "A list of type-ids to return only children of specific component-types", GH_ParamAccess.list);
+            pManager.AddGenericParameter("Component", "C", "The in-memory representation of a component instance", GH_ParamAccess.item);
+            pManager.AddTextParameter("TypeIDFilter", "F", "A list of type-ids to return only children of a specific component-type", GH_ParamAccess.list);
             pManager[1].Optional = true;
         }
 
@@ -33,7 +34,7 @@ namespace D2P_GrasshopperTools.GH.Components
         /// </summary>
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("ChildComponents", "C", "The in-memory representation of the component-child instances", GH_ParamAccess.list);
+            pManager.AddGenericParameter("JointComponents", "C", "The in-memory representation of the component-joint instances", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -54,16 +55,21 @@ namespace D2P_GrasshopperTools.GH.Components
                 return;
             }
 
-            var children = Instantiation.GetChildren(component, filterTypes, component.Settings);
-            if (children == null || !children.Any())
+            var joints = Instantiation.GetJoints(component, filterTypes);
+            if (joints == null || !joints.Any())
             {
-                var msg = $"Children of component {component.Name} not found !";
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
+                var msg = $"Joints of component {component.Name} not found !";
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, msg);
                 return;
             }
 
-            _components.AddRange(children);
-            DA.SetDataList(0, children);
+            foreach (var joint in joints)
+            {
+                if (!_components.Contains(joint))
+                    _components.Add(joint);
+            }
+
+            DA.SetDataList(0, joints);
         }
 
         /// <summary>
@@ -73,8 +79,8 @@ namespace D2P_GrasshopperTools.GH.Components
         {
             get
             {
-                //You can add image files to your project resources and access them like this:                
-                return Properties.Resources.GH_RetrieveChildren;
+                //You can add image files to your project resources and access them like this:                                
+                return Properties.Resources.GH_RetrieveJoints;
             }
         }
 
@@ -83,7 +89,7 @@ namespace D2P_GrasshopperTools.GH.Components
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("730EF6B1-3B10-4A7E-B963-EF11988700DB"); }
+            get { return new Guid("0D9BB504-81E8-439E-8F3F-74904EE834E1"); }
         }
     }
 }

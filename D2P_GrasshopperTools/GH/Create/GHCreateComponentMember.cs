@@ -1,13 +1,12 @@
 ﻿using D2P_Core;
 using D2P_Core.Interfaces;
-
 using Grasshopper.Kernel;
 using Rhino.DocObjects;
 using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 
-namespace D2P_GrasshopperTools.GH.Geometry
+namespace D2P_GrasshopperTools.GH.Create
 {
     public class GHCreateComponentMember : GHComponentBase
     {
@@ -17,7 +16,7 @@ namespace D2P_GrasshopperTools.GH.Geometry
         public GHCreateComponentMember()
           : base("CreateComponentMember", "ComponentMember",
               "Creates a component-member composed of geometry and a layer-information",
-              "D2P", "Geometry")
+              "D2P", "01 Create")
         {
         }
 

@@ -12,7 +12,7 @@ namespace D2P_GrasshopperTools.GH.Stream
         public GHStreamComponents()
           : base("StreamComponents", "Stream",
               "Stream component-instances from rhino by providing their GUIDs",
-              "D2P", "Stream")
+              "D2P", "00 Stream")
         {
         }
 

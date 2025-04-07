@@ -2,27 +2,30 @@
 using D2P_Core.Utility;
 using Grasshopper.Kernel;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace D2P_GrasshopperTools.GH.Components
+namespace D2P_GrasshopperTools.GH.Retrieve
 {
-    public class GHRetrieveParent : GHComponentPreview
+    public class GHRetrieveChildren : GHComponentPreview
     {
         /// <summary>
         /// Initializes a new instance of the Component_RetrieveParentComponent class.
         /// </summary>
-        public GHRetrieveParent()
-          : base("RetrieveParentComponent", "Parent",
-              "Retrieves the parent component of a given input component. E.g. If the component-instance is named “aa.01”, “aa.02”, “aa.03”, ... the parent-instance is named “aa”",
-              "D2P", "Components")
-        {
-        }
+        public GHRetrieveChildren()
+          : base("RetrieveChildComponents", "Children",
+              "Retrieves child components of a given input component. E.g. If the parent-instance is named “aa” all child-instances are named “aa.01”, “aa.02”, “aa.03”, etc.",
+              "D2P", "02 Retrieve")
+        { }
 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("Component", "C", "The in-memory representation of a component instance", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Component", "C", "The in-memory representation of a component instance to process", GH_ParamAccess.item);
+            pManager.AddTextParameter("TypeIDFilter", "F", "A list of type-ids to return only children of specific component-types", GH_ParamAccess.list);
+            pManager[1].Optional = true;
         }
 
         /// <summary>
@@ -30,7 +33,7 @@ namespace D2P_GrasshopperTools.GH.Components
         /// </summary>
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("ParentComponent", "C", "The in-memory representation of the component-parent instance", GH_ParamAccess.item);
+            pManager.AddGenericParameter("ChildComponents", "C", "The in-memory representation of the component-child instances", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -40,7 +43,9 @@ namespace D2P_GrasshopperTools.GH.Components
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             IComponent component = null;
+            List<string> filterTypes = new List<string>();
             DA.GetData(0, ref component);
+            DA.GetDataList(1, filterTypes);
 
             if (component == null)
             {
@@ -49,22 +54,16 @@ namespace D2P_GrasshopperTools.GH.Components
                 return;
             }
 
-            var parent = Instantiation.GetParentComponent(component, out int parentsFound);
-            if (parent == null)
+            var children = Instantiation.GetChildren(component, filterTypes, component.Settings);
+            if (children == null || !children.Any())
             {
-                var msg = $"Parent of component {component.Name} not found !";
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, msg);
-                return;
-            }
-            if (parentsFound > 1)
-            {
-                var msg = $"Found {parentsFound} parents for component {component.Name} !";
+                var msg = $"Children of component {component.Name} not found !";
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
                 return;
             }
 
-            _components.Add(parent);
-            DA.SetData(0, parent);
+            _components.AddRange(children);
+            DA.SetDataList(0, children);
         }
 
         /// <summary>
@@ -75,7 +74,7 @@ namespace D2P_GrasshopperTools.GH.Components
             get
             {
                 //You can add image files to your project resources and access them like this:                
-                return Properties.Resources.GH_RetrieveParent;
+                return Properties.Resources.GH_RetrieveChildren;
             }
         }
 
@@ -84,7 +83,7 @@ namespace D2P_GrasshopperTools.GH.Components
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("92F56E9E-C2DA-4ADE-9D04-061A6F88C739"); }
+            get { return new Guid("730EF6B1-3B10-4A7E-B963-EF11988700DB"); }
         }
     }
 }

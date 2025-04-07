@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace D2P_GrasshopperTools.GH.IO
+namespace D2P_GrasshopperTools.GH.Utility
 {
     public class GHBakeComponents : GHComponentPreview
     {
@@ -20,7 +20,7 @@ namespace D2P_GrasshopperTools.GH.IO
         public GHBakeComponents()
           : base("BakeComponents", "BakeComp",
               "Bake component-instances to the Rhino document",
-              "D2P", "IO")
+              "D2P", "04 Utility")
         {
         }
 
@@ -93,18 +93,14 @@ namespace D2P_GrasshopperTools.GH.IO
                 {
                     var existingComponents = Instantiation.InstancesByName(component, doc);
                     if (existingComponents.Count >= 1)
-                    {
                         Objects.DeleteComponents(existingComponents);
-                    }
                 }
 
                 RHDoc.AddToRhinoDoc(component, doc, _replaceExisting);
             }
 
             if (_purgeEmptyLayers)
-            {
                 RHDoc.Purge(doc);
-            }
         }
 
         /// <summary>

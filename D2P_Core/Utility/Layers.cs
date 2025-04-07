@@ -14,7 +14,15 @@ namespace D2P_Core.Utility
 
     public static class Layers
     {
-        public static int FindLayerIndex(IComponent component, string rawLayerName, out int layersFound) => FindLayer(component, rawLayerName, out layersFound)?.Index ?? -1;
+        //public static int FindLayerIndex(IComponent component, string rawLayerName, out int layersFound)
+        //{
+        //    var layerIdx = Layers.FindLayerIndexByFullPath(component, rawLayerName);
+        //    if (layerIdx <= 0)
+        //        return FindLayer(component, rawLayerName, out layersFound)?.Index ?? -1;
+        //    layersFound = 1;
+        //    return layerIdx;
+        //}
+
         public static Layer FindLayer(IComponent component, string rawLayerName, out int layersFound)
         {
             string layerName = string.Empty;

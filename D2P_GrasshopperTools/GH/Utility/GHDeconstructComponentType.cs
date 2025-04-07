@@ -2,7 +2,7 @@
 using Grasshopper.Kernel;
 using System;
 
-namespace D2P_GrasshopperTools.GH.Components
+namespace D2P_GrasshopperTools.GH.Utility
 {
     public class GHDeconstructComponentType : GHComponentBase
     {
@@ -12,14 +12,14 @@ namespace D2P_GrasshopperTools.GH.Components
         public GHDeconstructComponentType()
           : base("DeconstructComponentType", "DeType",
               "Deconstructs a component",
-              "D2P", "Components")
+              "D2P", "04 Utility")
         {
         }
 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("ComponentType", "T", "A component-type definition", GH_ParamAccess.item);
         }
@@ -27,7 +27,7 @@ namespace D2P_GrasshopperTools.GH.Components
         /// <summary>
         /// Registers all the output parameters for this component.
         /// </summary>
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddTextParameter("TypeID", "T", "Each type has a unique type-id, typically 4 uppercase letters that abbreviate the type-name and are easy to memorize", GH_ParamAccess.item);
             pManager.AddTextParameter("TypeName", "N", "Each type has a type-name, a short human readable description of the type", GH_ParamAccess.item);
