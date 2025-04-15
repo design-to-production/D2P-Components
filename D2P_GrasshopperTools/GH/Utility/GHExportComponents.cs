@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
-namespace D2P_GrasshopperTools.GH.IO
+namespace D2P_GrasshopperTools.GH.Utility
 {
     public class GHExportComponents : GHComponentPreview
     {
@@ -17,7 +17,7 @@ namespace D2P_GrasshopperTools.GH.IO
         public GHExportComponents()
           : base("ExportComponents", "Export",
               "Exports component-instances to another Rhino document. You can either export all component-instances to a single file or automatically export each component in a seperate file",
-              "D2P", "IO")
+              "D2P", "04 Utility")
         {
         }
 

@@ -2,7 +2,7 @@
 using Eto.Forms;
 using Rhino.UI;
 
-namespace D2P_GrasshopperTools.GH.Eto
+namespace D2P_GrasshopperTools.GH
 {
     internal class EtoDefaultSettingsPanel : Form
     {

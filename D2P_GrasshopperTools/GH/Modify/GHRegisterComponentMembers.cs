@@ -1,12 +1,11 @@
 ﻿using D2P_Core;
 using D2P_Core.Interfaces;
-
 using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace D2P_GrasshopperTools.GH.Components
+namespace D2P_GrasshopperTools.GH.Modify
 {
     public class GHRegisterComponentMembers : GHComponentPreview
     {
@@ -18,7 +17,7 @@ namespace D2P_GrasshopperTools.GH.Components
         public GHRegisterComponentMembers()
           : base("RegisterComponentMembers", "RegisterMembers",
               "Registers geometry and attributes to an in-memory representation of a component instance",
-              "D2P", "Components")
+              "D2P", "03 Modify")
         {
         }
 

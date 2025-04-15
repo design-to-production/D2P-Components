@@ -13,7 +13,7 @@ namespace D2P_GrasshopperTools.GH.Stream
         public GHStreamComponentTypes()
           : base("StreamComponentTypes", "StreamTypes",
               "Stream component-types from the Rhino document. Sorts them by their type-ids and automatically populates the output parameters",
-              "D2P", "Stream")
+              "D2P", "00 Stream")
         {
         }
 

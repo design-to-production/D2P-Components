@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace D2P_GrasshopperTools.GH.Components
+namespace D2P_GrasshopperTools.GH.Retrieve
 {
     public class GHRetrieveJoints : GHComponentPreview
     {
@@ -15,14 +15,14 @@ namespace D2P_GrasshopperTools.GH.Components
         public GHRetrieveJoints()
           : base("RetrieveJoints", "Joints",
               "Retrieves all joint-components of a given input component",
-              "D2P", "Components")
+              "D2P", "02 Retrieve")
         {
         }
 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Component", "C", "The in-memory representation of a component instance", GH_ParamAccess.item);
             pManager.AddTextParameter("TypeIDFilter", "F", "A list of type-ids to return only children of a specific component-type", GH_ParamAccess.list);
@@ -32,7 +32,7 @@ namespace D2P_GrasshopperTools.GH.Components
         /// <summary>
         /// Registers all the output parameters for this component.
         /// </summary>
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddGenericParameter("JointComponents", "C", "The in-memory representation of the component-joint instances", GH_ParamAccess.list);
         }
