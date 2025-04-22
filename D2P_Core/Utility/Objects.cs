@@ -104,7 +104,7 @@ namespace D2P_Core.Utility
         public static IEnumerable<int> ObjectGroupIDs(Guid objectID, RhinoDoc doc)
         {
             var rhinoObject = doc.Objects.Find(objectID);
-            if (rhinoObject.GroupCount < 1) return new List<int>();
+            if (rhinoObject == null || rhinoObject.GroupCount < 1) return new List<int>();
             return rhinoObject.GetGroupList();
         }
 

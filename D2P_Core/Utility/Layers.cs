@@ -29,7 +29,7 @@ namespace D2P_Core.Utility
             if (string.IsNullOrEmpty(rawLayerName))
                 layerName = ComposeComponentTypeLayerName(component);
             else layerName = ComposeComponentLayerName(component, rawLayerName);
-            var componentLayers = GetComponentLayers(component, false);
+            var componentLayers = GetComponentLayers(component, false, component.ActiveDoc);
             var matchedLayers = componentLayers.Where(l => !l.IsReference && l.Name == layerName);
             layersFound = matchedLayers.Count();
             if (matchedLayers.Count() > 1 || !matchedLayers.Any())
@@ -81,7 +81,7 @@ namespace D2P_Core.Utility
         public static int[] CreateStagingLayers(IComponent component)
         {
             var createdLayerIndices = new List<int>();
-            var componentLayer = GetComponentTypeRootLayer(component);
+            var componentLayer = GetComponentTypeRootLayer(component, component.ActiveDoc);
             if (componentLayer == null || componentLayer.Index == 0)
                 componentLayer = CreateComponentTypeLayer(component);
 
