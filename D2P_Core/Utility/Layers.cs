@@ -158,7 +158,7 @@ namespace D2P_Core.Utility
             return FindLayerByName(doc, componentTypeRootLayerName, componentType.Settings.RootLayerName);
         }
 
-        public static Guid GetComponentLayerID(IComponent component) => GetComponentTypeRootLayer(component)?.Id ?? Guid.Empty;
+        public static Guid GetComponentLayerID(IComponent component) => GetComponentTypeRootLayer(component, component.ActiveDoc)?.Id ?? Guid.Empty;
 
         public static string GetComponentTypeID(Layer componentLayer, Settings settings)
         {
