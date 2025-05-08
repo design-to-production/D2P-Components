@@ -31,7 +31,7 @@ namespace D2P_GrasshopperTools.GH.Stream
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("TypeID", "T", "The component-type or its type-id used to stream specific types", GH_ParamAccess.list);
-            pManager.AddTextParameter("NameFilter", "F", "The regex pattern used to filter by specific component-names", GH_ParamAccess.list, string.Empty);
+            pManager.AddTextParameter("NameFilter", "N", "The regex pattern used to filter by specific component-names", GH_ParamAccess.list, string.Empty);
             pManager.AddGenericParameter("Settings", "S", "The settings define the basic root-layer for all components being streamed and a collection of specific delimiters", GH_ParamAccess.item);
             pManager[2].Optional = true;
         }
@@ -73,7 +73,6 @@ namespace D2P_GrasshopperTools.GH.Stream
                     _components.AddRange(components); // only for visualization
                 }
             }
-
 
             if (OutputMismatch() && DA.Iteration == 0)
                 OnPingDocument().ScheduleSolution(5, d => CreateOutputParams(false));
