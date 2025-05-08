@@ -6,7 +6,7 @@ Ever struggled with structuring a model that is composed of a variety of differe
 You usually end up with spaghetti code inside Grasshopper and go for a coffee break when you change an input parameter ? 
 
 
-Then it’s time to consider following a different modelling approach ! We want to share our best practices, acquired in 15 years of daily business and pioneering in defining parametric models with you and are excited about your approaches !
+Then itâ€™s time to consider following a different modelling approach ! We want to share our best practices, acquired in 15 years of daily business and pioneering in defining parametric models with you and are excited about your approaches !
 In a nutshell this is what you can expect from D2P Components:
 -	Manage complex building components
 -	Define your own component types
@@ -38,12 +38,19 @@ In order to get the basic understanding of the terminology and the concepts behi
 - Step 2 - Download the [Example Files (WIP)]() and follow them step-by-step.
 - Step 3 - Start with a small (modelling) project and try to implement the core concepts shown in the example files by yourself
 
+## Known Issues
+- Whenever you open an existing, previously working GH Definition with D2P Components and find a GHComponent marked in "red" it's likely that the I/O parameter has changed from the last version.
+This could be the message in the balloon : ```1. Solution exception:GetData() can only be called on a parameter with access set to GH_ParamAccess.item```
+For example in Version 1.1.1 there was a fix for "StreamComponentsByType" where the input parameter changed from "list" to "item" which breaks the GHComponent as it's not upgrading automatically.
+In order to fix it just delete the deprecated component and replace it manually with the new version.
+We try to avoid introducing these kind of breaking changes though sometimes it's necessary.
+For future releases there will be potentially an upgrade assistant helping you to automate the migration.
+
 
 ## Getting Help
 - Whenever you have questions about the plugin, its usage or conceptual topics you can search in the [Discussion](https://github.com/design-to-production/D2P-Components/discussions) forum of this repository.
 If you don't find an answer or the topic wasn't discussed yet you are welcome to start a new conversation in that forum :)
 - If you want to ask something in private you can send an email with your request to [components@designtoproduction.com](mailto:components@designtoproduction.com)
-
 
 ## Getting Involved
 
