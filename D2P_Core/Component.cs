@@ -86,10 +86,12 @@ namespace D2P_Core
             AttributeCollection.Add(ID, new ObjectAttributes() { Name = Name, LayerIndex = 0 });
         }
 
-        public Component(ComponentType componentType, Guid id)
+        public Component(ComponentType componentType, Guid id, RhinoDoc doc = null)
         {
+            doc = doc ?? RhinoDoc.ActiveDoc;
             ID = id;
             _componentType = componentType;
+            ActiveDoc = doc;
         }
 
         protected Component(IComponent component)

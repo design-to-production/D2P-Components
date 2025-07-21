@@ -62,6 +62,7 @@ namespace D2P_Core.Utility
             var instances = new List<IComponent>();
             foreach (var obj in allObjects)
             {
+
                 var componentType = new ComponentType(obj, settings);
                 instances.Add(new Component(componentType, obj.Id) { ActiveDoc = doc });
             }
