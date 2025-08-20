@@ -192,5 +192,11 @@ namespace D2P_Core
             }
             StagingLayerCollection.Clear();
         }
+
+        public override string ToString()
+        {
+            //Type-ID, Name is in Name, (Parent), #Members or Elements
+            return $"{base.ToString()} - Name: \"{Name}\", Members: {GeometryCollection.Count}";
+        }
     }
 }

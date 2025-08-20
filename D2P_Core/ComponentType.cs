@@ -2,6 +2,8 @@
 using D2P_Core.Utility;
 using Rhino.DocObjects;
 using System.Drawing;
+//using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Xml.Linq;
 
 namespace D2P_Core
 {
@@ -47,6 +49,11 @@ namespace D2P_Core
             LabelSize = textObj.TextGeometry.TextHeight;
             LayerColor = Objects.ComponentTypeLayerColorFromObject(textObj, settings);
             Settings = Layers.GetComponentTypeSettings(textObj, settings);
+        }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()} - TypeID: \"{TypeID}\", Color: \"{LayerColor}\"";
         }
     }
 }
