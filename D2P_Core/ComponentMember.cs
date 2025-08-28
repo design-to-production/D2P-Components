@@ -21,7 +21,7 @@ namespace D2P_Core
 
         public override string ToString()
         {
-            return $"{base.ToString()} - Layer: \"{LayerInfo.RawLayerName}\", Geometries: {GeometryBases.Count()}";
+            return $"{base.ToString()} [Layer: \"{LayerInfo.RawLayerName}\", Geometries: {GeometryBases.Count()}]";
         }
     }
 }

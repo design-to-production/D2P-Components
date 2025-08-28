@@ -95,7 +95,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve
             get
             {
                 //You can add image files to your project resources and access them like this:                
-                return Properties.Resources.GH_RetrieveComponentObjects;
+                return Properties.Resources.GH_RetrieveGeometry;
             }
         }
 

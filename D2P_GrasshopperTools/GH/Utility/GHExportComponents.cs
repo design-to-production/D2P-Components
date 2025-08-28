@@ -102,7 +102,7 @@ namespace D2P_GrasshopperTools.GH.Utility
             get
             {
                 //You can add image files to your project resources and access them like this:                
-                return Properties.Resources.GH_ExportComponent;
+                return Properties.Resources.GH_ExportComponents;
             }
         }
 

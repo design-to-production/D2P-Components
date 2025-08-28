@@ -18,7 +18,7 @@ namespace D2P_Core
         }
         public override string ToString()
         {
-            return $"{base.ToString()} - Name: \"{RawLayerName}\", Color: {LayerColor}";
+            return $"{base.ToString()} [Name: \"{RawLayerName}\", Color: {LayerColor}]";
         }
     }
 

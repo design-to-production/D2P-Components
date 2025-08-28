@@ -104,7 +104,7 @@ namespace D2P_GrasshopperTools.GH.Modify
             get
             {
                 //You can add image files to your project resources and access them like this:                
-                return Properties.Resources.GH_RegisterComponentObjects;
+                return Properties.Resources.GH_RegisterComponentMembers;
             }
         }
 
