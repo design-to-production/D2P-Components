@@ -46,10 +46,10 @@ namespace D2P_Core
             doc = doc ?? RhinoDoc.ActiveDoc;
 
             TypeID = Objects.ComponentTypeIDFromObject(textObj, settings);
-            TypeName = Objects.ComponentTypeNameFromObject(textObj, settings, doc);
+            TypeName = Objects.ComponentTypeNameFromObject(textObj, settings);
             LabelSize = textObj.TextGeometry.TextHeight;
-            LayerColor = Objects.ComponentTypeLayerColorFromObject(textObj, settings, doc);
-            Settings = Layers.GetComponentTypeSettings(textObj, settings, doc);
+            LayerColor = Objects.ComponentTypeLayerColorFromObject(textObj, settings);
+            Settings = Layers.GetComponentTypeSettings(textObj, settings);
         }
     }
 }
