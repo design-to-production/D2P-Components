@@ -75,6 +75,7 @@ namespace D2P_Core
         public IEnumerable<GeometryBase> Geometry => GeometryCollection.Values;
         public IEnumerable<ObjectAttributes> Attributes => AttributeCollection.Values;
 
+        public Component() { }
         public Component(ComponentType componentType, string name, Plane plane)
         {
             ID = Guid.NewGuid();
@@ -86,13 +87,7 @@ namespace D2P_Core
             AttributeCollection.Add(ID, new ObjectAttributes() { Name = Name, LayerIndex = 0 });
         }
 
-        public Component(ComponentType componentType, Guid id)
-        {
-            ID = id;
-            _componentType = componentType;
-        }
-
-        protected Component(IComponent component)
+        private Component(IComponent component)
         {
             ID = component.ID;
             _componentType = new ComponentType(component);
@@ -103,6 +98,12 @@ namespace D2P_Core
             AttributeCollection = new AttributeCollection(component.AttributeCollection);
             StagingLayerCollection = new LayerCollection(component.StagingLayerCollection);
             IsVirtualClone = component.IsVirtualClone;
+        }
+
+        public virtual void Init(RhinoObject obj)
+        {
+            ID = obj.Id;
+            _componentType = Objects.ComponentTypeFromObject(obj);
         }
 
         public bool Transform(Transform xform) => Geometry.Select(geo => geo.Transform(xform)).All(r => r);

@@ -8,6 +8,9 @@ namespace D2P_Core.Interfaces
 {
     public interface IComponent : IComponentType
     {
+        // Setup
+        void Init(RhinoObject obj);
+
         RhinoDoc ActiveDoc { get; set; }
         ComponentType ComponentType { get; }
 

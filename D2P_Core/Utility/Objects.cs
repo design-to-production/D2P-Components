@@ -17,6 +17,13 @@ namespace D2P_Core.Utility
             IncludeChildren
         }
 
+        public static ComponentType ComponentTypeFromObject(RhinoObject obj, Settings settings = null)
+        {
+            settings = settings ?? new Settings();
+            var typeID = ComponentTypeIDFromObject(obj, settings);
+            var typeName = ComponentTypeNameFromObject(obj, settings);
+            return new ComponentType(typeID, typeName, settings);
+        }
         public static string ComponentTypeIDFromObject(RhinoObject obj, Settings settings) => obj.Name.Split(settings.TypeDelimiter).FirstOrDefault();
         public static string ComponentTypeNameFromObject(RhinoObject obj, Settings settings) => Layers.GetComponentTypeName(obj, settings);
         public static Color ComponentTypeLayerColorFromObject(RhinoObject obj, Settings settings) => Layers.GetComponentTypeRootLayer(obj, settings).Color;

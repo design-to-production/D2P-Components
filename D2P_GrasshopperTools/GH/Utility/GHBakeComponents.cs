@@ -92,7 +92,7 @@ namespace D2P_GrasshopperTools.GH.Utility
                 if (_replaceExisting)
                 {
                     var existingComponents = Instantiation.InstancesByName(component, doc);
-                    if (existingComponents.Count >= 1)
+                    if (existingComponents.Count() >= 1)
                         Objects.DeleteComponents(existingComponents);
                 }
 

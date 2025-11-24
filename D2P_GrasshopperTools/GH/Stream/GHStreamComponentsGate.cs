@@ -45,7 +45,7 @@ namespace D2P_GrasshopperTools.GH.Stream
             DA.GetData(1, ref settings);
 
             settings = settings ?? DefaultSettings.Create();
-            _components = D2P_Core.Utility.Instantiation.InstancesFromObjects(ids, settings);
+            _components = D2P_Core.Utility.Instantiation.InstancesFromObjects(ids, settings).ToList();
             var componentGroups = _components.GroupBy(comp => comp.TypeID);
 
             if (DA.Iteration == 0)

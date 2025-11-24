@@ -4,6 +4,7 @@ using D2P_GrasshopperTools.Utility;
 using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace D2P_GrasshopperTools.GH.Stream
 {
@@ -48,7 +49,7 @@ namespace D2P_GrasshopperTools.GH.Stream
 
             settings = settings ?? DefaultSettings.Create();
 
-            _components = Instantiation.InstancesFromObjects(ids, settings);
+            _components = Instantiation.InstancesFromObjects(ids, settings).ToList();
 
             DA.SetDataList(0, _components);
         }

@@ -10,15 +10,14 @@ namespace D2P_Core.Utility
 {
     public static class Instantiation
     {
-        public static List<IComponent> InstancesByName(string name, Settings settings, RhinoDoc doc = null)
+        public static IEnumerable<IComponent> InstancesByName(string name, Settings settings = null, RhinoDoc doc = null)
         {
             var objEnumSettings = new ObjectEnumeratorSettings() { HiddenObjects = true, LockedObjects = true, NameFilter = name, ObjectTypeFilter = ObjectType.Annotation };
             var rhObjects = doc.Objects.GetObjectList(objEnumSettings).Where(rhObj => rhObj.Attributes.GroupCount > 0);
             return InstancesFromObjects(rhObjects, settings, doc);
         }
-        public static List<IComponent> InstancesByName(IComponent component, RhinoDoc doc = null) => InstancesByName(component.Name, component.Settings, doc);
-
-        public static List<IComponent> InstancesByType(string type, Settings settings, FilterOptions filterOptions, RhinoDoc doc = null)
+        public static IEnumerable<IComponent> InstancesByName(IComponent component, RhinoDoc doc = null) => InstancesByName(component.Name, component.Settings, doc);
+        public static IEnumerable<IComponent> InstancesByType(string type, Settings settings, FilterOptions filterOptions, RhinoDoc doc = null)
         {
             doc = doc ?? RhinoDoc.ActiveDoc;
             var nameFilter = $"{type}{settings.TypeDelimiter}*";
@@ -27,56 +26,76 @@ namespace D2P_Core.Utility
             var rhObjects = doc.Objects.GetObjectList(objEnumSettings).Where(rhObj => reg.IsMatch(rhObj.Name) == !filterOptions.ReversePattern);
             return InstancesFromObjects(rhObjects, settings, doc);
         }
-        public static List<IComponent> InstancesFromObjects(IEnumerable<RhinoObject> objects, Settings settings, RhinoDoc doc = null)
+        public static IEnumerable<IComponent> InstancesFromObjects(IEnumerable<RhinoObject> objects, Settings settings = null, RhinoDoc doc = null)
         {
             return InstancesFromObjects(objects.Where(obj => obj != null).Select(obj => obj.Id), settings, doc);
         }
-        public static List<IComponent> InstancesFromObjects(IEnumerable<Guid> objectIds, Settings settings, RhinoDoc doc = null)
+        public static IEnumerable<IComponent> InstancesFromObjects(IEnumerable<Guid> objectIds, Settings settings = null, RhinoDoc doc = null)
         {
             doc = doc ?? RhinoDoc.ActiveDoc;
-            var allObjects = new List<TextObject>();
-            var processedGroups = new List<int>();
-            foreach (var objId in objectIds)
+            settings = settings ?? new Settings();
+
+            var components = new List<IComponent>();
+            var grpIndices = objectIds
+                .SelectMany(id => Objects.ObjectGroupIDs(id, doc))
+                .ToHashSet();
+
+            foreach (var grpIdx in grpIndices)
             {
-                var grpIndices = Objects.ObjectGroupIDs(objId, doc);
-                foreach (var grpIdx in grpIndices)
-                {
-                    if (processedGroups.Contains(grpIdx)) continue;
-                    processedGroups.Add(grpIdx);
-                    var idFound = false;
-                    var grpObjects = Objects.ObjectsByGroup(grpIdx, doc);
-                    foreach (var grpObj in grpObjects)
-                    {
-                        if (idFound)
-                            break;
-                        if (grpObj.GetType() != typeof(TextObject))
-                            continue;
-                        if (!grpObj.Name.Contains((grpObj as TextObject).TextGeometry.PlainText))
-                            continue;
-                        allObjects.Add(grpObj as TextObject);
-                        idFound = true;
-                    }
-                }
+                var component = InstanceFromGroup(grpIdx, settings, doc);
+                components.Add(component);
             }
 
-            var instances = new List<IComponent>();
-            foreach (var obj in allObjects)
-            {
-                var componentType = new ComponentType(obj, settings);
-                instances.Add(new Component(componentType, obj.Id));
-            }
-            instances.Sort((x, y) => string.Compare(x.ShortName, y.ShortName));
-            return instances;
-
+            components.Sort((x, y) => string.Compare(x.ShortName, y.ShortName));
+            return components;
         }
 
-        public static IComponent InstanceFromGroup(int groupIndex, Settings settings, RhinoDoc doc = null)
+        public static IComponent InstanceFromGroup(int grpIdx, Settings settings = null, RhinoDoc doc = null)
         {
             doc = doc ?? RhinoDoc.ActiveDoc;
-            var geometry = doc?.Objects.FindByGroup(groupIndex);
-            return InstancesFromObjects(geometry, settings, doc).FirstOrDefault();
+            settings = settings ?? new Settings();
+            var grpObjects = Objects.ObjectsByGroup(grpIdx, doc);
+            foreach (var grpObj in grpObjects)
+            {
+                if (grpObj.GetType() != typeof(TextObject))
+                    continue;
+                if (!grpObj.Name.Contains((grpObj as TextObject).TextGeometry.PlainText))
+                    continue;
+
+                var typeId = Objects.ComponentTypeIDFromObject(grpObj, settings);
+                if (!ComponentTable.TryGetValue(typeId, out var type))
+                    throw new Exception($"No class with type {typeId} registered !");
+
+                var component = (IComponent)Activator.CreateInstance(type);
+                component.Init(grpObj);
+                return component;
+            }
+            return null;
         }
-        public static IEnumerable<IComponent> InstancesFromGroups(int[] groupIndices, Settings settings, RhinoDoc doc = null)
+        public static IComponent InstanceFromObject(RhinoObject obj, Settings settings = null, RhinoDoc doc = null)
+        {
+            doc = doc ?? RhinoDoc.ActiveDoc;
+            settings = settings ?? new Settings();
+            var grpIndices = Objects.ObjectGroupIDs(obj.Id, doc);
+            foreach (var grpIdx in grpIndices)
+            {
+                var component = InstanceFromGroup(grpIdx, settings, doc);
+                if (component == null) continue;
+                return component;
+            }
+            return null;
+        }
+        public static IComponent InstanceFromObject(Guid objId, Settings settings = null, RhinoDoc doc = null)
+        {
+            return InstanceFromObject(doc.Objects.FindId(objId), settings, doc);
+        }
+        //public static IComponent InstanceFromGroup(int groupIndex, Settings settings = null, RhinoDoc doc = null)
+        //{
+        //    doc = doc ?? RhinoDoc.ActiveDoc;
+        //    var rhObjects = doc?.Objects.FindByGroup(groupIndex);
+        //    return InstancesFromObjects(rhObjects, settings, doc).FirstOrDefault();
+        //}
+        public static IEnumerable<IComponent> InstancesFromGroups(int[] groupIndices, Settings settings = null, RhinoDoc doc = null)
         {
             return groupIndices.Select(idx => InstanceFromGroup(idx, settings, doc));
         }
@@ -96,7 +115,7 @@ namespace D2P_Core.Utility
             var objEnumSettings = new ObjectEnumeratorSettings() { HiddenObjects = true, LockedObjects = true, NameFilter = namingCondition, ObjectTypeFilter = ObjectType.Annotation };
             var rhObjects = doc.Objects.GetObjectList(objEnumSettings);
             var parents = InstancesFromObjects(rhObjects, component.Settings, doc);
-            parentsFound = parents.Count;
+            parentsFound = parents.Count();
             return parents.FirstOrDefault();
         }
         public static IEnumerable<IComponent> GetChildren(IComponent component, IEnumerable<string> filterTypes = null, RhinoDoc doc = null)

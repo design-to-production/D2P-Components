@@ -13,6 +13,12 @@ namespace D2P_Core
             GeometryBases = geometryBases;
             ObjectAttributes = attributes;
         }
+        public ComponentMember(ILayerInfo layerInfo, GeometryBase geometryBase, ObjectAttributes attributes = null)
+        {
+            LayerInfo = layerInfo;
+            GeometryBases = new List<GeometryBase>() { geometryBase };
+            ObjectAttributes = attributes;
+        }
 
         public ILayerInfo LayerInfo { get; set; }
         public IEnumerable<GeometryBase> GeometryBases { get; set; }

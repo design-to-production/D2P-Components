@@ -13,7 +13,7 @@ namespace D2P_Core
         public Color LayerColor { get; set; }
         public Settings Settings { get; set; }
 
-        public ComponentType(string typeID, string typeName, Settings settings, double? labelSize, Color? layerColor)
+        public ComponentType(string typeID, string typeName, Settings settings, double? labelSize = null, Color? layerColor = null)
         {
             TypeID = typeID;
             TypeName = typeName;
