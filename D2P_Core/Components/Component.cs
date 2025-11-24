@@ -124,6 +124,13 @@ namespace D2P_Core.Components
                 .Select(rhObj => rhObj.Geometry)
                 .OfType<T>();
         }
+        public T GetEnum<T>(string rawLayerName) where T : struct, Enum
+        {
+            var txtDot = GetGeometry<TextDot>(rawLayerName).FirstOrDefault();
+            if (txtDot == null) return default(T);
+            Enum.TryParse(txtDot.Text, false, out T result);
+            return result;
+        }
         public void SetGeometry(string rawLayerName, IEnumerable<GeometryBase> geometry)
         {
             var layer = Layers.FindLayer(this, rawLayerName, out int layersFound);
@@ -143,6 +150,13 @@ namespace D2P_Core.Components
                 StagingLayerCollection.Add(member.LayerInfo, new Dictionary<Guid, int>());
 
             return AddObjectToCollections(member);
+        }
+
+        public IList<Guid> ReplaceMember(string rawLayerName, Color layerColor, IEnumerable<GeometryBase> geometry)
+        {
+            var layerInfo = new LayerInfo(rawLayerName, layerColor);
+            var member = new ComponentMember(layerInfo, geometry);
+            return ReplaceMember(member);
         }
         public IList<Guid> ReplaceMember(ComponentMember member)
         {
