@@ -1,4 +1,5 @@
-﻿using D2P_Core.Interfaces;
+﻿using D2P_Core.Components;
+using D2P_Core.Interfaces;
 using Rhino;
 using Rhino.DocObjects;
 using System;
@@ -50,7 +51,9 @@ namespace D2P_Core.Utility
             return components;
         }
 
-        public static IComponent InstanceFromGroup(int grpIdx, Settings settings = null, RhinoDoc doc = null)
+        public static IComponent InstanceFromGroup(int grpIdx, Settings settings = null, RhinoDoc doc = null) => InstanceFromGroup<IComponent>(grpIdx, settings, doc);
+
+        public static T InstanceFromGroup<T>(int grpIdx, Settings settings = null, RhinoDoc doc = null) where T : class, IComponent
         {
             doc = doc ?? RhinoDoc.ActiveDoc;
             settings = settings ?? new Settings();
@@ -66,12 +69,13 @@ namespace D2P_Core.Utility
                 if (!ComponentTable.TryGetValue(typeId, out var type))
                     throw new Exception($"No class with type {typeId} registered !");
 
-                var component = (IComponent)Activator.CreateInstance(type);
+                var component = (T)Activator.CreateInstance(type);
                 component.Init(grpObj);
                 return component;
             }
             return null;
         }
+
         public static IComponent InstanceFromObject(RhinoObject obj, Settings settings = null, RhinoDoc doc = null)
         {
             doc = doc ?? RhinoDoc.ActiveDoc;
@@ -80,6 +84,19 @@ namespace D2P_Core.Utility
             foreach (var grpIdx in grpIndices)
             {
                 var component = InstanceFromGroup(grpIdx, settings, doc);
+                if (component == null) continue;
+                return component;
+            }
+            return null;
+        }
+        public static T InstanceFromObject<T>(RhinoObject obj, Settings settings = null, RhinoDoc doc = null) where T : class, IComponent
+        {
+            doc = doc ?? RhinoDoc.ActiveDoc;
+            settings = settings ?? new Settings();
+            var grpIndices = Objects.ObjectGroupIDs(obj.Id, doc);
+            foreach (var grpIdx in grpIndices)
+            {
+                var component = InstanceFromGroup<T>(grpIdx, settings, doc);
                 if (component == null) continue;
                 return component;
             }

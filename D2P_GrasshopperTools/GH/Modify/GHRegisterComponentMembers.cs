@@ -1,4 +1,4 @@
-﻿using D2P_Core;
+﻿using D2P_Core.Components;
 using D2P_Core.Interfaces;
 using Grasshopper.Kernel;
 using System;
@@ -58,7 +58,7 @@ namespace D2P_GrasshopperTools.GH.Modify
                 return;
             }
 
-            var componentClone = component.Clone();
+            var componentClone = component.Clone(false);
             if (!componentClone.IsVirtual)
                 componentClone.ClearStagingLayerCollection();
 

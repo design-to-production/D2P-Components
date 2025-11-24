@@ -1,4 +1,4 @@
-﻿using D2P_Core;
+﻿using D2P_Core.Components;
 using D2P_Core.Interfaces;
 using Grasshopper.Kernel;
 using Rhino.DocObjects;
@@ -27,7 +27,7 @@ namespace D2P_GrasshopperTools.GH.Create
         {
             pManager.AddGenericParameter("LayerInfo", "L", "The layer-information used to create geometry on a specific layer of the component", GH_ParamAccess.item);
             pManager.AddGeometryParameter("Geometry", "G", "The input geometry that will be added to a component under a specific layer", GH_ParamAccess.list);
-            pManager.AddGenericParameter("ObjectAttributes", "A", "Optional input to define the RhinoObjectAttributes for the geometries", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Attributes", "A", "Optional input to define the RhinoObjectAttributes for the geometries", GH_ParamAccess.item);
             pManager[1].Optional = true;
             pManager[2].Optional = true;
         }

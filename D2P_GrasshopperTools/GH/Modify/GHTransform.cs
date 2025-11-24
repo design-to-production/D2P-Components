@@ -51,7 +51,7 @@ namespace D2P_GrasshopperTools.GH.Modify
             DA.GetDataList(1, sourcePlanes);
             DA.GetDataList(2, targetPlanes);
 
-            _components = components.Select(comp => comp.VirtualClone()).ToList();
+            _components = components.Select(comp => comp.Clone(true)).ToList();
 
             if (_components.Count != sourcePlanes.Count && sourcePlanes.Count != 0)
             {

@@ -8,7 +8,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace D2P_Core
+
+namespace D2P_Core.Components
 {
     using AttributeCollection = Dictionary<Guid, ObjectAttributes>;
     using GeometryCollection = Dictionary<Guid, GeometryBase>;
@@ -16,7 +17,7 @@ namespace D2P_Core
 
     public class Component : IComponent
     {
-
+        #region Properties
         GeometryCollection _geometryCollection = new GeometryCollection();
         AttributeCollection _attributeCollection = new AttributeCollection();
         LayerCollection _stagingLayerCollection = new LayerCollection();
@@ -35,7 +36,7 @@ namespace D2P_Core
         // State
         public bool IsInitialized => ActiveDoc.Layers.FindName(Layers.ComposeComponentTypeLayerName(this)) != null;
         public bool IsVirtual => ActiveDoc.Objects.FindId(ID) == null;
-        public bool IsVirtualClone { get; private set; }
+        public bool IsVirtualClone { get; protected set; }
 
         // Type
         public ComponentType ComponentType => _componentType;
@@ -63,18 +64,24 @@ namespace D2P_Core
         public GeometryCollection GeometryCollection
         {
             get => IsVirtualClone || IsVirtual || _geometryCollection.Any() ? _geometryCollection : RHObjects.ToDictionary(rh => rh.Id, rh => rh.Geometry);
-            private set => _geometryCollection = value.ToDictionary(kv => kv.Key, kv => kv.Value.Duplicate());
+            protected set => _geometryCollection = value.ToDictionary(kv => kv.Key, kv => kv.Value.Duplicate());
         }
         public AttributeCollection AttributeCollection
         {
             get => IsVirtualClone || IsVirtual || _attributeCollection.Any() ? _attributeCollection : RHObjects.ToDictionary(rh => rh.Id, rh => rh.Attributes);
-            private set => _attributeCollection = value.ToDictionary(kv => kv.Key, kv => kv.Value.Duplicate());
+            protected set => _attributeCollection = value.ToDictionary(kv => kv.Key, kv => kv.Value.Duplicate());
         }
-        public LayerCollection StagingLayerCollection { get => _stagingLayerCollection; private set => _stagingLayerCollection = value; }
+        public LayerCollection StagingLayerCollection
+        {
+            get => _stagingLayerCollection;
+            protected set => _stagingLayerCollection = value;
+        }
         public IEnumerable<RhinoObject> RHObjects => Objects.ObjectsByGroup(GroupIdx, ActiveDoc);
         public IEnumerable<GeometryBase> Geometry => GeometryCollection.Values;
         public IEnumerable<ObjectAttributes> Attributes => AttributeCollection.Values;
+        #endregion
 
+        #region Constructors
         public Component() { }
         public Component(ComponentType componentType, string name, Plane plane)
         {
@@ -86,11 +93,10 @@ namespace D2P_Core
             StagingLayerCollection.Add(new LayerInfo(), new Dictionary<Guid, int>() { { ID, -1 } });
             AttributeCollection.Add(ID, new ObjectAttributes() { Name = Name, LayerIndex = 0 });
         }
-
-        private Component(IComponent component)
+        public Component(IComponent component)
         {
             ID = component.ID;
-            _componentType = new ComponentType(component);
+            _componentType = component.ComponentType.Clone();
             GeometryCollection = new GeometryCollection(component.GeometryCollection);
             var label = TextEntity.Create(ShortName, Plane, Settings.DimensionStyle, false, 0, 0);
             label.TextHeight = _componentType.LabelSize;
@@ -105,10 +111,27 @@ namespace D2P_Core
             ID = obj.Id;
             _componentType = Objects.ComponentTypeFromObject(obj);
         }
+        #endregion
 
-        public bool Transform(Transform xform) => Geometry.Select(geo => geo.Transform(xform)).All(r => r);
-        public IComponent VirtualClone() => new Component(this) { IsVirtualClone = true };
-        public IComponent Clone() => new Component(this);
+        public bool Transform(Transform _) => Geometry.Select(geo => geo.Transform(_)).All(r => r);
+        public virtual IComponent Clone(bool isVirtual) => new Component() { IsVirtualClone = isVirtual };
+
+        #region Members
+        public IEnumerable<T> GetGeometry<T>(string rawLayerName) where T : GeometryBase
+        {
+            var layer = Layers.FindLayer(this, rawLayerName, out int layersFound);
+            return Objects.ObjectsByLayer(layer, ActiveDoc)
+                .Select(rhObj => rhObj.Geometry)
+                .OfType<T>();
+        }
+        public void SetGeometry(string rawLayerName, IEnumerable<GeometryBase> geometry)
+        {
+            var layer = Layers.FindLayer(this, rawLayerName, out int layersFound);
+            if (layer == null || layersFound != 1) return;
+            var layerInfo = new LayerInfo(rawLayerName, layer.Color);
+            var member = new ComponentMember(layerInfo, geometry);
+            ReplaceMember(member);
+        }
 
         public IList<Guid> AddMember(ComponentMember member)
         {
@@ -121,7 +144,6 @@ namespace D2P_Core
 
             return AddObjectToCollections(member);
         }
-
         public IList<Guid> ReplaceMember(ComponentMember member)
         {
             if (member == null) return new List<Guid>();
@@ -149,17 +171,19 @@ namespace D2P_Core
 
             return AddObjectToCollections(member);
         }
+        #endregion
 
+        #region Collections
         IList<Guid> AddObjectToCollections(ComponentMember member)
         {
             var layerIdx = Layers.FindLayerIndexByFullPath(this, member.LayerInfo.RawLayerName);
-            var objectAttributes = member.ObjectAttributes ?? new ObjectAttributes();
+            var objectAttributes = member.Attributes ?? new ObjectAttributes();
             objectAttributes.Name = Name;
             if (layerIdx > 0)
                 objectAttributes.LayerIndex = layerIdx;
 
             var ids = new List<Guid>();
-            foreach (var geometry in member.GeometryBases)
+            foreach (var geometry in member.Geometry)
             {
                 if (geometry == null)
                     continue;
@@ -193,5 +217,6 @@ namespace D2P_Core
             }
             StagingLayerCollection.Clear();
         }
+        #endregion
     }
 }

@@ -15,6 +15,7 @@ namespace D2P_Core
             RawLayerName = rawLayerName;
             LayerColor = layerColor;
         }
+
     }
 
     public class LayerInfoComparer : IComparer<ILayerInfo>

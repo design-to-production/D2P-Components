@@ -7,6 +7,8 @@ namespace D2P_Core
 {
     public class Settings
     {
+        public static Settings Default => new Settings();
+
         // Layerstructure
         public string RootLayerName { get; set; } = "D2P";
         public Color RootLayerColor { get; set; } = Color.FromArgb(220, 75, 58);

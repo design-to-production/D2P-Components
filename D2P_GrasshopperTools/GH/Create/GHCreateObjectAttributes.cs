@@ -11,7 +11,7 @@ namespace D2P_GrasshopperTools.GH.Create
         /// Initializes a new instance of the GH_CreateObjectAttributes class.
         /// </summary>
         public GHCreateObjectAttributes()
-          : base("CreateObjectAttributes", "ObjectAttributes",
+          : base("CreateObjectAttributes", "Attributes",
               "A simple GH component to create basic RhinoObjectAttributes",
               "D2P", "01 Create")
         {
@@ -31,7 +31,7 @@ namespace D2P_GrasshopperTools.GH.Create
         /// </summary>
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("ObjectAttributes", "A", "The RhinoObjectAttributes defined by this component", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Attributes", "A", "The RhinoObjectAttributes defined by this component", GH_ParamAccess.item);
         }
 
         /// <summary>

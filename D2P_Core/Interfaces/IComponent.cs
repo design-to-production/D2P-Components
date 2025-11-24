@@ -1,4 +1,5 @@
-﻿using Rhino;
+﻿using D2P_Core.Components;
+using Rhino;
 using Rhino.DocObjects;
 using Rhino.Geometry;
 using System;
@@ -36,9 +37,8 @@ namespace D2P_Core.Interfaces
         Dictionary<ILayerInfo, Dictionary<Guid, int>> StagingLayerCollection { get; }
 
         // Methods        
-        IComponent Clone();
-        IComponent VirtualClone();
-        bool Transform(Transform xform);
+        IComponent Clone(bool isVirtual);
+        bool Transform(Transform _);
         IList<Guid> AddMember(ComponentMember member);
         IList<Guid> ReplaceMember(ComponentMember member);
         void ClearStagingLayerCollection();

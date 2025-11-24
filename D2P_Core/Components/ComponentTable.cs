@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace D2P_Core
+namespace D2P_Core.Components
 {
     public static class ComponentTable
     {

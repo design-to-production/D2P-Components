@@ -3,7 +3,7 @@ using D2P_Core.Utility;
 using Rhino.DocObjects;
 using System.Drawing;
 
-namespace D2P_Core
+namespace D2P_Core.Components
 {
     public class ComponentType : IComponentType
     {
@@ -13,22 +13,13 @@ namespace D2P_Core
         public Color LayerColor { get; set; }
         public Settings Settings { get; set; }
 
-        public ComponentType(string typeID, string typeName, Settings settings, double? labelSize = null, Color? layerColor = null)
+        public ComponentType(string typeID, string typeName, Settings settings = null, double? labelSize = null, Color? layerColor = null)
         {
             TypeID = typeID;
             TypeName = typeName;
             LabelSize = labelSize ?? Rhino.RhinoDoc.ActiveDoc.DimStyles.Current.TextHeight;
             LayerColor = layerColor ?? Color.Black;
-            Settings = settings;
-        }
-
-        public ComponentType(IComponent component)
-        {
-            TypeID = component.TypeID;
-            TypeName = component.TypeName;
-            LabelSize = component.LabelSize;
-            LayerColor = component.LayerColor;
-            Settings = component.Settings;
+            Settings = settings ?? Settings.Default;
         }
 
         public ComponentType(Layer layer, Settings settings)
@@ -39,14 +30,15 @@ namespace D2P_Core
             LayerColor = layer.Color;
             Settings = Layers.GetComponentTypeSettings(layer, settings);
         }
-
-        public ComponentType(TextObject textObj, Settings settings)
+        private ComponentType(IComponentType type)
         {
-            TypeID = Objects.ComponentTypeIDFromObject(textObj, settings);
-            TypeName = Objects.ComponentTypeNameFromObject(textObj, settings);
-            LabelSize = textObj.TextGeometry.TextHeight;
-            LayerColor = Objects.ComponentTypeLayerColorFromObject(textObj, settings);
-            Settings = Layers.GetComponentTypeSettings(textObj, settings);
+            TypeID = type.TypeID;
+            TypeName = type.TypeName;
+            LabelSize = type.LabelSize;
+            LayerColor = type.LayerColor;
+            Settings = type.Settings;
         }
+
+        public ComponentType Clone() => new ComponentType(this);
     }
 }
