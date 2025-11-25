@@ -1,4 +1,5 @@
-﻿using D2P_Core.Interfaces;
+﻿using D2P_Core.Enums;
+using D2P_Core.Interfaces;
 using D2P_Core.Utility;
 using Rhino;
 using Rhino.DocObjects;
@@ -117,16 +118,15 @@ namespace D2P_Core.Components
         public virtual IComponent Clone(bool isVirtual) => new Component() { IsVirtualClone = isVirtual };
 
         #region Members
-        public IEnumerable<T> GetGeometry<T>(string rawLayerName) where T : GeometryBase
+        public IEnumerable<T> GetGeometry<T>(string rawLayerName, LayerScope layerScope) where T : GeometryBase
         {
             var layer = Layers.FindLayer(this, rawLayerName, out int layersFound);
-            return Objects.ObjectsByLayer(layer, ActiveDoc)
-                .Select(rhObj => rhObj.Geometry)
+            return Objects.ObjectsByLayer(layer.Index, this, layerScope)
                 .OfType<T>();
         }
-        public T GetEnum<T>(string rawLayerName) where T : struct, Enum
+        public T GetEnum<T>(string rawLayerName, LayerScope layerScope) where T : struct, Enum
         {
-            var txtDot = GetGeometry<TextDot>(rawLayerName).FirstOrDefault();
+            var txtDot = GetGeometry<TextDot>(rawLayerName, layerScope).FirstOrDefault();
             if (txtDot == null) return default(T);
             Enum.TryParse(txtDot.Text, false, out T result);
             return result;

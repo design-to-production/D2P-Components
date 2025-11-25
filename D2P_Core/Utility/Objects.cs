@@ -1,4 +1,5 @@
 ﻿using D2P_Core.Components;
+using D2P_Core.Enums;
 using D2P_Core.Interfaces;
 using Rhino;
 using Rhino.DocObjects;
@@ -12,12 +13,6 @@ namespace D2P_Core.Utility
 {
     public static class Objects
     {
-        public enum LayerScope
-        {
-            CurrentOnly,
-            IncludeChildren
-        }
-
         public static ComponentType ComponentTypeFromObject(RhinoObject obj, Settings settings = null)
         {
             settings = settings ?? new Settings();
