@@ -14,7 +14,7 @@ namespace D2P_GrasshopperTools.GH.Create
         /// Initializes a new instance of the Geometry_AddToComponent class.
         /// </summary>
         public GHCreateComponentMember()
-          : base("CreateComponentMember", "ComponentMember",
+          : base("CreateComponentMember", "Member",
               "Creates a component-member composed of geometry and a layer-information",
               "D2P", "01 Create")
         {
@@ -37,7 +37,7 @@ namespace D2P_GrasshopperTools.GH.Create
         /// </summary>
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("ComponentMember", "M", "The ComponentMember which can be registered to a component-instance", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Member", "M", "The Member which can be registered to a component-instance", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace D2P_GrasshopperTools.GH.Create
             DA.GetDataList(1, geometry);
             DA.GetData(2, ref attributes);
 
-            var componentMembers = new ComponentMember(layerInfo, geometry, attributes);
+            var componentMembers = new Member(layerInfo, geometry, attributes);
 
             DA.SetData(0, componentMembers);
         }

@@ -19,7 +19,7 @@ namespace D2P_Core.Utility
             }
         }
 
-        public static RhinoDoc CreateHeadless(RhinoDoc doc)
+        internal static RhinoDoc CreateHeadless(RhinoDoc doc)
         {
             var headlessDoc = RhinoDoc.CreateHeadless(doc.Name);
             headlessDoc.Layers.SetCurrentLayerIndex(0, true);
@@ -35,7 +35,7 @@ namespace D2P_Core.Utility
             return headlessDoc;
         }
 
-        public static Guid AddToRhinoDoc(IComponent component, RhinoDoc doc = null, bool replaceExisting = false)
+        internal static Guid AddToRhinoDoc(IComponent component, RhinoDoc doc = null, bool replaceExisting = true)
         {
             doc = doc ?? RhinoDoc.ActiveDoc;
             var grpExists = doc.Groups.FindIndex(component.GroupIdx) != null;
@@ -69,7 +69,7 @@ namespace D2P_Core.Utility
             return component.ID;
         }
 
-        public static void UpdateComponentTypeLayerColors(IComponentType componentType, RhinoDoc doc)
+        internal static void UpdateComponentTypeLayerColors(IComponentType componentType, RhinoDoc doc)
         {
             var rhLayer = Layers.GetComponentTypeRootLayer(componentType, doc);
             if (rhLayer == null || rhLayer.Color == componentType.LayerColor)
@@ -77,7 +77,7 @@ namespace D2P_Core.Utility
             rhLayer.Color = componentType.LayerColor;
         }
 
-        public static void UpdateComponentSublayerColors(IComponent component)
+        internal static void UpdateComponentSublayerColors(IComponent component)
         {
             var layerInfos = component.StagingLayerCollection.Keys;
             foreach (var layerInfo in layerInfos)

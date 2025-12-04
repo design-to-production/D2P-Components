@@ -47,7 +47,7 @@ namespace D2P_GrasshopperTools.GH.Modify
         {
 
             IComponent component = null;
-            var componentMembers = new List<ComponentMember>();
+            var componentMembers = new List<Member>();
             DA.GetData(0, ref component);
             DA.GetDataList(1, componentMembers);
 

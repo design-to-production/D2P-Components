@@ -112,6 +112,10 @@ namespace D2P_Core.Components
             ID = obj.Id;
             _componentType = Objects.ComponentTypeFromObject(obj);
         }
+        public virtual void Commit()
+        {
+            RHDoc.AddToRhinoDoc(this, ActiveDoc, true);
+        }
         #endregion
 
         public bool Transform(Transform _) => Geometry.Select(geo => geo.Transform(_)).All(r => r);
@@ -131,16 +135,16 @@ namespace D2P_Core.Components
             Enum.TryParse(txtDot.Text, false, out T result);
             return result;
         }
-        public void SetGeometry(string rawLayerName, IEnumerable<GeometryBase> geometry)
-        {
-            var layer = Layers.FindLayer(this, rawLayerName, out int layersFound);
-            if (layer == null || layersFound != 1) return;
-            var layerInfo = new LayerInfo(rawLayerName, layer.Color);
-            var member = new ComponentMember(layerInfo, geometry);
-            ReplaceMember(member);
-        }
+        //public void SetGeometry(string rawLayerName, IEnumerable<GeometryBase> geometry)
+        //{
+        //    var layer = Layers.FindLayer(this, rawLayerName, out int layersFound);
+        //    if (layer == null || layersFound != 1) return;
+        //    var layerInfo = new LayerInfo(rawLayerName, layer.Color);
+        //    var member = new Member(layerInfo, geometry);
+        //    ReplaceMember(member);
+        //}
 
-        public IList<Guid> AddMember(ComponentMember member)
+        public IList<Guid> AddMember<T>(IMember<T> member) where T : GeometryBase
         {
             if (member == null) return new List<Guid>();
 
@@ -155,10 +159,10 @@ namespace D2P_Core.Components
         public IList<Guid> ReplaceMember(string rawLayerName, Color layerColor, IEnumerable<GeometryBase> geometry)
         {
             var layerInfo = new LayerInfo(rawLayerName, layerColor);
-            var member = new ComponentMember(layerInfo, geometry);
+            var member = new Member(this, layerInfo, geometry);
             return ReplaceMember(member);
         }
-        public IList<Guid> ReplaceMember(ComponentMember member)
+        public IList<Guid> ReplaceMember<T>(IMember<T> member) where T : GeometryBase
         {
             if (member == null) return new List<Guid>();
 
@@ -188,7 +192,7 @@ namespace D2P_Core.Components
         #endregion
 
         #region Collections
-        IList<Guid> AddObjectToCollections(ComponentMember member)
+        IList<Guid> AddObjectToCollections<T>(IMember<T> member) where T : GeometryBase
         {
             var layerIdx = Layers.FindLayerIndexByFullPath(this, member.LayerInfo.RawLayerName);
             var objectAttributes = member.Attributes ?? new ObjectAttributes();

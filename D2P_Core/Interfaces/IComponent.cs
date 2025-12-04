@@ -11,6 +11,7 @@ namespace D2P_Core.Interfaces
     {
         // Setup
         void Init(RhinoObject obj);
+        void Commit();
 
         RhinoDoc ActiveDoc { get; set; }
         ComponentType ComponentType { get; }
@@ -39,8 +40,8 @@ namespace D2P_Core.Interfaces
         // Methods        
         IComponent Clone(bool isVirtual);
         bool Transform(Transform _);
-        IList<Guid> AddMember(ComponentMember member);
-        IList<Guid> ReplaceMember(ComponentMember member);
+        IList<Guid> AddMember<T>(IMember<T> member) where T : GeometryBase;
+        IList<Guid> ReplaceMember<T>(IMember<T> member) where T : GeometryBase;
         void ClearStagingLayerCollection();
     }
 }
