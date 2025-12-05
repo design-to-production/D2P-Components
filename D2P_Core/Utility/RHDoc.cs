@@ -1,4 +1,5 @@
-﻿using D2P_Core.Interfaces;
+﻿using D2P_Core.Components.Grasshopper;
+using D2P_Core.Interfaces;
 using Rhino;
 using Rhino.Geometry;
 using System;
@@ -35,11 +36,18 @@ namespace D2P_Core.Utility
             return headlessDoc;
         }
 
-        internal static Guid AddToRhinoDoc(IComponent component, RhinoDoc doc = null, bool replaceExisting = true)
+        internal static Guid ReplaceInRhinoDoc(IComponentBase component)
+        {
+            var label = TextEntity.Create(component.Name, component.Plane, component.Settings.DimensionStyle, false, 0, 0);
+            label.TextHeight = component.LabelSize;
+            return component.ActiveDoc.Objects.Add(label);
+        }
+
+        internal static Guid AddToRhinoDoc(GrasshopperComponent component, RhinoDoc doc = null, bool replaceExisting = true)
         {
             doc = doc ?? RhinoDoc.ActiveDoc;
-            var grpExists = doc.Groups.FindIndex(component.GroupIdx) != null;
-            var grpIdx = component.IsVirtual || !grpExists || !replaceExisting ? Group.AddGroup(doc) : component.GroupIdx;
+            var grpExists = doc.Groups.FindIndex(component.GroupIndex) != null;
+            var grpIdx = component.IsVirtual || !grpExists || !replaceExisting ? Group.AddGroup(doc) : component.GroupIndex;
             Layers.CreateStagingLayers(component);
 
             if (replaceExisting)
@@ -69,15 +77,16 @@ namespace D2P_Core.Utility
             return component.ID;
         }
 
-        internal static void UpdateComponentTypeLayerColors(IComponentType componentType, RhinoDoc doc)
+
+        internal static void UpdateComponentTypeLayerColors(IComponentBase component, RhinoDoc doc)
         {
-            var rhLayer = Layers.GetComponentTypeRootLayer(componentType, doc);
-            if (rhLayer == null || rhLayer.Color == componentType.LayerColor)
+            var rhLayer = Layers.GetComponentTypeRootLayer(component);
+            if (rhLayer == null || rhLayer.Color == component.LayerColor)
                 return;
-            rhLayer.Color = componentType.LayerColor;
+            rhLayer.Color = component.LayerColor;
         }
 
-        internal static void UpdateComponentSublayerColors(IComponent component)
+        internal static void UpdateComponentSublayerColors(GrasshopperComponent component)
         {
             var layerInfos = component.StagingLayerCollection.Keys;
             foreach (var layerInfo in layerInfos)

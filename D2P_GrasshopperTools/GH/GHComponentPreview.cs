@@ -1,4 +1,4 @@
-﻿using D2P_Core.Interfaces;
+﻿using D2P_Core.Components.Grasshopper;
 using Grasshopper.Kernel;
 using Rhino.DocObjects;
 using Rhino.Geometry;
@@ -12,7 +12,7 @@ namespace D2P_GrasshopperTools.GH
     {
 
         protected BoundingBox _box;
-        protected List<IComponent> _components = new List<IComponent>();
+        protected List<GrasshopperComponent> _components = new List<GrasshopperComponent>();
 
         protected GHComponentPreview(string name, string shortname, string description, string category, string subcategory)
         : base(name, shortname, description, category, subcategory)

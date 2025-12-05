@@ -1,4 +1,5 @@
 ﻿using D2P_Core.Components;
+using D2P_Core.Components.Grasshopper;
 using D2P_Core.Enums;
 using D2P_Core.Interfaces;
 using Rhino;
@@ -24,7 +25,7 @@ namespace D2P_Core.Utility
         public static string ComponentTypeNameFromObject(RhinoObject obj, Settings settings) => Layers.GetComponentTypeName(obj, settings);
         public static Color ComponentTypeLayerColorFromObject(RhinoObject obj, Settings settings) => Layers.GetComponentTypeRootLayer(obj, settings).Color;
 
-        public static IEnumerable<T> ObjectsByLayer<T>(int layerIdx, IComponent component, LayerScope layerScope) where T : GeometryBase
+        public static IEnumerable<T> ObjectsByLayer<T>(int layerIdx, GrasshopperComponent component, LayerScope layerScope) where T : GeometryBase
         {
             IEnumerable<T> objectsByLayer(int idx)
             {
@@ -48,13 +49,20 @@ namespace D2P_Core.Utility
                     return Enumerable.Empty<T>();
             }
         }
-        public static IEnumerable<GeometryBase> ObjectsByLayer(int layerIdx, IComponent component, LayerScope layerScope) => ObjectsByLayer<GeometryBase>(layerIdx, component, layerScope);
+        public static IEnumerable<T> ObjectsByLayer<T>(IComponentBase component, int layerIdx) where T : GeometryBase
+        {
+            return component.Members
+                .FirstOrDefault(m => m.Attributes.LayerIndex == layerIdx)
+                .Geometry.OfType<T>();
+        }
+
+        public static IEnumerable<GeometryBase> ObjectsByLayer(int layerIdx, IComponentBase component, LayerScope layerScope) => ObjectsByLayer<GeometryBase>(component, layerIdx);
         public static IEnumerable<RhinoObject> ObjectsByLayer(Layer layer, RhinoDoc doc = null)
         {
             doc = doc ?? RhinoDoc.ActiveDoc;
             return doc.Objects.FindByLayer(layer);
         }
-        public static IEnumerable<Guid> ObjectIDsByLayer(IComponent component, int layerIdx, RhinoDoc doc = null)
+        public static IEnumerable<Guid> ObjectIDsByLayer(IComponentBase component, int layerIdx, RhinoDoc doc = null)
         {
             doc = doc ?? RhinoDoc.ActiveDoc;
             var filter = new ObjectEnumeratorSettings()
@@ -70,28 +78,49 @@ namespace D2P_Core.Utility
         public static IEnumerable<RhinoObject> ObjectsByGroup(int grpIdx, RhinoDoc doc) => doc.Groups.GroupMembers(grpIdx);
         public static IEnumerable<RhinoObject> ObjectsByGroup(int grpIdx, Layer layer, RhinoDoc doc) => ObjectsByGroup(grpIdx, doc).Where(rh => rh.Attributes.LayerIndex == layer?.Index);
 
-        public static int DeleteObjects(IComponent component, Layer layer)
+        public static int DeleteObjects(IComponentBase component, Layer layer)
         {
-            var rhObjects = ObjectsByGroup(component.GroupIdx, layer, component.ActiveDoc);
+            if (!Group.GetGroupIndex(component, out int grpIdx))
+                return 0;
+            var rhObjects = ObjectsByGroup(grpIdx, layer, component.ActiveDoc);
             if (rhObjects == null)
                 return 0;
             var objectIds = rhObjects.Select(rh => rh.Id);
             return component.ActiveDoc.Objects.Delete(objectIds, true);
         }
-        public static int DeleteObjects(IComponent component)
+        public static int DeleteObjects(IComponentBase component)
         {
-            var objectIds = ObjectsByGroup(component.GroupIdx, component.ActiveDoc)
+            if (!Group.GetGroupIndex(component, out int grpIdx))
+                return 0;
+            var objectIds = ObjectsByGroup(grpIdx, component.ActiveDoc)
                 .Select(rh => rh.Id)
                 .Where(id => id != component.ID);
             return component.ActiveDoc.Objects.Delete(objectIds, true);
         }
 
-        public static int DeleteComponent(IComponent component)
+        public static int DeleteObjects(IMember member)
         {
-            var objectIds = ObjectsByGroup(component.GroupIdx, component.ActiveDoc).Select(rh => rh.Id);
+            var layer = Layers.FindLayer(member);
+            return DeleteObjects(member.Component, layer);
+
+        }
+        public static void ReplaceObjects(IMember member)
+        {
+            DeleteObjects(member);
+            AddObjects(member);
+        }
+        public static void AddObjects(IMember member)
+        {
+            var layer = Layers.FindLayer(member);
+        }
+
+        public static int DeleteComponent(IComponentBase component)
+        {
+            if (!Group.GetGroupIndex(component, out int grpIdx)) return -1;
+            var objectIds = ObjectsByGroup(grpIdx, component.ActiveDoc).Select(rh => rh.Id);
             return component.ActiveDoc.Objects.Delete(objectIds, true);
         }
-        public static int DeleteComponents(IEnumerable<IComponent> components)
+        public static int DeleteComponents(IEnumerable<IComponentBase> components)
         {
             return components.Sum(comp => DeleteComponent(comp));
         }

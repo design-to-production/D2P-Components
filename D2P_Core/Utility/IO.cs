@@ -1,4 +1,4 @@
-﻿using D2P_Core.Interfaces;
+﻿using D2P_Core.Components.Grasshopper;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,7 +8,7 @@ namespace D2P_Core.Utility
     public static class IO
     {
 
-        public static void Export(IComponent component, string directoryPath)
+        public static void Export(GrasshopperComponent component, string directoryPath)
         {
             component.ActiveDoc.Objects.UnselectAll();
             foreach (var rhObj in component.RHObjects)
@@ -20,7 +20,7 @@ namespace D2P_Core.Utility
             component.ActiveDoc.Objects.UnselectAll();
         }
 
-        public static void ExportWithHeadless(IComponent component, string directoryPath)
+        public static void ExportWithHeadless(GrasshopperComponent component, string directoryPath)
         {
             var headlessDoc = RHDoc.CreateHeadless(component.ActiveDoc);
             RHDoc.AddToRhinoDoc(component, headlessDoc);
@@ -28,7 +28,7 @@ namespace D2P_Core.Utility
             var fileName = Path.Combine(directoryPath, component.ShortName + ".3dm");
             headlessDoc.Export(fileName);
         }
-        public static void ExportWithHeadless(IEnumerable<IComponent> components, string directory, string fileName)
+        public static void ExportWithHeadless(IEnumerable<GrasshopperComponent> components, string directory, string fileName)
         {
             if (!components.Any())
                 return;

@@ -1,25 +1,17 @@
-﻿using D2P_Core.Components;
-using Rhino;
-using Rhino.DocObjects;
+﻿using Rhino.DocObjects;
 using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 
 namespace D2P_Core.Interfaces
 {
-    public interface IComponent : IComponentType
+    public interface IComponent : IComponentBase, IComponentType
     {
         // Setup
         void Init(RhinoObject obj);
-        void Commit();
-
-        RhinoDoc ActiveDoc { get; set; }
-        ComponentType ComponentType { get; }
 
         // IDs
-        Guid ID { get; set; }
         int GroupIdx { get; }
-        string Name { get; }
         string ShortName { get; }
 
         // State
@@ -29,7 +21,6 @@ namespace D2P_Core.Interfaces
 
         // Geometry
         TextEntity Label { get; }
-        Plane Plane { get; set; }
         IEnumerable<RhinoObject> RHObjects { get; }
         IEnumerable<GeometryBase> Geometry { get; }
         IEnumerable<ObjectAttributes> Attributes { get; }

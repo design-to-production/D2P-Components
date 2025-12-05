@@ -3,15 +3,16 @@ using Rhino.DocObjects;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace D2P_Core
+namespace D2P_Core.Components
 {
     public class Settings
     {
         public static Settings Default => new Settings();
 
-        // Layerstructure
+        // Layerstructure        
         public string RootLayerName { get; set; } = "D2P";
         public Color RootLayerColor { get; set; } = Color.FromArgb(220, 75, 58);
+
 
         // Style        
         public string DimensionStyleName { get; set; } = RhinoDoc.ActiveDoc.DimStyles.Current.Name;

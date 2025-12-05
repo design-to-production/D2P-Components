@@ -1,5 +1,4 @@
-﻿using D2P_Core;
-using D2P_Core.Components;
+﻿using D2P_Core.Components;
 using Grasshopper.Kernel;
 using System;
 using System.Drawing;
@@ -23,7 +22,7 @@ namespace D2P_GrasshopperTools.GH.Create
         /// </summary>
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddTextParameter("TypeID", "T", "Each type has a unique type-id, typically 4 uppercase letters that abbreviate the type-name and are easy to memorize", GH_ParamAccess.item);
+            pManager.AddTextParameter("TypeId", "T", "Each type has a unique type-id, typically 4 uppercase letters that abbreviate the type-name and are easy to memorize", GH_ParamAccess.item);
             pManager.AddTextParameter("TypeName", "N", "Each type has a type-name, a short human readable description of the type", GH_ParamAccess.item);
             pManager.AddNumberParameter("LabelSize", "L", "The label size defines the size of the text-entity representing a component-instance in a Rhino document", GH_ParamAccess.item);
             pManager.AddColourParameter("LayerColor", "C", "The layer-color defines the color of the component-type root-layer", GH_ParamAccess.item);

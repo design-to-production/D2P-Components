@@ -1,5 +1,4 @@
-﻿using D2P_Core;
-using D2P_Core.Components;
+﻿using D2P_Core.Components;
 using Grasshopper.Kernel;
 using System;
 using System.Linq;
@@ -47,7 +46,7 @@ namespace D2P_GrasshopperTools.GH.Stream
             var componentTypes = D2P_Core.Utility.Instantiation.GetComponentTypes(settings);
 
             if (DA.Iteration == 0)
-                _properties = componentTypes.ToDictionary(compType => compType.TypeID, compType => typeof(ComponentType));
+                _properties = componentTypes.ToDictionary(compType => compType.TypeId, compType => typeof(ComponentType));
 
             if (OutputMismatch() && DA.Iteration == 0)
                 OnPingDocument().ScheduleSolution(5, d => CreateOutputParams(false));
@@ -55,7 +54,7 @@ namespace D2P_GrasshopperTools.GH.Stream
             {
                 foreach (var compType in componentTypes)
                 {
-                    DA.SetData(compType.TypeID, compType);
+                    DA.SetData(compType.TypeId, compType);
                 }
             }
         }

@@ -1,4 +1,5 @@
 ﻿using D2P_Core;
+using D2P_Core.Components;
 using D2P_Core.Interfaces;
 using D2P_GrasshopperTools.Utility;
 using Grasshopper;
@@ -30,7 +31,7 @@ namespace D2P_GrasshopperTools.GH.Stream
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("TypeID", "T", "The component-type or its type-id used to stream specific types", GH_ParamAccess.list);
+            pManager.AddGenericParameter("TypeId", "T", "The component-type or its type-id used to stream specific types", GH_ParamAccess.list);
             pManager.AddTextParameter("NameFilter", "N", "The regex pattern used to filter by specific component-names", GH_ParamAccess.list, string.Empty);
             pManager.AddGenericParameter("Settings", "S", "The settings define the basic root-layer for all components being streamed and a collection of specific delimiters", GH_ParamAccess.item);
             pManager[2].Optional = true;
@@ -61,7 +62,7 @@ namespace D2P_GrasshopperTools.GH.Stream
             var componentTrees = new Dictionary<string, DataTree<IComponent>>();
             foreach (var componentType in componentTypes)
             {
-                var typeID = (componentType?.Value as IComponentType)?.TypeID ?? componentType?.Value?.ToString();
+                var typeID = (componentType?.Value as IComponentType)?.TypeId ?? componentType?.Value?.ToString();
                 _properties.Add(typeID, typeof(Enumerable));
                 componentTrees.Add(typeID, new DataTree<IComponent>());
                 for (int i = 0; i < filterList.Count; i++)

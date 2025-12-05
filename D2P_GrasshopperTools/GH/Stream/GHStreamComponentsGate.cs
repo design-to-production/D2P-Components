@@ -1,4 +1,4 @@
-﻿using D2P_Core;
+﻿using D2P_Core.Components;
 using D2P_GrasshopperTools.Utility;
 using Grasshopper.Kernel;
 using System;
@@ -46,11 +46,11 @@ namespace D2P_GrasshopperTools.GH.Stream
 
             settings = settings ?? DefaultSettings.Create();
             _components = D2P_Core.Utility.Instantiation.InstancesFromObjects(ids, settings).ToList();
-            var componentGroups = _components.GroupBy(comp => comp.TypeID);
+            var componentGroups = _components.GroupBy(comp => comp.TypeId);
 
             if (DA.Iteration == 0)
             {
-                _properties = componentGroups.ToDictionary(grp => grp.First().TypeID, c => typeof(Enumerable));
+                _properties = componentGroups.ToDictionary(grp => grp.First().TypeId, c => typeof(Enumerable));
             }
 
             if (OutputMismatch() && DA.Iteration == 0)
@@ -64,7 +64,7 @@ namespace D2P_GrasshopperTools.GH.Stream
             {
                 foreach (var group in componentGroups)
                 {
-                    var typeName = group.First().TypeID;
+                    var typeName = group.First().TypeId;
                     DA.SetDataList(typeName, group);
                 }
             }

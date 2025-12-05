@@ -79,7 +79,7 @@ namespace D2P_GrasshopperTools.GH.Utility
         void BakeComponents()
         {
             var doc = RhinoDoc.ActiveDoc;
-            var componentTypes = _components.GroupBy(c => c.TypeID).Select(grp => grp.FirstOrDefault());
+            var componentTypes = _components.GroupBy(c => c.TypeId).Select(grp => grp.FirstOrDefault());
             foreach (var componentType in componentTypes)
             {
                 RHDoc.UpdateComponentTypeLayerColors(componentType, doc);

@@ -1,4 +1,5 @@
-﻿using D2P_Core.Enums;
+﻿using D2P_Core.Components.Member;
+using D2P_Core.Enums;
 using D2P_Core.Interfaces;
 using D2P_Core.Utility;
 using Rhino;
@@ -10,13 +11,13 @@ using System.Drawing;
 using System.Linq;
 
 
-namespace D2P_Core.Components
+namespace D2P_Core.Components.Grasshopper
 {
     using AttributeCollection = Dictionary<Guid, ObjectAttributes>;
     using GeometryCollection = Dictionary<Guid, GeometryBase>;
     using LayerCollection = Dictionary<ILayerInfo, Dictionary<Guid, int>>;
 
-    public class Component : IComponent
+    public class GrasshopperComponent : IComponentBase
     {
         #region Properties
         GeometryCollection _geometryCollection = new GeometryCollection();
@@ -30,8 +31,8 @@ namespace D2P_Core.Components
 
         // IDs
         public Guid ID { get; set; }
-        public int GroupIdx => Utility.Group.GetGroupIndex(ID, ActiveDoc);
-        public string Name => TypeID + Settings.TypeDelimiter + ShortName;
+        public int GroupIndex { get { Utility.Group.GetGroupIndex(this, out int grpIdx); return grpIdx; } }
+        public string Name => TypeId + Settings.TypeDelimiter + ShortName;
         public string ShortName => Label.PlainText;
 
         // State
@@ -40,8 +41,8 @@ namespace D2P_Core.Components
         public bool IsVirtualClone { get; protected set; }
 
         // Type
-        public ComponentType ComponentType => _componentType;
-        public string TypeID => _componentType.TypeID;
+        public IComponentType ComponentType => _componentType;
+        public string TypeId => _componentType.TypeId;
         public string TypeName => _componentType.TypeName;
         public Color LayerColor => _componentType.LayerColor;
         public Settings Settings => _componentType.Settings;
@@ -77,14 +78,16 @@ namespace D2P_Core.Components
             get => _stagingLayerCollection;
             protected set => _stagingLayerCollection = value;
         }
-        public IEnumerable<RhinoObject> RHObjects => Objects.ObjectsByGroup(GroupIdx, ActiveDoc);
+        public IEnumerable<RhinoObject> RHObjects => Objects.ObjectsByGroup(GroupIndex, ActiveDoc);
         public IEnumerable<GeometryBase> Geometry => GeometryCollection.Values;
         public IEnumerable<ObjectAttributes> Attributes => AttributeCollection.Values;
+
+        public IEnumerable<IMember> Members => throw new NotImplementedException();
         #endregion
 
         #region Constructors
-        public Component() { }
-        public Component(ComponentType componentType, string name, Plane plane)
+        public GrasshopperComponent() { }
+        public GrasshopperComponent(ComponentType componentType, string name, Plane plane)
         {
             ID = Guid.NewGuid();
             _componentType = componentType;
@@ -94,32 +97,29 @@ namespace D2P_Core.Components
             StagingLayerCollection.Add(new LayerInfo(), new Dictionary<Guid, int>() { { ID, -1 } });
             AttributeCollection.Add(ID, new ObjectAttributes() { Name = Name, LayerIndex = 0 });
         }
-        public Component(IComponent component)
-        {
-            ID = component.ID;
-            _componentType = component.ComponentType.Clone();
-            GeometryCollection = new GeometryCollection(component.GeometryCollection);
-            var label = TextEntity.Create(ShortName, Plane, Settings.DimensionStyle, false, 0, 0);
-            label.TextHeight = _componentType.LabelSize;
-            GeometryCollection[ID] = label;
-            AttributeCollection = new AttributeCollection(component.AttributeCollection);
-            StagingLayerCollection = new LayerCollection(component.StagingLayerCollection);
-            IsVirtualClone = component.IsVirtualClone;
-        }
+        //public GrasshopperComponent(IComponent component)
+        //{
+        //    ID = component.ID;
+        //    _componentType = component.ComponentType.Clone();
+        //    GeometryCollection = new GeometryCollection(component.GeometryCollection);
+        //    var label = TextEntity.Create(ShortName, Plane, Settings.DimensionStyle, false, 0, 0);
+        //    label.TextHeight = _componentType.LabelSize;
+        //    GeometryCollection[ID] = label;
+        //    AttributeCollection = new AttributeCollection(component.AttributeCollection);
+        //    StagingLayerCollection = new LayerCollection(component.StagingLayerCollection);
+        //    IsVirtualClone = component.IsVirtualClone;
+        //}
 
         public virtual void Init(RhinoObject obj)
         {
             ID = obj.Id;
             _componentType = Objects.ComponentTypeFromObject(obj);
         }
-        public virtual void Commit()
-        {
-            RHDoc.AddToRhinoDoc(this, ActiveDoc, true);
-        }
+
         #endregion
 
         public bool Transform(Transform _) => Geometry.Select(geo => geo.Transform(_)).All(r => r);
-        public virtual IComponent Clone(bool isVirtual) => new Component() { IsVirtualClone = isVirtual };
+        public virtual IComponentBase Clone(bool isVirtual) => new GrasshopperComponent() { IsVirtualClone = isVirtual };
 
         #region Members
         public IEnumerable<T> GetGeometry<T>(string rawLayerName, LayerScope layerScope) where T : GeometryBase
@@ -131,18 +131,10 @@ namespace D2P_Core.Components
         public T GetEnum<T>(string rawLayerName, LayerScope layerScope) where T : struct, Enum
         {
             var txtDot = GetGeometry<TextDot>(rawLayerName, layerScope).FirstOrDefault();
-            if (txtDot == null) return default(T);
+            if (txtDot == null) return default;
             Enum.TryParse(txtDot.Text, false, out T result);
             return result;
         }
-        //public void SetGeometry(string rawLayerName, IEnumerable<GeometryBase> geometry)
-        //{
-        //    var layer = Layers.FindLayer(this, rawLayerName, out int layersFound);
-        //    if (layer == null || layersFound != 1) return;
-        //    var layerInfo = new LayerInfo(rawLayerName, layer.Color);
-        //    var member = new Member(layerInfo, geometry);
-        //    ReplaceMember(member);
-        //}
 
         public IList<Guid> AddMember<T>(IMember<T> member) where T : GeometryBase
         {
@@ -159,7 +151,7 @@ namespace D2P_Core.Components
         public IList<Guid> ReplaceMember(string rawLayerName, Color layerColor, IEnumerable<GeometryBase> geometry)
         {
             var layerInfo = new LayerInfo(rawLayerName, layerColor);
-            var member = new Member(this, layerInfo, geometry);
+            var member = new MemberGeo(this, layerInfo, geometry);
             return ReplaceMember(member);
         }
         public IList<Guid> ReplaceMember<T>(IMember<T> member) where T : GeometryBase
@@ -234,6 +226,19 @@ namespace D2P_Core.Components
                 RemoveObjectFromCollections(objID);
             }
             StagingLayerCollection.Clear();
+        }
+
+        public virtual void Commit()
+        {
+            RHDoc.AddToRhinoDoc(this, ActiveDoc, true);
+        }
+        public bool Exists()
+        {
+            return !IsVirtual;
+        }
+        public void Delete()
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

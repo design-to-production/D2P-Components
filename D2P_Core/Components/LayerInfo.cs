@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace D2P_Core
+namespace D2P_Core.Components
 {
     public class LayerInfo : ILayerInfo
     {
@@ -21,7 +21,7 @@ namespace D2P_Core
     public class LayerInfoComparer : IComparer<ILayerInfo>
     {
         readonly char _layerNameDelimiter;
-        public LayerInfoComparer(IComponent component)
+        public LayerInfoComparer(IComponentBase component)
         {
             _layerNameDelimiter = component.Settings.LayerNameDelimiter;
         }

@@ -1,13 +1,15 @@
-﻿using System.Drawing;
+﻿using D2P_Core.Components;
+using System.Drawing;
 
 namespace D2P_Core.Interfaces
 {
     public interface IComponentType
     {
         Settings Settings { get; }
-        string TypeID { get; }
+
+        string TypeId { get; }
         string TypeName { get; }
-        double LabelSize { get; }
         Color LayerColor { get; }
+        double LabelSize { get; }
     }
 }

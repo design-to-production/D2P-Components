@@ -43,10 +43,10 @@ namespace D2P_GrasshopperTools.GH.Stream
 
             _components = componentTree.Select(x => new GH_ObjectWrapper(x).Value as IComponent).ToList();
 
-            var componentGroups = _components.GroupBy(comp => comp.TypeID);
+            var componentGroups = _components.GroupBy(comp => comp.TypeId);
             if (DA.Iteration == 0)
             {
-                _properties = componentGroups.ToDictionary(grp => grp.First().TypeID, c => typeof(Enumerable));
+                _properties = componentGroups.ToDictionary(grp => grp.First().TypeId, c => typeof(Enumerable));
             }
 
             if (OutputMismatch() && DA.Iteration == 0)

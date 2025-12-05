@@ -2,9 +2,9 @@
 {
     internal static class DefaultSettings
     {
-        internal static D2P_Core.Settings Create()
+        internal static D2P_Core.Components.Settings Create()
         {
-            return new D2P_Core.Settings()
+            return new D2P_Core.Components.Settings()
             {
                 RootLayerName = Properties.Settings.Default.DefaultRootLayerName,
                 RootLayerColor = Properties.Settings.Default.DefaultRootLayerColor,

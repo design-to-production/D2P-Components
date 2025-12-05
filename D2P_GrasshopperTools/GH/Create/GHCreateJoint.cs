@@ -1,4 +1,5 @@
 ﻿using D2P_Core.Components;
+using D2P_Core.Components.Grasshopper;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 using System;
@@ -45,7 +46,7 @@ namespace D2P_GrasshopperTools.GH.Create
         {
             ComponentType componentType = null;
             var plane = Plane.Unset;
-            var components = new List<Component>();
+            var components = new List<GrasshopperComponent>();
 
             DA.GetData(0, ref componentType);
             DA.GetData(1, ref plane);
@@ -66,7 +67,7 @@ namespace D2P_GrasshopperTools.GH.Create
                 return;
             }
 
-            var component = new Component(componentType, name, plane);
+            var component = new GrasshopperComponent(componentType, name, plane);
             _components.Add(component);
 
             DA.SetData(0, component);

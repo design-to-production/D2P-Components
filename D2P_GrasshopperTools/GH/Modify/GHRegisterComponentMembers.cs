@@ -1,4 +1,4 @@
-﻿using D2P_Core.Components;
+﻿using D2P_Core.Components.Member;
 using D2P_Core.Interfaces;
 using Grasshopper.Kernel;
 using System;
@@ -47,7 +47,7 @@ namespace D2P_GrasshopperTools.GH.Modify
         {
 
             IComponent component = null;
-            var componentMembers = new List<Member>();
+            var componentMembers = new List<MemberGeo>();
             DA.GetData(0, ref component);
             DA.GetDataList(1, componentMembers);
 

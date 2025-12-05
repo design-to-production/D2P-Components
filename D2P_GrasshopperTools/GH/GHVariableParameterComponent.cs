@@ -37,7 +37,7 @@ namespace D2P_GrasshopperTools.GH
                 {
                     var compWrapper = new GH_ObjectWrapper(listData[i]);
                     var component = compWrapper.Value as IComponent;
-                    var typeIdx = typesDictionary[component.TypeID];
+                    var typeIdx = typesDictionary[component.TypeId];
                     var path = new GH_Path(p);
                     outTrees[typeIdx].Append(compWrapper, path);
                 }
@@ -130,7 +130,7 @@ namespace D2P_GrasshopperTools.GH
 
                 Params.Output[i].Name = $"{name}";
                 Params.Output[i].NickName = $"{name}";
-                Params.Output[i].Description = $"Component TypeID {name}";
+                Params.Output[i].Description = $"Component TypeId {name}";
                 Params.Output[i].MutableNickName = false;
                 if (type.IsAssignableFrom(typeof(IEnumerable)))
                 {
