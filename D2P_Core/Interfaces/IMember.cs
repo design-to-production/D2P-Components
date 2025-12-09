@@ -4,19 +4,22 @@ using System.Collections.Generic;
 
 namespace D2P_Core.Interfaces
 {
-    public interface IMember<T> : IDocMember where T : GeometryBase
+    public interface IMember : IDocMember
     {
         IComponentBase Component { get; }
+        IMember Parent { get; set; }
         IEnumerable<IMember> Children { get; }
 
         ILayerInfo LayerInfo { get; }
-        IEnumerable<T> Geometry { get; }
-        T FirstGeometry { get; }
+        IEnumerable<GeometryBase> Geometry { get; }
         ObjectAttributes Attributes { get; set; }
 
-        void SetGeometry(T geometry);
-        void SetGeometry(IEnumerable<T> geometry);
+        void SetGeometry(GeometryBase geometry);
+        void SetGeometry(IEnumerable<GeometryBase> geometry);
+    }
+    public interface IMember<T> : IMember where T : GeometryBase
+    {
+        new IEnumerable<T> Geometry { get; }
     }
 
-    public interface IMember : IMember<GeometryBase> { }
 }

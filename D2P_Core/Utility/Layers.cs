@@ -94,7 +94,8 @@ namespace D2P_Core.Utility
         public static Layer CreateLayer(IMember member)
         {
             var component = member.Component;
-            var layerSegments = new Queue<string>(member.LayerInfo.RawLayerName
+            var layerName = ComposeMemberLayerName(member);
+            var layerSegments = new Queue<string>(layerName
                 .Split(component.Settings.LayerNameDelimiter)
                 .Where(s => !string.IsNullOrEmpty(s))
             );
@@ -105,6 +106,25 @@ namespace D2P_Core.Utility
 
             return TraverseLayers(component, ref layerSegments, componentLayer.Id, member.LayerInfo);
         }
+
+        private static string ComposeMemberLayerName(IMember member)
+        {
+            if (member == null)
+                return string.Empty;
+
+            var layerName = member.LayerInfo?.RawLayerName ?? string.Empty;
+            if (member.Parent == null)
+                return layerName;
+
+            var parentLayerName = ComposeMemberLayerName(member.Parent);
+            var layerDelimiter = member.Component.Settings.LayerNameDelimiter;
+
+            if (string.IsNullOrEmpty(parentLayerName))
+                return layerName;
+
+            return $"{parentLayerName}{layerDelimiter}{layerDelimiter}{layerName}";
+        }
+
 
         public static int[] CreateStagingLayers(GrasshopperComponent component)
         {
@@ -316,8 +336,7 @@ namespace D2P_Core.Utility
                     ParentLayerId = parentLayerId,
                     Color = layerInfo.LayerColor
                 };
-                var layerIdx = doc.Layers.Add(docLayer);
-                docLayer.Index = layerIdx;
+                docLayer.Index = doc.Layers.Add(docLayer);
             }
             if (docLayer == null || !layerQueue.Any())
                 return docLayer;

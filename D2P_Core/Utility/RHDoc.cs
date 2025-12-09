@@ -77,7 +77,6 @@ namespace D2P_Core.Utility
             return component.ID;
         }
 
-
         internal static void UpdateComponentTypeLayerColors(IComponentBase component, RhinoDoc doc)
         {
             var rhLayer = Layers.GetComponentTypeRootLayer(component);

@@ -10,9 +10,6 @@ namespace D2P_Core.Components.Member
     {
         public Q EnumValue { get => GetEnum(); set => SetEnum(value); }
 
-        public MemberEnum(IComponentBase component, ILayerInfo layerInfo)
-            : base(component, layerInfo) { }
-
         public MemberEnum(IComponentBase component, string layerName, Color layerColor)
             : base(component, layerName, layerColor) { }
 

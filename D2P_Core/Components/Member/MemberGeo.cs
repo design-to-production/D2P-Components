@@ -4,14 +4,14 @@ using Rhino.DocObjects;
 using Rhino.Geometry;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Dynamic;
 using System.Linq;
 
 namespace D2P_Core.Components.Member
 {
-    public class MemberGeo<T> : DynamicObject, IMember<T> where T : GeometryBase
+    public class MemberGeo<T> : IMember<T> where T : GeometryBase
     {
-        private readonly Dictionary<string, object> _members = new Dictionary<string, object>();
+        private readonly Dictionary<string, IMember> _members = new Dictionary<string, IMember>();
+
         private readonly IComponentBase _component;
         private readonly ILayerInfo _layerInfo;
 
@@ -19,53 +19,62 @@ namespace D2P_Core.Components.Member
         protected ObjectAttributes _attributes;
 
         public IComponentBase Component { get => _component; }
-        public IEnumerable<IMember> Children { get => _members.Values.Select(obj => (IMember)obj); }
+        public IMember Parent { get; set; }
+        public IEnumerable<IMember> Children { get => _members.Values; }
 
         public ILayerInfo LayerInfo { get => _layerInfo; }
         public IEnumerable<T> Geometry { get => GetGeometry(); }
+        IEnumerable<GeometryBase> IMember.Geometry => Geometry;
+
         public T FirstGeometry => Geometry.FirstOrDefault();
         public ObjectAttributes Attributes { get => _attributes; set => _attributes = value; }
 
 
+        public MemberGeo(IComponentBase component, string layerName, Color layerColor)
+            : this(component, new LayerInfo(layerName, layerColor)) { }
         public MemberGeo(IComponentBase component, ILayerInfo layerInfo)
         {
             _component = component;
             _layerInfo = layerInfo;
-        }
-        public MemberGeo(IComponentBase component, string layerName, Color layerColor)
-        {
-            _component = component;
-            _layerInfo = new LayerInfo(layerName, layerColor);
+            _attributes = new ObjectAttributes();
         }
 
-        public override bool TrySetMember(SetMemberBinder binder, object value)
-        {
-            _members[binder.Name] = value;
-            return true;
-        }
+        //public override bool TrySetMember(SetMemberBinder binder, object value)
+        //{
+        //    _members[binder.Name] = value;
+        //    return true;
+        //}
 
-        public override bool TryGetMember(GetMemberBinder binder, out object result)
-        {
-            return _members.TryGetValue(binder.Name, out result);
-        }
+        //public override bool TryGetMember(GetMemberBinder binder, out object result)
+        //{
+        //    return _members.TryGetValue(binder.Name, out result);
+        //}
 
-        public object this[string name]
+        public IMember this[string name]
         {
-            get => _members.TryGetValue(name, out var v) ? v : null;
-            set => _members[name] = value;
+            get
+            {
+                _members.TryGetValue(name, out var v);
+                return v ?? null;
+            }
+            set
+            {
+                if (value == null) return;
+                value.Parent = this;
+                _members[name] = value;
+            }
         }
-
 
         private IEnumerable<T> GetGeometry()
         {
             if (_geometry != null) return _geometry;
-            var layer = Layers.FindLayer((IMember)this);
+            var layer = Layers.FindLayer(this);
             return Objects.ObjectsByLayer<T>(Component, layer.Index);
         }
         public void SetGeometry(T geometry) => SetGeometry(new[] { geometry });
         public void SetGeometry(IEnumerable<T> geometry) => _geometry = geometry;
-        public void SetGeometry(GeometryBase geometry) => SetGeometry(geometry);
-        public void SetGeometry(IEnumerable<GeometryBase> geometry) => SetGeometry(geometry);
+        void IMember.SetGeometry(GeometryBase geometry) => SetGeometry(geometry as T);
+        void IMember.SetGeometry(IEnumerable<GeometryBase> geometry) => SetGeometry(geometry as IEnumerable<T>);
 
         public bool Exists()
         {
@@ -73,21 +82,26 @@ namespace D2P_Core.Components.Member
         }
         public void Commit()
         {
-            if (!Component.Exists())
-                return;
+            UpdateDoc();
+            foreach (var childMember in Children)
+            {
+                childMember.Commit();
+            }
+        }
+        private void UpdateDoc()
+        {
+            if (!Component.Exists()) return;
 
-            var attributes = Attributes;
-            attributes.RemoveFromAllGroups();
-            attributes.AddToGroup(Component.GroupIndex);
+            Attributes.RemoveFromAllGroups();
+            Attributes.AddToGroup(Component.GroupIndex);
+            var memberLayer = Layers.CreateLayer(this);
+            Attributes.LayerIndex = memberLayer.Index;
 
-            var memberLayer = Layers.CreateLayer((IMember)this);
-            attributes.LayerIndex = memberLayer.Index;
-
-            Objects.DeleteObjects((IMember)this);
-            var doc = Component.ActiveDoc;
+            if (_geometry == null) return;
+            Objects.DeleteObjects(this);
             foreach (var geometry in Geometry)
             {
-                doc.Objects.Add(geometry, attributes);
+                Component.ActiveDoc.Objects.Add(geometry, Attributes);
             }
         }
         public void Delete()
