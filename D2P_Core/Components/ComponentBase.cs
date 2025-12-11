@@ -27,14 +27,14 @@ namespace D2P_Core.Components
         public abstract Color LayerColor { get; }
         public abstract double LabelSize { get; }
 
+        protected abstract void Init();
+
         public ComponentBase() { Init(); }
         public ComponentBase(string name, Plane plane) : this()
         {
             ShortName = name;
             Plane = plane;
         }
-
-        protected abstract void Init();
 
         //public abstract IComponentBase Parent { get; }
         //public abstract IEnumerable<IComponentBase> Children { get; }
@@ -51,16 +51,11 @@ namespace D2P_Core.Components
         public virtual void Delete() => Objects.DeleteComponent(this);
         public virtual void Commit()
         {
-            if (!Exists())
-                Create();
-
+            if (!Exists()) Create();
             foreach (var member in Members)
-            {
                 member.Commit();
-            }
         }
-
-        private void Create()
+        void Create()
         {
             if (!Utility.Group.GetGroupIndex(this, out int grpIdx))
                 grpIdx = Utility.Group.AddGroup(ActiveDoc);

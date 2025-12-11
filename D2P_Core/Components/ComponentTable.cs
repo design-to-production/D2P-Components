@@ -16,8 +16,10 @@ namespace D2P_Core.Components
             RegisterComponent<GrasshopperComponent>("");
         }
 
-        public static void RegisterComponent<T>(string typeID) where T : IComponentBase, new()
+        public static void RegisterComponent<T>(string typeID) where T : class, IComponentBase
         {
+            if (Table.ContainsKey(typeID))
+                return;
             Table[typeID] = typeof(T);
         }
 
@@ -28,10 +30,7 @@ namespace D2P_Core.Components
         public static bool TryGetTypeId(Type type, out string typeId)
         {
             if (!Table.ContainsValue(type))
-            {
-                typeId = null;
-                return false;
-            }
+                throw new Exception($"No TypeId set for {type.Name}");
             typeId = Table.First(e => e.Value == type).Key;
             return true;
         }

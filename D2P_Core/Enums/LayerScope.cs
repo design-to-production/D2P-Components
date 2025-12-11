@@ -3,6 +3,6 @@
     public enum LayerScope
     {
         CurrentOnly,
-        IncludeChildren
+        IncludeChildren,
     }
 }

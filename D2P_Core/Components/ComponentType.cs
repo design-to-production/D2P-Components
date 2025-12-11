@@ -15,7 +15,6 @@ namespace D2P_Core.Components
         public double LabelSize { get; }
         public Color LayerColor { get; }
 
-
         public ComponentType(string typeID, string typeName, Settings settings = null, double? labelSize = null, Color? layerColor = null)
         {
             TypeId = typeID;
