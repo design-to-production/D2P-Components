@@ -1,5 +1,4 @@
-﻿using Rhino;
-using Rhino.Geometry;
+﻿using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 
@@ -7,8 +6,6 @@ namespace D2P_Core.Interfaces
 {
     public interface IComponentBase : IComponentType, IDocMember
     {
-        RhinoDoc ActiveDoc { get; }
-
         Guid ID { get; set; }
         int GroupIndex { get; }
         string Name { get; }

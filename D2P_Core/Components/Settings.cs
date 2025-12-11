@@ -1,46 +1,29 @@
 ﻿using Rhino;
 using Rhino.DocObjects;
-using System.Collections.Generic;
 using System.Drawing;
 
 namespace D2P_Core.Components
 {
-    public class Settings
+    public static class Settings
     {
-        public static Settings Default => new Settings();
+        // Docs
+        public static RhinoDoc ActiveDoc { get; set; } = RhinoDoc.ActiveDoc;
 
-        // Layerstructure        
-        public string RootLayerName { get; set; } = "D2P";
-        public Color RootLayerColor { get; set; } = Color.FromArgb(220, 75, 58);
-
+        // Layer structure        
+        public static string RootLayerName { get; set; } = "D2P";
+        public static Color RootLayerColor { get; set; } = Color.FromArgb(220, 75, 58);
 
         // Style        
-        public string DimensionStyleName { get; set; } = RhinoDoc.ActiveDoc.DimStyles.Current.Name;
-        public DimensionStyle DimensionStyle => RhinoDoc.ActiveDoc.DimStyles.FindName(DimensionStyleName) ?? RhinoDoc.ActiveDoc.DimStyles.Current;
+        public static string DimensionStyleName { get; set; } = ActiveDoc.DimStyles.Current.Name;
+        public static DimensionStyle DimensionStyle => ActiveDoc.DimStyles.FindName(DimensionStyleName) ?? ActiveDoc.DimStyles.Current;
 
         // Delimiter
-        public char TypeDelimiter { get; set; } = ':';
-        public char LayerDelimiter { get; set; } = '_';
-        public char NameDelimiter { get; set; } = '.';
-        public char LayerDescriptionDelimiter { get; set; } = '-';
-        public char LayerNameDelimiter { get; set; } = ':';
-        public char CountDelimiter { get; set; } = '#';
-        public char JointDelimiter { get; set; } = '+';
-
-        public Settings ShallowCopy()
-        {
-            return (Settings)MemberwiseClone();
-        }
-
-        public Dictionary<string, string> ToDictionary()
-        {
-            var settings = new Dictionary<string, string>();
-            foreach (var propertyInfo in typeof(Settings).GetProperties())
-            {
-                var value = propertyInfo?.GetValue(this);
-                settings.Add(propertyInfo?.Name, value?.ToString());
-            }
-            return settings;
-        }
+        public static char TypeDelimiter { get; set; } = ':';
+        public static char LayerDelimiter { get; set; } = '_';
+        public static char NameDelimiter { get; set; } = '.';
+        public static char LayerDescriptionDelimiter { get; set; } = '-';
+        public static char LayerNameDelimiter { get; set; } = ':';
+        public static char CountDelimiter { get; set; } = '#';
+        public static char JointDelimiter { get; set; } = 'x';
     }
 }

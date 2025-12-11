@@ -45,7 +45,6 @@ namespace D2P_Core.Components.Grasshopper
         public string TypeId => _componentType.TypeId;
         public string TypeName => _componentType.TypeName;
         public Color LayerColor => _componentType.LayerColor;
-        public Settings Settings => _componentType.Settings;
 
         // Geometry
         public double LabelSize => Label.TextHeight;
@@ -78,7 +77,7 @@ namespace D2P_Core.Components.Grasshopper
             get => _stagingLayerCollection;
             protected set => _stagingLayerCollection = value;
         }
-        public IEnumerable<RhinoObject> RHObjects => Objects.ObjectsByGroup(GroupIndex, ActiveDoc);
+        public IEnumerable<RhinoObject> RHObjects => Objects.ObjectsByGroup(GroupIndex);
         public IEnumerable<GeometryBase> Geometry => GeometryCollection.Values;
         public IEnumerable<ObjectAttributes> Attributes => AttributeCollection.Values;
 

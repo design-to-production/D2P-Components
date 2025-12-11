@@ -36,18 +36,10 @@ namespace D2P_Core.Utility
             return headlessDoc;
         }
 
-        internal static Guid ReplaceInRhinoDoc(IComponentBase component)
+        internal static Guid AddToRhinoDoc(GrasshopperComponent component, RhinoDoc doc, bool replaceExisting = true)
         {
-            var label = TextEntity.Create(component.Name, component.Plane, component.Settings.DimensionStyle, false, 0, 0);
-            label.TextHeight = component.LabelSize;
-            return component.ActiveDoc.Objects.Add(label);
-        }
-
-        internal static Guid AddToRhinoDoc(GrasshopperComponent component, RhinoDoc doc = null, bool replaceExisting = true)
-        {
-            doc = doc ?? RhinoDoc.ActiveDoc;
             var grpExists = doc.Groups.FindIndex(component.GroupIndex) != null;
-            var grpIdx = component.IsVirtual || !grpExists || !replaceExisting ? Group.AddGroup(doc) : component.GroupIndex;
+            var grpIdx = component.IsVirtual || !grpExists || !replaceExisting ? Group.AddGroup() : component.GroupIndex;
             Layers.CreateStagingLayers(component);
 
             if (replaceExisting)
@@ -91,7 +83,7 @@ namespace D2P_Core.Utility
             foreach (var layerInfo in layerInfos)
             {
                 var rhLayer = Layers.FindLayer(component, layerInfo.RawLayerName, out int _);
-                if (rhLayer == null || rhLayer.Color == layerInfo.LayerColor || Layers.IsComponentTypeTopLayer(rhLayer, component.Settings))
+                if (rhLayer == null || rhLayer.Color == layerInfo.LayerColor || Layers.IsComponentTypeRootLayer(rhLayer))
                     continue;
                 rhLayer.Color = layerInfo.LayerColor;
             }

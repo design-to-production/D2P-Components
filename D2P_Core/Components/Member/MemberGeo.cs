@@ -101,7 +101,7 @@ namespace D2P_Core.Components.Member
             Objects.DeleteObjects(this);
             foreach (var geometry in Geometry)
             {
-                Component.ActiveDoc.Objects.Add(geometry, Attributes);
+                Settings.ActiveDoc.Objects.Add(geometry, Attributes);
             }
         }
         public void Delete()

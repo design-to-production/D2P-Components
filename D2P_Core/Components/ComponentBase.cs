@@ -1,6 +1,5 @@
 ﻿using D2P_Core.Interfaces;
 using D2P_Core.Utility;
-using Rhino;
 using Rhino.DocObjects;
 using Rhino.Geometry;
 using System;
@@ -12,10 +11,6 @@ namespace D2P_Core.Components
 {
     public abstract class ComponentBase : IComponentBase
     {
-        static RhinoDoc _doc = RhinoDoc.ActiveDoc;
-        public RhinoDoc ActiveDoc { get => _doc; protected set => _doc = value; }
-        public Settings Settings { get; } = Settings.Default;
-
         public Guid ID { get; set; }
         public int GroupIndex { get; protected set; }
         public string ShortName { get; protected set; }
@@ -47,7 +42,7 @@ namespace D2P_Core.Components
                 .OfType<IMember>();
         }
 
-        public virtual bool Exists() => ActiveDoc.Objects.FindId(ID) != null;
+        public virtual bool Exists() => Settings.ActiveDoc.Objects.FindId(ID) != null;
         public virtual void Delete() => Objects.DeleteComponent(this);
         public virtual void Commit()
         {
@@ -58,7 +53,7 @@ namespace D2P_Core.Components
         void Create()
         {
             if (!Utility.Group.GetGroupIndex(this, out int grpIdx))
-                grpIdx = Utility.Group.AddGroup(ActiveDoc);
+                grpIdx = Utility.Group.AddGroup();
             GroupIndex = grpIdx;
 
             var componentLayer = Layers.GetComponentTypeRootLayer(this);
@@ -71,7 +66,7 @@ namespace D2P_Core.Components
             attributes.RemoveFromAllGroups();
             attributes.AddToGroup(GroupIndex);
 
-            ID = ActiveDoc.Objects.AddText(label, attributes);
+            ID = Settings.ActiveDoc.Objects.AddText(label, attributes);
         }
     }
 }

@@ -15,23 +15,16 @@ namespace D2P_Core.Components
             RawLayerName = rawLayerName;
             LayerColor = layerColor;
         }
-
     }
 
     public class LayerInfoComparer : IComparer<ILayerInfo>
     {
-        readonly char _layerNameDelimiter;
-        public LayerInfoComparer(IComponentBase component)
-        {
-            _layerNameDelimiter = component.Settings.LayerNameDelimiter;
-        }
-
         public int Compare(ILayerInfo x, ILayerInfo y)
         {
             if (x == y) return 0;
             if (y == null) return 1;
-            var n1 = x.RawLayerName.Split(_layerNameDelimiter).Length;
-            var n2 = y.RawLayerName.Split(_layerNameDelimiter).Length;
+            var n1 = x.RawLayerName.Split(Settings.LayerNameDelimiter).Length;
+            var n2 = y.RawLayerName.Split(Settings.LayerNameDelimiter).Length;
             return n1 > n2 ? 1 : -1;
         }
     }
