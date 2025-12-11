@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 
 namespace D2P_Core.Components
 {
@@ -36,7 +37,7 @@ namespace D2P_Core.Components
         public IEnumerable<IMember> Members
         {
             get => GetType()
-                .GetProperties()
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
                 .Where(p => typeof(IMember).IsAssignableFrom(p.PropertyType))
                 .Select(p => p.GetValue(this))
                 .OfType<IMember>();

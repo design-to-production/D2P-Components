@@ -5,6 +5,7 @@ using Rhino.Geometry;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 
 namespace D2P_Core.Components.Member
 {
@@ -39,17 +40,6 @@ namespace D2P_Core.Components.Member
             _attributes = new ObjectAttributes();
         }
 
-        //public override bool TrySetMember(SetMemberBinder binder, object value)
-        //{
-        //    _members[binder.Name] = value;
-        //    return true;
-        //}
-
-        //public override bool TryGetMember(GetMemberBinder binder, out object result)
-        //{
-        //    return _members.TryGetValue(binder.Name, out result);
-        //}
-
         public IMember this[string name]
         {
             get
@@ -64,6 +54,25 @@ namespace D2P_Core.Components.Member
                 _members[name] = value;
             }
         }
+
+        public IEnumerable<IMember> Members
+        {
+            get => GetType()
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .Where(p =>
+                    p.CanRead &&
+                    p.GetIndexParameters().Length == 0 &&
+                    typeof(IMember).IsAssignableFrom(p.PropertyType) &&
+                    p.Name != nameof(Parent) &&
+                    p.Name != nameof(Children))
+                .Select(p => p.GetValue(this))
+                .OfType<IMember>().Select(m =>
+                {
+                    m.Parent = this;
+                    return m;
+                });
+        }
+
 
         private IEnumerable<T> GetGeometry()
         {
@@ -83,7 +92,8 @@ namespace D2P_Core.Components.Member
         public void Commit()
         {
             UpdateDoc();
-            foreach (var childMember in Children)
+            var members = Children.Concat(Members);
+            foreach (var childMember in members)
             {
                 childMember.Commit();
             }
