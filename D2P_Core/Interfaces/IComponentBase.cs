@@ -4,17 +4,18 @@ using System.Collections.Generic;
 
 namespace D2P_Core.Interfaces
 {
-    public interface IComponentBase : IComponentType, IDocMember
+    public interface IComponentBase : IComponentType, IDocObject
     {
+        IMember ParentMember { get; set; }
+        IEnumerable<IMember> Members { get; }
+
         Guid ID { get; set; }
         int GroupIndex { get; }
         string Name { get; }
         string ShortName { get; }
         Plane Plane { get; }
 
-        //IComponentBase Parent { get; }
-        //IEnumerable<IComponentBase> Children { get; }
-        IEnumerable<IMember> Members { get; }
-
+        //IComponentBase ParentMember { get; }
+        //IEnumerable<IComponentBase> ChildMembers { get; }
     }
 }

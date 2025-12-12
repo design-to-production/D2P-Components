@@ -13,7 +13,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve
         /// Initializes a new instance of the Component_RetrieveParentComponent class.
         /// </summary>
         public GHRetrieveChildren()
-          : base("RetrieveChildComponents", "Children",
+          : base("RetrieveChildComponents", "ChildMembers",
               "Retrieves child components of a given input component. E.g. If the parent-instance is named “aa” all child-instances are named “aa.01”, “aa.02”, “aa.03”, etc.",
               "D2P", "02 Retrieve")
         { }
@@ -57,7 +57,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve
             var children = Instantiation.GetChildren(component, filterTypes);
             if (children == null || !children.Any())
             {
-                var msg = $"Children of component {component.Name} not found !";
+                var msg = $"ChildMembers of component {component.Name} not found !";
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
                 return;
             }

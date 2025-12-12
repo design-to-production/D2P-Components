@@ -26,7 +26,7 @@ namespace D2P_GrasshopperTools.GH.Create
             pManager.AddGenericParameter("Type", "T", "The type definition for this component instance. This will define where the component will be baked into the layer-tree of the Rhino document", GH_ParamAccess.item);
             pManager.AddTextParameter("Name", "N", "The name of the component instance. This will define the name of all objects within this component after baking it to the Rhino document", GH_ParamAccess.item);
             pManager.AddPlaneParameter("Plane", "P", "The plane used to create the text-label for the component after baking to the Rhino Document", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Parent", "C", "The parent component or name used to create the inherent name of this component", GH_ParamAccess.item);
+            pManager.AddGenericParameter("ParentMember", "C", "The parent component or name used to create the inherent name of this component", GH_ParamAccess.item);
             pManager[3].Optional = true;
         }
 

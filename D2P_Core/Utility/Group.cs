@@ -9,7 +9,10 @@ namespace D2P_Core.Utility
     internal static class Group
     {
         // Add Group
-        internal static int AddGroup() => Settings.ActiveDoc.Groups.Add();
+        internal static int AddGroup()
+        {
+            return Settings.ActiveDoc.Groups.Add();
+        }
 
         // Add Objects To Group
         internal static int AddObjectsToGroup(IEnumerable<Guid> objIDs, int grpIdx)

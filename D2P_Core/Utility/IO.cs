@@ -1,5 +1,5 @@
 ﻿using D2P_Core.Components;
-using D2P_Core.Components.Grasshopper;
+using D2P_Core.Interfaces;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,45 +8,25 @@ namespace D2P_Core.Utility
 {
     public static class IO
     {
-        public static void Export(GrasshopperComponent component, string directoryPath)
-        {
-            component.ActiveDoc.Objects.UnselectAll();
-            foreach (var rhObj in component.RHObjects)
-            {
-                rhObj.Select(true, false, true, true, true, true);
-            }
-            var fileName = Path.Combine(directoryPath, component.ShortName + ".3dm");
-            component.ActiveDoc.ExportSelected(fileName);
-            component.ActiveDoc.Objects.UnselectAll();
-        }
-
-        // TODO: Refactoring
-        public static void ExportWithHeadless(GrasshopperComponent component, string directoryPath)
-        {
-            var headlessDoc = RHDoc.CreateHeadless(Settings.ActiveDoc);
-
-            //RHDoc.AddToRhinoDoc(component);
-            RHDoc.Purge(headlessDoc);
-            var fileName = Path.Combine(directoryPath, component.ShortName + ".3dm");
-            headlessDoc.Export(fileName);
-        }
-        public static void ExportWithHeadless(IEnumerable<GrasshopperComponent> components, string directory, string fileName)
+        public static void ExportWithHeadless(IEnumerable<IComponentBase> components, string directory, string fileName)
         {
             if (!components.Any())
                 return;
 
-            var activeDoc = components.FirstOrDefault()?.ActiveDoc;
-            var headlessDoc = RHDoc.CreateHeadless(activeDoc);
+            var currentDoc = Settings.ActiveDoc;
+            Settings.ActiveDoc = RHDoc.CreateHeadless(currentDoc);
             foreach (var component in components)
             {
-                RHDoc.AddToRhinoDoc(component, headlessDoc);
+                component.Commit();
             }
-            RHDoc.Purge(headlessDoc);
+
             var filePath = Path.Combine(directory, fileName);
             if (!Path.HasExtension(filePath))
                 filePath = Path.ChangeExtension(filePath, "3dm");
-            headlessDoc.Export(filePath);
-        }
 
+            RHDoc.Purge(Settings.ActiveDoc);
+            Settings.ActiveDoc.Export(filePath);
+            Settings.ActiveDoc = currentDoc;
+        }
     }
 }

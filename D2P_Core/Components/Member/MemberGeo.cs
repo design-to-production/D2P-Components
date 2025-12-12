@@ -20,8 +20,15 @@ namespace D2P_Core.Components.Member
         protected ObjectAttributes _attributes;
 
         public IComponentBase Component { get => _component; }
-        public IMember Parent { get; set; }
-        public IEnumerable<IMember> Children { get => _members.Values; }
+
+        public IMember ParentMember { get; set; }
+        public IEnumerable<IMember> Members
+        {
+            get
+            {
+                return _members.Values.Concat(FindMembers());
+            }
+        }
 
         public ILayerInfo LayerInfo { get => _layerInfo; }
         public IEnumerable<T> Geometry { get => GetGeometry(); }
@@ -50,29 +57,29 @@ namespace D2P_Core.Components.Member
             set
             {
                 if (value == null) return;
-                value.Parent = this;
+                value.ParentMember = this;
                 _members[name] = value;
             }
         }
 
-        public IEnumerable<IMember> Members
+        private IEnumerable<IMember> FindMembers()
         {
-            get => GetType()
+            return GetType()
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
                 .Where(p =>
                     p.CanRead &&
                     p.GetIndexParameters().Length == 0 &&
                     typeof(IMember).IsAssignableFrom(p.PropertyType) &&
-                    p.Name != nameof(Parent) &&
-                    p.Name != nameof(Children))
+                    p.Name != nameof(ParentMember) &&
+                    p.Name != nameof(Members))
                 .Select(p => p.GetValue(this))
-                .OfType<IMember>().Select(m =>
+                .OfType<IMember>()
+                .Select(m =>
                 {
-                    m.Parent = this;
+                    m.ParentMember = this;
                     return m;
                 });
         }
-
 
         private IEnumerable<T> GetGeometry()
         {
@@ -92,8 +99,7 @@ namespace D2P_Core.Components.Member
         public void Commit()
         {
             UpdateDoc();
-            var members = Children.Concat(Members);
-            foreach (var childMember in members)
+            foreach (var childMember in Members)
             {
                 childMember.Commit();
             }

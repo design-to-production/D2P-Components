@@ -1,6 +1,5 @@
 ﻿using D2P_Core.Components;
 using D2P_Core.Interfaces;
-using Rhino.DocObjects;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -21,28 +20,18 @@ namespace D2P_Core.Utility
             parentNameSegments.RemoveAt(parentNameSegments.Count - 1);
             var parentName = string.Join(Settings.NameDelimiter.ToString(), parentNameSegments);
             var namingCondition = $"*{Settings.TypeDelimiter}{parentName}";
-            var objEnumSettings = new ObjectEnumeratorSettings()
-            {
-                HiddenObjects = true,
-                LockedObjects = true,
-                NameFilter = namingCondition,
-                ObjectTypeFilter = ObjectType.Annotation
-            };
+            var objEnumSettings = Constants.ObjectEnumeratorSettings(namingCondition);
             var rhObjects = Settings.ActiveDoc.Objects.GetObjectList(objEnumSettings);
             var parents = Instantiation.InstancesFromObjects(rhObjects);
             parentsFound = parents.Count();
             return parents.FirstOrDefault();
         }
-        public static IEnumerable<IComponentBase> GetChildren(IComponentBase component, IEnumerable<string> filterTypes = null)
+
+        // Get Child Components
+        public static IEnumerable<IComponentBase> GetChildComponents(IComponentBase component, IEnumerable<string> filterTypes = null)
         {
             var namingCondition = $"*{Settings.TypeDelimiter}{component.ShortName}{Settings.NameDelimiter}*";
-            var objEnumSettings = new ObjectEnumeratorSettings()
-            {
-                HiddenObjects = true,
-                LockedObjects = true,
-                NameFilter = namingCondition,
-                ObjectTypeFilter = ObjectType.Annotation
-            };
+            var objEnumSettings = Constants.ObjectEnumeratorSettings(namingCondition);
             var rhObjects = Settings.ActiveDoc.Objects.GetObjectList(objEnumSettings)
                 .Where(rhObj => !rhObj.Name.Contains(Settings.JointDelimiter));
             if (filterTypes != null && filterTypes.Any())
@@ -50,10 +39,12 @@ namespace D2P_Core.Utility
             var children = Instantiation.InstancesFromObjects(rhObjects);
             return children;
         }
-        public static IEnumerable<IComponentBase> GetJoints(IComponentBase component, IEnumerable<string> filterTypes = null)
+
+        // Get Joint Components
+        public static IEnumerable<IComponentBase> GetJointComponents(IComponentBase component, IEnumerable<string> filterTypes = null)
         {
             var namingCondition = $"*{component.ShortName}*";
-            var objEnumSettings = new ObjectEnumeratorSettings() { HiddenObjects = true, LockedObjects = true, NameFilter = namingCondition, ObjectTypeFilter = ObjectType.Annotation };
+            var objEnumSettings = Constants.ObjectEnumeratorSettings(namingCondition);
             var escapedString = $"(.*{Settings.TypeDelimiter}{component.ShortName}{Settings.JointDelimiter}.*)" +
                 $"|(.*{Settings.JointDelimiter}{component.ShortName}{Settings.JointDelimiter}.*)" +
                 $"|(.*{Settings.JointDelimiter}{component.ShortName}$)";
@@ -66,13 +57,15 @@ namespace D2P_Core.Utility
             var joints = Instantiation.InstancesFromObjects(rhObjects);
             return joints;
         }
+
+        // Get Connected Components
         public static IEnumerable<IComponentBase> GetConnectedComponents(IComponentBase component, IEnumerable<string> typeFilter)
         {
             IEnumerable<IComponentBase> joints;
             if (component.ShortName.Contains(Settings.JointDelimiter))
                 joints = component.ShortName.Split(Settings.JointDelimiter)
                     .SelectMany(x => Instantiation.InstancesByName($"*{Settings.TypeDelimiter}{x}"));
-            else joints = GetJoints(component);
+            else joints = GetJointComponents(component);
             var connectedComponentNames = joints
                 .SelectMany(x => x.ShortName.Split(Settings.JointDelimiter)
                 .Where(y => y != component.ShortName))
@@ -84,6 +77,7 @@ namespace D2P_Core.Utility
             return connectedComponents;
         }
 
+        // Get Component Types
         public static IEnumerable<IComponentType> GetComponentTypes()
         {
             var componentTypeLayers = Layers.FindComponentTypeRootLayers();

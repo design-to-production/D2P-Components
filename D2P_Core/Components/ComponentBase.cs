@@ -23,6 +23,19 @@ namespace D2P_Core.Components
         public abstract Color LayerColor { get; }
         public abstract double LabelSize { get; }
 
+        public IMember ParentMember { get; set; }
+        public IEnumerable<IMember> Members
+        {
+            get
+            {
+                return GetType()
+                    .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                    .Where(p => typeof(IMember).IsAssignableFrom(p.PropertyType))
+                    .Select(p => p.GetValue(this))
+                    .OfType<IMember>();
+            }
+        }
+
         protected abstract void Init();
 
         public ComponentBase() { Init(); }
@@ -32,16 +45,8 @@ namespace D2P_Core.Components
             Plane = plane;
         }
 
-        //public abstract IComponentBase Parent { get; }
-        //public abstract IEnumerable<IComponentBase> Children { get; }
-        public IEnumerable<IMember> Members
-        {
-            get => GetType()
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                .Where(p => typeof(IMember).IsAssignableFrom(p.PropertyType))
-                .Select(p => p.GetValue(this))
-                .OfType<IMember>();
-        }
+        //public abstract IComponentBase ParentMember { get; }
+        //public abstract IEnumerable<IComponentBase> ChildMembers { get; }
 
         public virtual bool Exists() => Settings.ActiveDoc.Objects.FindId(ID) != null;
         public virtual void Delete() => Objects.DeleteComponent(this);
@@ -57,7 +62,7 @@ namespace D2P_Core.Components
                 grpIdx = Utility.Group.AddGroup();
             GroupIndex = grpIdx;
 
-            var componentLayer = Layers.GetComponentTypeRootLayer(this);
+            var componentLayer = Layers.FindComponentTypeRootLayer(this);
             if (componentLayer == null || componentLayer.Index == 0)
                 componentLayer = Layers.CreateComponentTypeLayer(this);
 

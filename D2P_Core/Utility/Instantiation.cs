@@ -13,17 +13,11 @@ namespace D2P_Core.Utility
         // Instance By Name
         public static IEnumerable<IComponentBase> InstancesByName(string name)
         {
-            var objEnumSettings = new ObjectEnumeratorSettings()
-            {
-                HiddenObjects = true,
-                LockedObjects = true,
-                NameFilter = name,
-                ObjectTypeFilter = ObjectType.Annotation
-            };
+            var objEnumSettings = Constants.ObjectEnumeratorSettings(name);
             var rhObjects = Settings.ActiveDoc.Objects.GetObjectList(objEnumSettings).Where(rhObj => rhObj.Attributes.GroupCount > 0);
             return InstancesFromObjects(rhObjects);
         }
-        public static IEnumerable<IComponentBase> InstancesByName(IComponent component)
+        public static IEnumerable<IComponentBase> InstancesByName(IComponentBase component)
         {
             return InstancesByName(component.Name);
         }
@@ -32,13 +26,7 @@ namespace D2P_Core.Utility
         public static IEnumerable<IComponentBase> InstancesByType(string type, FilterOptions filterOptions)
         {
             var nameFilter = $"{type}{Settings.TypeDelimiter}*";
-            var objEnumSettings = new ObjectEnumeratorSettings()
-            {
-                HiddenObjects = true,
-                LockedObjects = true,
-                NameFilter = nameFilter,
-                ObjectTypeFilter = ObjectType.Annotation
-            };
+            var objEnumSettings = Constants.ObjectEnumeratorSettings(nameFilter);
             var reg = new Regex(filterOptions.RegexPattern);
             var rhObjects = Settings.ActiveDoc.Objects.GetObjectList(objEnumSettings)
                 .Where(rhObj => reg.IsMatch(rhObj.Name) == !filterOptions.ReversePattern);
@@ -60,7 +48,7 @@ namespace D2P_Core.Utility
         {
             var components = new List<T>();
             var grpIndices = objectIds
-                .SelectMany(id => Objects.ObjectGroupIDs(id))
+                .SelectMany(id => Objects.GetObjectGroupIDs(id))
                 .ToHashSet();
 
             foreach (var grpIdx in grpIndices)
@@ -88,14 +76,14 @@ namespace D2P_Core.Utility
                 if (!grpObj.Name.Contains((grpObj as TextObject).TextGeometry.PlainText))
                     continue;
 
-                var typeId = Objects.ComponentTypeIDFromObject(grpObj);
-                if (!ComponentTable.TryGetValue(typeId, out var type))
-                    throw new Exception($"No class with type {typeId} registered !");
+                var componentType = Objects.GetComponentTypeFromObject(grpObj);
+                if (!ComponentTable.TryGetValue(componentType.TypeId, out var type))
+                    throw new Exception($"No class with type {componentType.TypeId} registered !");
 
                 var component = (T)Activator.CreateInstance(type);
                 component.ID = grpObj.Id;
 
-                var compType = Objects.ComponentTypeFromObject(grpObj);
+                //var compType = Objects.GetComponentTypeFromObject(grpObj);
 
                 return component;
             }
@@ -105,7 +93,7 @@ namespace D2P_Core.Utility
         // Instance From Object
         public static IComponentBase InstanceFromObject(RhinoObject obj)
         {
-            var grpIndices = Objects.ObjectGroupIDs(obj.Id);
+            var grpIndices = Objects.GetObjectGroupIDs(obj.Id);
             foreach (var grpIdx in grpIndices)
             {
                 var component = InstanceFromGroup(grpIdx);
@@ -116,7 +104,7 @@ namespace D2P_Core.Utility
         }
         public static T InstanceFromObject<T>(RhinoObject obj) where T : class, IComponentBase
         {
-            var grpIndices = Objects.ObjectGroupIDs(obj.Id);
+            var grpIndices = Objects.GetObjectGroupIDs(obj.Id);
             foreach (var grpIdx in grpIndices)
             {
                 var component = InstanceFromGroup<T>(grpIdx);
@@ -124,11 +112,6 @@ namespace D2P_Core.Utility
                 return component;
             }
             return null;
-        }
-        public static IComponentBase InstanceFromObject(Guid objId)
-        {
-            var rhObj = Settings.ActiveDoc.Objects.FindId(objId);
-            return InstanceFromObject(rhObj);
         }
     }
 }

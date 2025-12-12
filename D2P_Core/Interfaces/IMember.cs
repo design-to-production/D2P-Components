@@ -4,11 +4,12 @@ using System.Collections.Generic;
 
 namespace D2P_Core.Interfaces
 {
-    public interface IMember : IDocMember
+    public interface IMember : IDocObject
     {
         IComponentBase Component { get; }
-        IMember Parent { get; set; }
-        IEnumerable<IMember> Children { get; }
+
+        IMember ParentMember { get; set; }
+        IEnumerable<IMember> Members { get; }
 
         ILayerInfo LayerInfo { get; }
         IEnumerable<GeometryBase> Geometry { get; }
@@ -21,5 +22,4 @@ namespace D2P_Core.Interfaces
     {
         new IEnumerable<T> Geometry { get; }
     }
-
 }

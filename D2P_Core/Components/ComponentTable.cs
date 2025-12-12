@@ -1,5 +1,4 @@
-﻿using D2P_Core.Components.Grasshopper;
-using D2P_Core.Interfaces;
+﻿using D2P_Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +8,9 @@ namespace D2P_Core.Components
     public static class ComponentTable
     {
         static Dictionary<string, Type> Table { get; } = new Dictionary<string, Type>();
-        public static string[] TypeIDs => Table.Keys.ToArray();
 
-        static ComponentTable()
-        {
-            RegisterComponent<GrasshopperComponent>("");
-        }
+        public static IEnumerable<string> Keys => Table.Keys;
+        public static IEnumerable<Type> Values => Table.Values;
 
         public static void RegisterComponent<T>(string typeID) where T : class, IComponentBase
         {
