@@ -13,8 +13,7 @@ namespace D2P_GrasshopperTools.GH.Utility
           : base("DeconstructComponentType", "DeType",
               "Deconstructs a component",
               "D2P", "04 Utility")
-        {
-        }
+        { }
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -33,7 +32,6 @@ namespace D2P_GrasshopperTools.GH.Utility
             pManager.AddTextParameter("TypeName", "N", "Each type has a type-name, a short human readable description of the type", GH_ParamAccess.item);
             pManager.AddNumberParameter("LabelSize", "L", "The label size defines the size of the text-entity representing a component-instance in a Rhino document", GH_ParamAccess.item);
             pManager.AddColourParameter("LayerColor", "C", "The layer-color defines the color of the component-type root-layer", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Settings", "S", "The settings define the basic root-layer for all components being used and a collection of specific delimiters", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -49,7 +47,6 @@ namespace D2P_GrasshopperTools.GH.Utility
             DA.SetData(1, componentType?.TypeName);
             DA.SetData(2, componentType?.LabelSize);
             DA.SetData(3, componentType?.LayerColor);
-            DA.SetData(4, componentType?.Settings);
         }
 
         /// <summary>

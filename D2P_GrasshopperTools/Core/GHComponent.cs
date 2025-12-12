@@ -1,9 +1,10 @@
-﻿using D2P_Core.Interfaces;
+﻿using D2P_Core.Components;
+using D2P_Core.Interfaces;
 using Rhino.Geometry;
 using System.Drawing;
 
 
-namespace D2P_Core.Components.Grasshopper
+namespace D2P_GrasshopperTools.Core
 {
     public class GHComponent : ComponentBase
     {
@@ -12,11 +13,23 @@ namespace D2P_Core.Components.Grasshopper
         public override Color LayerColor { get; }
         public override double LabelSize { get; }
 
-        protected override void Init()
+        protected override void Init() { }
+        public override object Clone()
         {
-            throw new System.NotImplementedException();
+            return new GHComponent(this);
         }
 
+        private GHComponent(IComponentBase component)
+        {
+            TypeId = component.TypeId;
+            TypeName = component.TypeName;
+            LayerColor = component.LayerColor;
+            LabelSize = component.LabelSize;
+
+
+
+            Members = component.Members.Clone();
+        }
         public GHComponent() : base() { }
         public GHComponent(IComponentType type, string name, Plane plane)
             : base(name, plane)

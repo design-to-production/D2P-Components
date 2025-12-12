@@ -45,7 +45,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            IComponent component = null;
+            IComponentBase component = null;
             var layerName = string.Empty;
             var layerScope = -1;
 
@@ -83,7 +83,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve
                 }
             }
 
-            var geometries = Objects.ObjectsByLayer(layerIdx, component, (Objects.LayerScope)layerScope);
+            var geometries = Objects.ObjectsByLayer(component, layerIdx);
             DA.SetDataList(0, geometries);
         }
 

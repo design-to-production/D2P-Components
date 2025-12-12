@@ -1,5 +1,5 @@
 ﻿using D2P_Core.Components;
-using D2P_Core.Components.Grasshopper;
+using D2P_GrasshopperTools.Core;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 using System;
@@ -46,14 +46,14 @@ namespace D2P_GrasshopperTools.GH.Create
         {
             ComponentType componentType = null;
             var plane = Plane.Unset;
-            var components = new List<GrasshopperComponent>();
+            var components = new List<GHComponent>();
 
             DA.GetData(0, ref componentType);
             DA.GetData(1, ref plane);
             DA.GetDataList(2, components);
 
             var componentNames = components.Select(c => c?.ShortName ?? string.Empty);
-            var name = string.Join(componentType.Settings.JointDelimiter.ToString(), componentNames);
+            var name = string.Join(Settings.JointDelimiter.ToString(), componentNames);
             if (!componentNames.Any() || componentNames.Contains(string.Empty))
             {
                 var msg = $"Invalid Joint Name {name} !";
@@ -67,7 +67,7 @@ namespace D2P_GrasshopperTools.GH.Create
                 return;
             }
 
-            var component = new GrasshopperComponent(componentType, name, plane);
+            var component = new GHComponent(componentType, name, plane);
             _components.Add(component);
 
             DA.SetData(0, component);

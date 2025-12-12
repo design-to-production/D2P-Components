@@ -28,5 +28,10 @@ namespace D2P_Core.Utility
             Settings.ActiveDoc.Export(filePath);
             Settings.ActiveDoc = currentDoc;
         }
+
+        public static void ExportWithHeadless(IComponentBase component, string directory)
+        {
+            ExportWithHeadless(new[] { component }, directory, component.Name);
+        }
     }
 }

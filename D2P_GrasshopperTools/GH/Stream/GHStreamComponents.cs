@@ -1,6 +1,4 @@
-﻿using D2P_Core.Components;
-using D2P_Core.Utility;
-using D2P_GrasshopperTools.Utility;
+﻿using D2P_Core.Utility;
 using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
@@ -24,8 +22,6 @@ namespace D2P_GrasshopperTools.GH.Stream
         {
             var guidParam = new Grasshopper.Kernel.Parameters.Param_Guid();
             pManager.AddParameter(guidParam, "ComponentIDs", "IDs", "The GUIDs of Rhino component-instances", GH_ParamAccess.list);
-            pManager.AddGenericParameter("Settings", "S", "The settings define the basic root-layer for all components being streamed and a collection of specific delimiters", GH_ParamAccess.item);
-            pManager[1].Optional = true;
         }
 
         /// <summary>
@@ -43,13 +39,9 @@ namespace D2P_GrasshopperTools.GH.Stream
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             var ids = new List<Guid>();
-            Settings settings = null;
             DA.GetDataList(0, ids);
-            DA.GetData(1, ref settings);
 
-            settings = settings ?? DefaultSettings.Create();
-
-            _components = Instantiation.InstancesFromObjects(ids, settings).ToList();
+            _components = Instantiation.InstancesFromObjects(ids).ToList();
 
             DA.SetDataList(0, _components);
         }

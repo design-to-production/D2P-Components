@@ -45,9 +45,9 @@ namespace D2P_GrasshopperTools.GH.Modify
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
+            IComponentBase component = null;
+            var componentMembers = new List<MemberGeo>();
 
-            IComponent component = null;
-            var componentMembers = new List<Member>();
             DA.GetData(0, ref component);
             DA.GetDataList(1, componentMembers);
 
@@ -58,26 +58,12 @@ namespace D2P_GrasshopperTools.GH.Modify
                 return;
             }
 
-            var componentClone = component.Clone(false);
-            if (!componentClone.IsVirtual)
-                componentClone.ClearStagingLayerCollection();
-
-            foreach (var obj in componentMembers)
+            var componentClone = (IComponentBase)component.Clone();
+            foreach (var member in componentMembers)
             {
-                var rawLayerName = obj.LayerInfo.RawLayerName;
-                if (D2P_Core.Utility.Layers.FindLayerIndexByFullPath(componentClone, rawLayerName) < 0)
-                {
-                    D2P_Core.Utility.Layers.FindLayer(componentClone, rawLayerName, out int layersFound);
-                    if (layersFound > 1)
-                    {
-                        var msg = $"Found {layersFound} layers with name {rawLayerName}, specify full path !";
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
-                        return;
-                    }
-                }
-                if (_replaceExisting)
-                    componentClone.ReplaceMember(obj);
-                else componentClone.AddMember(obj);
+                member.Component = componentClone;
+                var key = Guid.NewGuid().ToString();
+                componentClone[key] = member;
             }
 
             _components.Add(componentClone);

@@ -1,4 +1,4 @@
-﻿using D2P_Core.Components;
+﻿using D2P_Core.Components.Member;
 using D2P_Core.Interfaces;
 using Grasshopper.Kernel;
 using Rhino.DocObjects;
@@ -54,9 +54,9 @@ namespace D2P_GrasshopperTools.GH.Create
             DA.GetDataList(1, geometry);
             DA.GetData(2, ref attributes);
 
-            var componentMembers = new Member(layerInfo, geometry, attributes);
+            var member = new MemberGeo(null, layerInfo, geometry, attributes);
 
-            DA.SetData(0, componentMembers);
+            DA.SetData(0, member);
         }
 
         /// <summary>

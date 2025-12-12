@@ -1,4 +1,5 @@
 ﻿using D2P_Core.Components;
+using D2P_Core.Utility;
 using Grasshopper.Kernel;
 using System;
 using System.Linq;
@@ -22,8 +23,7 @@ namespace D2P_GrasshopperTools.GH.Stream
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("Settings", "S", "The settings define the basic root-layer for all components being used and a collection of specific delimiters", GH_ParamAccess.item);
-            pManager[0].Optional = true;
+
         }
 
         /// <summary>
@@ -31,6 +31,7 @@ namespace D2P_GrasshopperTools.GH.Stream
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
+
         }
 
         /// <summary>
@@ -39,11 +40,7 @@ namespace D2P_GrasshopperTools.GH.Stream
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            Settings settings = null;
-            DA.GetData(0, ref settings);
-            settings = settings ?? new Settings();
-
-            var componentTypes = D2P_Core.Utility.Instantiation.GetComponentTypes(settings);
+            var componentTypes = Components.GetComponentTypes();
 
             if (DA.Iteration == 0)
                 _properties = componentTypes.ToDictionary(compType => compType.TypeId, compType => typeof(ComponentType));

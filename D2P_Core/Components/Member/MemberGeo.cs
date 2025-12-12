@@ -12,22 +12,16 @@ namespace D2P_Core.Components.Member
     public class MemberGeo<T> : IMember<T> where T : GeometryBase
     {
         private readonly Dictionary<string, IMember> _members = new Dictionary<string, IMember>();
-
-        private readonly IComponentBase _component;
         private readonly ILayerInfo _layerInfo;
 
         protected IEnumerable<T> _geometry;
         protected ObjectAttributes _attributes;
 
-        public IComponentBase Component { get => _component; }
-
+        public IComponentBase Component { get; set; }
         public IMember ParentMember { get; set; }
         public IEnumerable<IMember> Members
         {
-            get
-            {
-                return _members.Values.Concat(FindMembers());
-            }
+            get => _members.Values.Concat(FindMembers());
         }
 
         public ILayerInfo LayerInfo { get => _layerInfo; }
@@ -42,7 +36,7 @@ namespace D2P_Core.Components.Member
             : this(component, new LayerInfo(layerName, layerColor)) { }
         public MemberGeo(IComponentBase component, ILayerInfo layerInfo)
         {
-            _component = component;
+            Component = component;
             _layerInfo = layerInfo;
             _attributes = new ObjectAttributes();
         }
@@ -106,7 +100,7 @@ namespace D2P_Core.Components.Member
         }
         private void UpdateDoc()
         {
-            if (!Component.Exists()) return;
+            if (Component == null || !Component.Exists()) return;
 
             Attributes.RemoveFromAllGroups();
             Attributes.AddToGroup(Component.GroupIndex);
@@ -128,11 +122,11 @@ namespace D2P_Core.Components.Member
 
     public class MemberGeo : MemberGeo<GeometryBase>
     {
-        public MemberGeo(IComponentBase component, ILayerInfo layerInfo, IEnumerable<GeometryBase> geometry, ObjectAttributes attributes = null)
+        public MemberGeo(IComponentBase component, ILayerInfo layerInfo, IEnumerable<GeometryBase> geometry, ObjectAttributes attributes)
             : base(component, layerInfo)
         {
             _geometry = geometry;
-            Attributes = attributes;
+            _attributes = attributes;
         }
     }
 }

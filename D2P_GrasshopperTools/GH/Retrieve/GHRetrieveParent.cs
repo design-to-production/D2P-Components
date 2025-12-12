@@ -39,7 +39,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            IComponent component = null;
+            IComponentBase component = null;
             DA.GetData(0, ref component);
 
             if (component == null)
@@ -49,7 +49,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve
                 return;
             }
 
-            var parent = Instantiation.GetParentComponent(component, out int parentsFound);
+            var parent = Components.GetParentComponent(component, out int parentsFound);
             if (parent == null)
             {
                 var msg = $"ParentMember of component {component.Name} not found !";

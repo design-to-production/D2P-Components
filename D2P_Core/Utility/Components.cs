@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace D2P_Core.Utility
 {
-    internal static class Components
+    public static class Components
     {
         // Get Parent Component
         public static IComponentBase GetParentComponent(IComponentBase component, out int parentsFound)

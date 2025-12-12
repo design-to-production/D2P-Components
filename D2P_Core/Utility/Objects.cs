@@ -57,7 +57,7 @@ namespace D2P_Core.Utility
                 .Geometry
                 .OfType<T>();
         }
-        public static IEnumerable<GeometryBase> ObjectsByLayer(int layerIdx, IComponentBase component) => ObjectsByLayer<GeometryBase>(component, layerIdx);
+        public static IEnumerable<GeometryBase> ObjectsByLayer(IComponentBase component, int layerIdx) => ObjectsByLayer<GeometryBase>(component, layerIdx);
         public static IEnumerable<RhinoObject> ObjectsByLayer(Layer layer)
         {
             return Settings.ActiveDoc.Objects.FindByLayer(layer);

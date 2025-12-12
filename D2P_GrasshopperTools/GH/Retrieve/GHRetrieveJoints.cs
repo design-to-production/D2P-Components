@@ -43,7 +43,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            IComponent component = null;
+            IComponentBase component = null;
             List<string> filterTypes = new List<string>();
             DA.GetData(0, ref component);
             DA.GetDataList(1, filterTypes);
@@ -55,7 +55,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve
                 return;
             }
 
-            var joints = Instantiation.GetJoints(component, filterTypes);
+            var joints = Components.GetJointComponents(component, filterTypes);
             if (joints == null || !joints.Any())
             {
                 var msg = $"Joints of component {component.Name} not found !";

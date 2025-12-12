@@ -36,7 +36,7 @@ namespace D2P_GrasshopperTools.GH
                 for (int i = 0; i < listData.Count; i++)
                 {
                     var compWrapper = new GH_ObjectWrapper(listData[i]);
-                    var component = compWrapper.Value as IComponent;
+                    var component = compWrapper.Value as IComponentBase;
                     var typeIdx = typesDictionary[component.TypeId];
                     var path = new GH_Path(p);
                     outTrees[typeIdx].Append(compWrapper, path);

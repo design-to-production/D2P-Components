@@ -1,4 +1,5 @@
-﻿using D2P_Core.Utility;
+﻿using D2P_Core.Components;
+using D2P_Core.Utility;
 using Grasshopper.Kernel;
 using Rhino;
 using Rhino.DocObjects;
@@ -78,11 +79,10 @@ namespace D2P_GrasshopperTools.GH.Utility
 
         void BakeComponents()
         {
-            var doc = RhinoDoc.ActiveDoc;
             var componentTypes = _components.GroupBy(c => c.TypeId).Select(grp => grp.FirstOrDefault());
             foreach (var componentType in componentTypes)
             {
-                RHDoc.UpdateComponentTypeLayerColors(componentType, doc);
+                //Layers.UpdateComponentTypeLayerColors(componentType);
             }
 
             foreach (var component in _components)
@@ -91,16 +91,15 @@ namespace D2P_GrasshopperTools.GH.Utility
 
                 if (_replaceExisting)
                 {
-                    var existingComponents = Instantiation.InstancesByName(component, doc);
-                    if (existingComponents.Count() >= 1)
+                    var existingComponents = Instantiation.InstancesByName(component);
+                    if (existingComponents.Any())
                         Objects.DeleteComponents(existingComponents);
                 }
-
-                RHDoc.AddToRhinoDoc(component, doc, _replaceExisting);
+                component.Commit();
             }
 
             if (_purgeEmptyLayers)
-                RHDoc.Purge(doc);
+                RHDoc.Purge(Settings.ActiveDoc);
         }
 
         /// <summary>

@@ -12,6 +12,8 @@ namespace D2P_Core.Components
 {
     public abstract class ComponentBase : IComponentBase
     {
+        private readonly Dictionary<string, IMember> _members = new Dictionary<string, IMember>();
+
         public Guid ID { get; set; }
         public int GroupIndex { get; protected set; }
         public string ShortName { get; protected set; }
@@ -26,23 +28,63 @@ namespace D2P_Core.Components
         public IMember ParentMember { get; set; }
         public IEnumerable<IMember> Members
         {
-            get
-            {
-                return GetType()
-                    .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                    .Where(p => typeof(IMember).IsAssignableFrom(p.PropertyType))
-                    .Select(p => p.GetValue(this))
-                    .OfType<IMember>();
-            }
+            get => _members.Values.Concat(FindMembers());
+        }
+        public IEnumerable<GeometryBase> Geometry
+        {
+            get => Members.SelectMany(m => m.Geometry);
         }
 
         protected abstract void Init();
+        public abstract object Clone();
 
         public ComponentBase() { Init(); }
         public ComponentBase(string name, Plane plane) : this()
         {
             ShortName = name;
             Plane = plane;
+        }
+
+        public IMember this[string name]
+        {
+            get
+            {
+                _members.TryGetValue(name, out var v);
+                return v ?? null;
+            }
+            set
+            {
+                if (value == null) return;
+                _members[name] = value;
+            }
+        }
+        private IEnumerable<IMember> FindMembers()
+        {
+            return GetType()
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .Where(p =>
+                    p.CanRead &&
+                    p.GetIndexParameters().Length == 0 &&
+                    typeof(IMember).IsAssignableFrom(p.PropertyType) &&
+                    p.Name != nameof(ParentMember) &&
+                    p.Name != nameof(Members))
+                .Select(p => p.GetValue(this))
+                .OfType<IMember>()
+                .Select(m =>
+                {
+                    return m;
+                });
+        }
+
+        public bool Transform(Transform xform)
+        {
+            var result = true;
+            foreach (var geometry in Geometry)
+            {
+                if (!geometry.Transform(xform))
+                    result = false;
+            }
+            return result;
         }
 
         //public abstract IComponentBase ParentMember { get; }

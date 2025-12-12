@@ -1,4 +1,5 @@
-﻿using Grasshopper.Kernel;
+﻿using D2P_Core.Utility;
+using Grasshopper.Kernel;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -18,8 +19,7 @@ namespace D2P_GrasshopperTools.GH.Utility
           : base("ExportComponents", "Export",
               "Exports component-instances to another Rhino document. You can either export all component-instances to a single file or automatically export each component in a seperate file",
               "D2P", "04 Utility")
-        {
-        }
+        { }
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -68,7 +68,7 @@ namespace D2P_GrasshopperTools.GH.Utility
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     var fileName = Path.GetFileNameWithoutExtension(saveFileDialog.FileName);
-                    D2P_Core.Utility.IO.ExportWithHeadless(_components, directoryPath, fileName);
+                    IO.ExportWithHeadless(_components, directoryPath, fileName);
                 }
                 else return;
             }
@@ -76,7 +76,7 @@ namespace D2P_GrasshopperTools.GH.Utility
             {
                 foreach (var component in _components)
                 {
-                    D2P_Core.Utility.IO.ExportWithHeadless(component, directory.FullName);
+                    IO.ExportWithHeadless(component, directory.FullName);
                 }
             }
 

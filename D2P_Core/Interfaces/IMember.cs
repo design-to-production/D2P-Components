@@ -6,7 +6,7 @@ namespace D2P_Core.Interfaces
 {
     public interface IMember : IDocObject
     {
-        IComponentBase Component { get; }
+        IComponentBase Component { get; set; }
 
         IMember ParentMember { get; set; }
         IEnumerable<IMember> Members { get; }

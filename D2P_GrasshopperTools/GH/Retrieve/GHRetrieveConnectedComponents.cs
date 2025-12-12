@@ -1,4 +1,5 @@
 ﻿using D2P_Core.Interfaces;
+using D2P_Core.Utility;
 using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            IComponent component = null;
+            IComponentBase component = null;
             var filterTypes = new List<string>();
             DA.GetData(0, ref component);
             DA.GetDataList(1, filterTypes);
@@ -54,7 +55,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve
                 return;
             }
 
-            var connectedComponents = D2P_Core.Utility.Instantiation.GetConnectedComponents(component, filterTypes);
+            var connectedComponents = Components.GetConnectedComponents(component, filterTypes);
             if (connectedComponents == null || !connectedComponents.Any())
             {
                 var msg = $"Connected components of component {component.Name} not found !";

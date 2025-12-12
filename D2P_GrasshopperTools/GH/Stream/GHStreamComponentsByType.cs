@@ -1,7 +1,5 @@
 ﻿using D2P_Core;
-using D2P_Core.Components;
 using D2P_Core.Interfaces;
-using D2P_GrasshopperTools.Utility;
 using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
@@ -33,8 +31,6 @@ namespace D2P_GrasshopperTools.GH.Stream
         {
             pManager.AddGenericParameter("TypeId", "T", "The component-type or its type-id used to stream specific types", GH_ParamAccess.list);
             pManager.AddTextParameter("NameFilter", "N", "The regex pattern used to filter by specific component-names", GH_ParamAccess.list, string.Empty);
-            pManager.AddGenericParameter("Settings", "S", "The settings define the basic root-layer for all components being streamed and a collection of specific delimiters", GH_ParamAccess.item);
-            pManager[2].Optional = true;
         }
 
         /// <summary>
@@ -52,23 +48,19 @@ namespace D2P_GrasshopperTools.GH.Stream
         {
             var componentTypes = new List<GH_ObjectWrapper>();
             var filterList = new List<string>();
-            Settings settings = null;
             DA.GetDataList(0, componentTypes);
             DA.GetDataList(1, filterList);
-            DA.GetData(2, ref settings);
 
-            settings = settings ?? DefaultSettings.Create();
-
-            var componentTrees = new Dictionary<string, DataTree<IComponent>>();
+            var componentTrees = new Dictionary<string, DataTree<IComponentBase>>();
             foreach (var componentType in componentTypes)
             {
                 var typeID = (componentType?.Value as IComponentType)?.TypeId ?? componentType?.Value?.ToString();
                 _properties.Add(typeID, typeof(Enumerable));
-                componentTrees.Add(typeID, new DataTree<IComponent>());
+                componentTrees.Add(typeID, new DataTree<IComponentBase>());
                 for (int i = 0; i < filterList.Count; i++)
                 {
                     var filterOptions = new FilterOptions() { RegexPattern = filterList[i], ReversePattern = reverseRegex };
-                    var components = D2P_Core.Utility.Instantiation.InstancesByType(typeID, settings, filterOptions);
+                    var components = D2P_Core.Utility.Instantiation.InstancesByType(typeID, filterOptions);
                     componentTrees[typeID].EnsurePath(i);
                     componentTrees[typeID].AddRange(components);
                     _components.AddRange(components); // only for visualization

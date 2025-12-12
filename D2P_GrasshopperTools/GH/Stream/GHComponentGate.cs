@@ -16,8 +16,7 @@ namespace D2P_GrasshopperTools.GH.Stream
           : base("ComponentGate", "Gate",
               "Sorts the input component-instances by their type-ids and automatically populates the output parameters",
               "D2P", "00 Stream")
-        {
-        }
+        { }
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -41,7 +40,7 @@ namespace D2P_GrasshopperTools.GH.Stream
             if (!DA.GetDataTree(0, out GH_Structure<IGH_Goo> componentTree))
                 return;
 
-            _components = componentTree.Select(x => new GH_ObjectWrapper(x).Value as IComponent).ToList();
+            _components = componentTree.Select(x => new GH_ObjectWrapper(x).Value as IComponentBase).ToList();
 
             var componentGroups = _components.GroupBy(comp => comp.TypeId);
             if (DA.Iteration == 0)

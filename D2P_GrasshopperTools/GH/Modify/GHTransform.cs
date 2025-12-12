@@ -44,14 +44,14 @@ namespace D2P_GrasshopperTools.GH.Modify
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            var components = new List<IComponent>();
+            var components = new List<IComponentBase>();
             var sourcePlanes = new List<Plane>();
             var targetPlanes = new List<Plane>();
             DA.GetDataList(0, components);
             DA.GetDataList(1, sourcePlanes);
             DA.GetDataList(2, targetPlanes);
 
-            _components = components.Select(comp => comp.Clone(true)).ToList();
+            _components = components.Select(comp => (IComponentBase)comp.Clone()).ToList();
 
             if (_components.Count != sourcePlanes.Count && sourcePlanes.Count != 0)
             {

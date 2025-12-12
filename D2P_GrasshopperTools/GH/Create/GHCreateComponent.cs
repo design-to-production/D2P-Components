@@ -1,5 +1,5 @@
 ﻿using D2P_Core.Components;
-using D2P_Core.Components.Grasshopper;
+using D2P_GrasshopperTools.Core;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 using System;
@@ -15,8 +15,7 @@ namespace D2P_GrasshopperTools.GH.Create
           : base("CreateComponent", "Component",
               "Creates a component instance based on a specific type",
               "D2P", "01 Create")
-        {
-        }
+        { }
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -47,7 +46,7 @@ namespace D2P_GrasshopperTools.GH.Create
             ComponentType componentType = null;
             var name = string.Empty;
             var plane = Plane.Unset;
-            GrasshopperComponent parent = null;
+            GHComponent parent = null;
 
             DA.GetData(0, ref componentType);
             DA.GetData(1, ref name);
@@ -55,9 +54,9 @@ namespace D2P_GrasshopperTools.GH.Create
             DA.GetData(3, ref parent);
 
             var parentName = parent?.ShortName ?? parent?.ToString();
-            name = string.IsNullOrEmpty(parentName) ? name : $"{parentName}{componentType.Settings.NameDelimiter}{name}";
+            name = string.IsNullOrEmpty(parentName) ? name : $"{parentName}{Settings.NameDelimiter}{name}";
 
-            var component = new GrasshopperComponent(componentType, name, plane);
+            var component = new GHComponent(componentType, name, plane);
             _components.Add(component);
 
             DA.SetData(0, component);

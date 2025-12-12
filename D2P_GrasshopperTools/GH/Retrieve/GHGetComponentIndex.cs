@@ -1,4 +1,4 @@
-﻿using D2P_Core.Components.Grasshopper;
+﻿using D2P_Core.Components;
 using D2P_Core.Interfaces;
 using Grasshopper.Kernel;
 using System;
@@ -40,20 +40,14 @@ namespace D2P_GrasshopperTools.GH.Retrieve
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            GrasshopperComponent joint = null;
-            GrasshopperComponent component = null;
+            IComponentBase joint = null;
+            IComponentBase component = null;
 
             DA.GetData(0, ref joint);
             DA.GetData(1, ref component);
 
-            var jointDelimiter = joint?.Settings.JointDelimiter;
-            if (jointDelimiter == null)
-            {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid Joint Component !");
-                return;
-            }
-            var connectedComponents = joint?.ShortName.Split(jointDelimiter.Value);
-            var index = Array.IndexOf(connectedComponents, (component as IComponent)?.ShortName);
+            var connectedComponents = joint?.ShortName.Split(Settings.JointDelimiter);
+            var index = Array.IndexOf(connectedComponents, (component as IComponentBase)?.ShortName);
 
             if (index >= 0)
                 DA.SetData(0, index);

@@ -1,10 +1,9 @@
-﻿using D2P_Core;
+﻿using D2P_GrasshopperTools.Utility;
 using Grasshopper.Kernel;
 using Rhino;
 using Rhino.UI;
 using System;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace D2P_GrasshopperTools.GH.Create
@@ -84,21 +83,21 @@ namespace D2P_GrasshopperTools.GH.Create
             DA.GetData(8, ref countDelimiter);
             DA.GetData(9, ref jointDelimiter);
 
-            var settings = new Settings()
-            {
-                RootLayerName = !string.IsNullOrEmpty(rootLayerName) ? rootLayerName : Properties.Settings.Default.DefaultRootLayerName,
-                RootLayerColor = rootLayerColor != Color.Empty ? rootLayerColor : Properties.Settings.Default.DefaultRootLayerColor,
-                DimensionStyleName = !string.IsNullOrEmpty(dimensionStyleName) ? dimensionStyleName : Properties.Settings.Default.DefaultDimensionStyleName,
-                TypeDelimiter = !string.IsNullOrEmpty(typeDelimiter) ? typeDelimiter.First() : Properties.Settings.Default.DefaultTypeDelimiter,
-                LayerDelimiter = !string.IsNullOrEmpty(layerDelimiter) ? layerDelimiter.First() : Properties.Settings.Default.DefaultLayerDelimiter,
-                NameDelimiter = !string.IsNullOrEmpty(nameDelimiter) ? nameDelimiter.First() : Properties.Settings.Default.DefaultNameDelimiter,
-                LayerDescriptionDelimiter = !string.IsNullOrEmpty(layerDescriptionDelimiter) ? layerDescriptionDelimiter.First() : Properties.Settings.Default.DefaultLayerDescriptionDelimiter,
-                LayerNameDelimiter = !string.IsNullOrEmpty(layerNameDelimiter) ? layerNameDelimiter.First() : Properties.Settings.Default.DefaultLayerNameDelimiter,
-                CountDelimiter = !string.IsNullOrEmpty(countDelimiter) ? countDelimiter.First() : Properties.Settings.Default.DefaultCountDelimiter,
-                JointDelimiter = !string.IsNullOrEmpty(jointDelimiter) ? jointDelimiter.First() : Properties.Settings.Default.DefaultJointDelimiter,
-            };
+            //var settings = new Settings()
+            //{
+            //    RootLayerName = !string.IsNullOrEmpty(rootLayerName) ? rootLayerName : Properties.Settings.Default.DefaultRootLayerName,
+            //    RootLayerColor = rootLayerColor != Color.Empty ? rootLayerColor : Properties.Settings.Default.DefaultRootLayerColor,
+            //    DimensionStyleName = !string.IsNullOrEmpty(dimensionStyleName) ? dimensionStyleName : Properties.Settings.Default.DefaultDimensionStyleName,
+            //    TypeDelimiter = !string.IsNullOrEmpty(typeDelimiter) ? typeDelimiter.First() : Properties.Settings.Default.DefaultTypeDelimiter,
+            //    LayerDelimiter = !string.IsNullOrEmpty(layerDelimiter) ? layerDelimiter.First() : Properties.Settings.Default.DefaultLayerDelimiter,
+            //    NameDelimiter = !string.IsNullOrEmpty(nameDelimiter) ? nameDelimiter.First() : Properties.Settings.Default.DefaultNameDelimiter,
+            //    LayerDescriptionDelimiter = !string.IsNullOrEmpty(layerDescriptionDelimiter) ? layerDescriptionDelimiter.First() : Properties.Settings.Default.DefaultLayerDescriptionDelimiter,
+            //    LayerNameDelimiter = !string.IsNullOrEmpty(layerNameDelimiter) ? layerNameDelimiter.First() : Properties.Settings.Default.DefaultLayerNameDelimiter,
+            //    CountDelimiter = !string.IsNullOrEmpty(countDelimiter) ? countDelimiter.First() : Properties.Settings.Default.DefaultCountDelimiter,
+            //    JointDelimiter = !string.IsNullOrEmpty(jointDelimiter) ? jointDelimiter.First() : Properties.Settings.Default.DefaultJointDelimiter,
+            //};
 
-            DA.SetData(0, settings);
+            DA.SetData(0, DefaultSettings.Create());
         }
 
         protected override void AppendAdditionalComponentMenuItems(ToolStripDropDown menu)

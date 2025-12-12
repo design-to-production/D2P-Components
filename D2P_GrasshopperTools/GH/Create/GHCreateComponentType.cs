@@ -26,11 +26,9 @@ namespace D2P_GrasshopperTools.GH.Create
             pManager.AddTextParameter("TypeName", "N", "Each type has a type-name, a short human readable description of the type", GH_ParamAccess.item);
             pManager.AddNumberParameter("LabelSize", "L", "The label size defines the size of the text-entity representing a component-instance in a Rhino document", GH_ParamAccess.item);
             pManager.AddColourParameter("LayerColor", "C", "The layer-color defines the color of the component-type root-layer", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Settings", "S", "The settings define the basic root-layer for all components being used and a collection of specific delimiters", GH_ParamAccess.item);
             pManager[1].Optional = true;
             pManager[2].Optional = true;
             pManager[3].Optional = true;
-            pManager[4].Optional = true;
         }
 
         /// <summary>
@@ -51,32 +49,28 @@ namespace D2P_GrasshopperTools.GH.Create
             var typeName = string.Empty;
             double labelSize = 0;
             Color layerColor = Color.Black;
-            Settings settings = null;
 
             DA.GetData(0, ref typeID);
             DA.GetData(1, ref typeName);
             DA.GetData(2, ref labelSize);
             DA.GetData(3, ref layerColor);
-            DA.GetData(4, ref settings);
 
-            if (settings == null)
-                settings = new Settings();
             if (string.IsNullOrEmpty(typeName))
             {
-                var componentLayer = D2P_Core.Utility.Layers.FindComponentLayerByType(typeID, settings.RootLayerName);
+                var componentLayer = D2P_Core.Utility.Layers.FindComponentLayerByType(typeID);
                 if (componentLayer == null)
                 {
                     var msg = $"Layer of type {typeID} does not exist in the RhinoDoc yet. Cannot auto-generate layer description !";
                     AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
                     return;
                 }
-                typeName = D2P_Core.Utility.Layers.GetComponentTypeName(componentLayer, settings);
+                typeName = D2P_Core.Utility.Layers.GetComponentTypeName(componentLayer);
             }
 
             if (labelSize <= 0)
                 labelSize = Rhino.RhinoDoc.ActiveDoc.DimStyles.Current.TextHeight;
 
-            var cls = new ComponentType(typeID, typeName, settings, labelSize, layerColor);
+            var cls = new ComponentType(typeID, typeName, labelSize, layerColor);
             DA.SetData(0, cls);
         }
 
