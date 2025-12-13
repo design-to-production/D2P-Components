@@ -8,28 +8,15 @@ namespace D2P_GrasshopperTools.Core
 {
     public class GHComponent : ComponentBase
     {
-        public override string TypeId { get; }
-        public override string TypeName { get; }
-        public override Color LayerColor { get; }
-        public override double LabelSize { get; }
+        public override string TypeId { get; set; }
+        public override string TypeName { get; set; }
+        public override Color LayerColor { get; set; }
+        public override double LabelSize { get; set; }
 
         protected override void Init() { }
-        public override object Clone()
-        {
-            return new GHComponent(this);
-        }
+        public override object Clone() => new GHComponent(this);
 
-        private GHComponent(IComponentBase component)
-        {
-            TypeId = component.TypeId;
-            TypeName = component.TypeName;
-            LayerColor = component.LayerColor;
-            LabelSize = component.LabelSize;
-
-
-
-            Members = component.Members.Clone();
-        }
+        private GHComponent(IComponentBase other) : base(other) { }
         public GHComponent() : base() { }
         public GHComponent(IComponentType type, string name, Plane plane)
             : base(name, plane)

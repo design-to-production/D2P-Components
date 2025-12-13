@@ -28,8 +28,10 @@ namespace D2P_GrasshopperTools.GH.Create
             pManager.AddGenericParameter("LayerInfo", "L", "The layer-information used to create geometry on a specific layer of the component", GH_ParamAccess.item);
             pManager.AddGeometryParameter("Geometry", "G", "The input geometry that will be added to a component under a specific layer", GH_ParamAccess.list);
             pManager.AddGenericParameter("Attributes", "A", "Optional input to define the RhinoObjectAttributes for the geometries", GH_ParamAccess.item);
+            pManager.AddGenericParameter("ParentMember", "P", "Optional input to define the ParentMember", GH_ParamAccess.item);
             pManager[1].Optional = true;
             pManager[2].Optional = true;
+            pManager[3].Optional = true;
         }
 
         /// <summary>
@@ -49,12 +51,15 @@ namespace D2P_GrasshopperTools.GH.Create
             ILayerInfo layerInfo = null;
             var geometry = new List<GeometryBase>();
             ObjectAttributes attributes = null;
+            IMember parent = null;
 
             DA.GetData(0, ref layerInfo);
             DA.GetDataList(1, geometry);
             DA.GetData(2, ref attributes);
+            DA.GetData(3, ref parent);
 
-            var member = new MemberGeo(null, layerInfo, geometry, attributes);
+            var name = Guid.NewGuid().ToString();
+            var member = new MemberGeo(name, null, parent, layerInfo);
 
             DA.SetData(0, member);
         }

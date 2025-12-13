@@ -11,34 +11,64 @@ namespace D2P_Core.Components.Member
 {
     public class MemberGeo<T> : IMember<T> where T : GeometryBase
     {
-        private readonly Dictionary<string, IMember> _members = new Dictionary<string, IMember>();
-        private readonly ILayerInfo _layerInfo;
-
+        protected ILayerInfo _layerInfo;
         protected IEnumerable<T> _geometry;
         protected ObjectAttributes _attributes;
+        protected Dictionary<string, IMember> _members;
 
         public IComponentBase Component { get; set; }
         public IMember ParentMember { get; set; }
         public IEnumerable<IMember> Members
         {
             get => _members.Values.Concat(FindMembers());
+            set => _members = value.ToDictionary(m => m.Name, m => m);
         }
 
-        public ILayerInfo LayerInfo { get => _layerInfo; }
-        public IEnumerable<T> Geometry { get => GetGeometry(); }
-        IEnumerable<GeometryBase> IMember.Geometry => Geometry;
+        public string Name { get; set; }
 
-        public T FirstGeometry => Geometry.FirstOrDefault();
-        public ObjectAttributes Attributes { get => _attributes; set => _attributes = value; }
-
-
-        public MemberGeo(IComponentBase component, string layerName, Color layerColor)
-            : this(component, new LayerInfo(layerName, layerColor)) { }
-        public MemberGeo(IComponentBase component, ILayerInfo layerInfo)
+        public ILayerInfo LayerInfo
         {
+            get => _layerInfo;
+            set => _layerInfo = value;
+        }
+        public IEnumerable<T> Geometry
+        {
+            get => GetGeometry();
+            set => _geometry = value;
+        }
+        IEnumerable<GeometryBase> IMember.Geometry
+        {
+            get => GetGeometry();
+            set => _geometry = value as IEnumerable<T>;
+        }
+
+        public ObjectAttributes Attributes
+        {
+            get => _attributes;
+            set => _attributes = value;
+        }
+
+
+        public MemberGeo(string name, IComponentBase component, IMember parent, ILayerInfo layerInfo)
+        {
+            Name = name;
             Component = component;
+            ParentMember = parent;
             _layerInfo = layerInfo;
             _attributes = new ObjectAttributes();
+            _members = new Dictionary<string, IMember>();
+        }
+        public MemberGeo(string name, IComponentBase component, IMember parent, string layerName, Color layerColor)
+            : this(name, component, parent, new LayerInfo(layerName, layerColor)) { }
+        protected MemberGeo(IMember other)
+        {
+            Name = other.Name;
+            Component = other.Component;
+            ParentMember = other.ParentMember;
+            LayerInfo = other.LayerInfo;
+            Geometry = other.Geometry.Select(g => g.Duplicate()).OfType<T>();
+            Attributes = other.Attributes.Duplicate();
+            Members = other.Members.Select(m => m.Clone() as IMember);
         }
 
         public IMember this[string name]
@@ -67,12 +97,7 @@ namespace D2P_Core.Components.Member
                     p.Name != nameof(ParentMember) &&
                     p.Name != nameof(Members))
                 .Select(p => p.GetValue(this))
-                .OfType<IMember>()
-                .Select(m =>
-                {
-                    m.ParentMember = this;
-                    return m;
-                });
+                .OfType<IMember>();
         }
 
         private IEnumerable<T> GetGeometry()
@@ -118,15 +143,14 @@ namespace D2P_Core.Components.Member
         {
             throw new System.NotImplementedException();
         }
+
+        public object Clone() => new MemberGeo<T>(this);
     }
 
     public class MemberGeo : MemberGeo<GeometryBase>
     {
-        public MemberGeo(IComponentBase component, ILayerInfo layerInfo, IEnumerable<GeometryBase> geometry, ObjectAttributes attributes)
-            : base(component, layerInfo)
-        {
-            _geometry = geometry;
-            _attributes = attributes;
-        }
+        public MemberGeo(string name, IComponentBase component, IMember parent, ILayerInfo layerInfo)
+            : base(name, component, parent, layerInfo)
+        { }
     }
 }

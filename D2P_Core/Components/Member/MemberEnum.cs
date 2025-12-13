@@ -10,8 +10,8 @@ namespace D2P_Core.Components.Member
     {
         public Q EnumValue { get => GetEnum(); set => SetEnum(value); }
 
-        public MemberEnum(IComponentBase component, string layerName, Color layerColor)
-            : base(component, layerName, layerColor) { }
+        public MemberEnum(string name, IComponentBase component, IMember parent, string layerName, Color layerColor)
+            : base(name, component, parent, layerName, layerColor) { }
 
         private Q GetEnum()
         {

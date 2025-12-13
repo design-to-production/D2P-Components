@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace D2P_Core.Interfaces
 {
-    public interface IComponentBase : IComponentType, IDocObject, ICloneable
+    public interface IComponentBase : IComponentType, IDocObject
     {
         IMember ParentMember { get; set; }
         IEnumerable<IMember> Members { get; }

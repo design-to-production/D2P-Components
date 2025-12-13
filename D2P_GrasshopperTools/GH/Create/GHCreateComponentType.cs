@@ -1,4 +1,5 @@
 ﻿using D2P_Core.Components;
+using D2P_GrasshopperTools.Core;
 using Grasshopper.Kernel;
 using System;
 using System.Drawing;
@@ -69,6 +70,8 @@ namespace D2P_GrasshopperTools.GH.Create
 
             if (labelSize <= 0)
                 labelSize = Rhino.RhinoDoc.ActiveDoc.DimStyles.Current.TextHeight;
+
+            ComponentTable.RegisterComponent<GHComponent>(typeID);
 
             var cls = new ComponentType(typeID, typeName, labelSize, layerColor);
             DA.SetData(0, cls);

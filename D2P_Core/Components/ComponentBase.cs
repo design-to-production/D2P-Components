@@ -12,7 +12,7 @@ namespace D2P_Core.Components
 {
     public abstract class ComponentBase : IComponentBase
     {
-        private readonly Dictionary<string, IMember> _members = new Dictionary<string, IMember>();
+        protected Dictionary<string, IMember> _members = new Dictionary<string, IMember>();
 
         public Guid ID { get; set; }
         public int GroupIndex { get; protected set; }
@@ -20,15 +20,16 @@ namespace D2P_Core.Components
         public string Name => TypeId + Settings.TypeDelimiter + ShortName;
         public Plane Plane { get; }
 
-        public abstract string TypeId { get; }
-        public abstract string TypeName { get; }
-        public abstract Color LayerColor { get; }
-        public abstract double LabelSize { get; }
+        public abstract string TypeId { get; set; }
+        public abstract string TypeName { get; set; }
+        public abstract Color LayerColor { get; set; }
+        public abstract double LabelSize { get; set; }
 
         public IMember ParentMember { get; set; }
         public IEnumerable<IMember> Members
         {
             get => _members.Values.Concat(FindMembers());
+            set => _members = value.ToDictionary(m => m.Name, m => m);
         }
         public IEnumerable<GeometryBase> Geometry
         {
@@ -43,6 +44,14 @@ namespace D2P_Core.Components
         {
             ShortName = name;
             Plane = plane;
+        }
+        protected ComponentBase(IComponentBase other)
+        {
+            TypeId = other.TypeId;
+            TypeName = other.TypeName;
+            LayerColor = other.LayerColor;
+            LabelSize = other.LabelSize;
+            Members = other.Members.Select(m => m.Clone() as IMember);
         }
 
         public IMember this[string name]

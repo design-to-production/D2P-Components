@@ -1,5 +1,4 @@
-﻿using D2P_GrasshopperTools.Utility;
-using Grasshopper.Kernel;
+﻿using Grasshopper.Kernel;
 using Rhino;
 using Rhino.UI;
 using System;
@@ -97,7 +96,7 @@ namespace D2P_GrasshopperTools.GH.Create
             //    JointDelimiter = !string.IsNullOrEmpty(jointDelimiter) ? jointDelimiter.First() : Properties.Settings.Default.DefaultJointDelimiter,
             //};
 
-            DA.SetData(0, DefaultSettings.Create());
+            //DA.SetData(0, DefaultSettings.Create());
         }
 
         protected override void AppendAdditionalComponentMenuItems(ToolStripDropDown menu)

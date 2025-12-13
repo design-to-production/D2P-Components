@@ -9,10 +9,12 @@ namespace D2P_Core.Interfaces
         IComponentBase Component { get; set; }
 
         IMember ParentMember { get; set; }
-        IEnumerable<IMember> Members { get; }
+        IEnumerable<IMember> Members { get; set; }
 
-        ILayerInfo LayerInfo { get; }
-        IEnumerable<GeometryBase> Geometry { get; }
+        string Name { get; set; }
+
+        ILayerInfo LayerInfo { get; set; }
+        IEnumerable<GeometryBase> Geometry { get; set; }
         ObjectAttributes Attributes { get; set; }
 
         void SetGeometry(GeometryBase geometry);

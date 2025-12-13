@@ -1,5 +1,6 @@
 ﻿using D2P_Core.Interfaces;
 using Rhino;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace D2P_Core.Utility
@@ -33,40 +34,17 @@ namespace D2P_Core.Utility
             return headlessDoc;
         }
 
-        //internal static Guid AddToRhinoDoc(GrasshopperComponent component, RhinoDoc doc, bool replaceExisting = true)
-        //{
-        //    var grpExists = doc.Groups.FindIndex(component.GroupIndex) != null;
-        //    var grpIdx = component.IsVirtual || !grpExists || !replaceExisting ? Group.AddGroup() : component.GroupIndex;
-        //    Layers.CreateStagingLayers(component);
+        public static void UpdateComponentLayerColors(IEnumerable<IComponentBase> components)
+        {
+            foreach (var compGrp in components.GroupBy(c => c.TypeId))
+            {
+                var component = compGrp.First();
+                UpdateComponentTypeLayerColors(component);
+                UpdateComponentSublayerColors(component);
+            }
+        }
 
-        //    if (replaceExisting)
-        //        Objects.DeleteObjects(component);
-
-        //    foreach (var keyVal in component.GeometryCollection)
-        //    {
-        //        var id = keyVal.Key;
-        //        component.AttributeCollection.TryGetValue(id, out var attributes);
-        //        attributes.RemoveFromAllGroups();
-        //        attributes.AddToGroup(grpIdx);
-        //        var layerIdx = component.StagingLayerCollection.Values
-        //            .Where(kv => kv.ContainsKey(id))
-        //            .Select(kv => kv[id])
-        //            .FirstOrDefault();
-        //        if (layerIdx > 0)
-        //            attributes.LayerIndex = layerIdx;
-        //        if (id == component.ID)
-        //        {
-        //            if (!replaceExisting || doc.Objects.FindId(id) == null)
-        //                doc.Objects.AddText(keyVal.Value as TextEntity, attributes);
-        //            else doc.Objects.Replace(id, keyVal.Value as TextEntity);
-        //        }
-        //        else doc.Objects.Add(keyVal.Value, attributes);
-        //    }
-        //    UpdateComponentSublayerColors(component);
-        //    return component.ID;
-        //}
-
-        internal static void UpdateComponentTypeLayerColors(IComponentBase component, RhinoDoc doc)
+        static void UpdateComponentTypeLayerColors(IComponentBase component)
         {
             var rhLayer = Layers.FindComponentTypeRootLayer(component);
             if (rhLayer == null || rhLayer.Color == component.LayerColor)
@@ -74,7 +52,7 @@ namespace D2P_Core.Utility
             rhLayer.Color = component.LayerColor;
         }
 
-        internal static void UpdateComponentSublayerColors(IComponentBase component)
+        static void UpdateComponentSublayerColors(IComponentBase component)
         {
             var layerInfos = component.Members.Select(m => m.LayerInfo);
             foreach (var layerInfo in layerInfos)

@@ -1,7 +1,6 @@
 ﻿using D2P_Core.Interfaces;
 using D2P_Core.Utility;
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Parameters;
 using System;
 
 namespace D2P_GrasshopperTools.GH.Retrieve
@@ -25,10 +24,6 @@ namespace D2P_GrasshopperTools.GH.Retrieve
         {
             pManager.AddGenericParameter("Component", "C", "The in-memory representation of a component instance", GH_ParamAccess.item);
             pManager.AddTextParameter("LayerName", "L", "The name of the layer below the root-layer of a component", GH_ParamAccess.item);
-            pManager.AddIntegerParameter("LayerScope", "S", "The scope of layers to traverse. CurrentOnly means that you will receive the geometry of that specific layer only while IncludeChildren will return the geometry of any sublayers as well", GH_ParamAccess.item, 0);
-            var param = (Param_Integer)pManager[2];
-            param.AddNamedValue("CurrentOnly", (int)Objects.LayerScope.CurrentOnly);
-            param.AddNamedValue("IncludeChildren", (int)Objects.LayerScope.IncludeChildren);
         }
 
         /// <summary>
@@ -47,11 +42,9 @@ namespace D2P_GrasshopperTools.GH.Retrieve
         {
             IComponentBase component = null;
             var layerName = string.Empty;
-            var layerScope = -1;
 
             DA.GetData(0, ref component);
             DA.GetData(1, ref layerName);
-            DA.GetData(2, ref layerScope);
 
             if (component == null)
             {
@@ -59,11 +52,6 @@ namespace D2P_GrasshopperTools.GH.Retrieve
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
                 return;
             }
-
-            if (layerScope < 0)
-                layerScope = 0;
-            else if (layerScope > 1)
-                layerScope = 1;
 
             var layerIdx = Layers.FindLayerIndexByFullPath(component, layerName);
             if (layerIdx < 0)
