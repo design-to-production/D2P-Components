@@ -8,10 +8,10 @@ namespace D2P_Core.Components
 {
     public class ComponentType : IComponentType
     {
-        public string TypeId { get; }
-        public string TypeName { get; }
-        public double LabelSize { get; }
-        public Color LayerColor { get; }
+        public string TypeId { get; set; }
+        public string TypeName { get; set; }
+        public double LabelSize { get; set; }
+        public Color LayerColor { get; set; }
 
         public ComponentType(string typeID, string typeName, double? labelSize = null, Color? layerColor = null)
         {

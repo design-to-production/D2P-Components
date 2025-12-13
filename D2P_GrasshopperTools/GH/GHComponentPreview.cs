@@ -35,6 +35,9 @@ namespace D2P_GrasshopperTools.GH
                 var bbox = geo.GetBoundingBox(false);
                 _box.Union(bbox);
             }
+            var sphere = new Sphere(_box.Center, 1000);
+            _box.Union(sphere.BoundingBox);
+
             _box.Transform(Transform.Scale(_box.Center, 1.2));
         }
 

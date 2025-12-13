@@ -41,7 +41,7 @@ namespace D2P_Core.Utility
             if (componentLayer == null || componentLayer.Index == 0)
                 componentLayer = CreateComponentTypeLayer(component);
 
-            return TraverseLayers(component, ref layerSegments, componentLayer.Id, member.LayerInfo);
+            return TraverseLayers(member, ref layerSegments, componentLayer.Id);
         }
         public static Layer CreateRootLayer()
         {
@@ -101,20 +101,20 @@ namespace D2P_Core.Utility
             return Settings.ActiveDoc.Layers.FindIndex(layerIndex);
         }
 
-        public static int FindLayerIndexByFullPath(IComponentBase component, string rawLayerName)
-        {
-            return FindLayerByFullPath(component, rawLayerName)?.Index ?? -1;
-        }
-        public static Layer FindLayerByFullPath(IComponentBase component, string rawLayerName)
-        {
-            var layerNames = new Queue<string>(rawLayerName.Split(Settings.LayerNameDelimiter)
-                .Where(s => !string.IsNullOrEmpty(s)));
-            if (!layerNames.Any())
-                return null;
+        //public static int FindLayerIndexByFullPath(IComponentBase component, string rawLayerName)
+        //{
+        //    return FindLayerByFullPath(component, rawLayerName)?.Index ?? -1;
+        //}
+        //public static Layer FindLayerByFullPath(IComponentBase component, string rawLayerName)
+        //{
+        //    var layerNames = new Queue<string>(rawLayerName.Split(Settings.LayerNameDelimiter)
+        //        .Where(s => !string.IsNullOrEmpty(s)));
+        //    if (!layerNames.Any())
+        //        return null;
 
-            var rootLayer = FindComponentTypeRootLayer(component);
-            return TraverseLayers(component, ref layerNames, rootLayer.Id);
-        }
+        //    var rootLayer = FindComponentTypeRootLayer(component);
+        //    return TraverseLayers(component, ref layerNames, rootLayer.Id);
+        //}
 
 
         public static Layer FindComponentLayerByType(string type)
@@ -295,26 +295,29 @@ namespace D2P_Core.Utility
         }
 
         // Traverse Layers
-        static Layer TraverseLayers(IComponentBase component, ref Queue<string> layerQueue, Guid parentLayerId, ILayerInfo layerInfo = null)
+        static Layer TraverseLayers(IMember member, ref Queue<string> layerQueue, Guid parentLayerId)
         {
-            var layerName = ComposeComponentLayerName(component, layerQueue.Dequeue());
+            if (string.IsNullOrEmpty(member.LayerInfo.RawLayerName))
+                return FindComponentTypeRootLayer(member.Component);
+
+            var layerName = ComposeComponentLayerName(member.Component, layerQueue.Dequeue());
             var layerPath = ComposeFullLayerPath(layerName, parentLayerId);
             var docLayerIdx = Settings.ActiveDoc.Layers.FindByFullPath(layerPath, -1);
             var docLayer = Settings.ActiveDoc.Layers.FindIndex(docLayerIdx);
-            if (docLayer == null && layerInfo != null)
+            if (docLayer == null && member.LayerInfo != null)
             {
                 docLayer = new Layer()
                 {
                     Name = layerName,
                     Id = Guid.NewGuid(),
                     ParentLayerId = parentLayerId,
-                    Color = layerInfo.LayerColor
+                    Color = member.LayerInfo.LayerColor
                 };
                 docLayer.Index = Settings.ActiveDoc.Layers.Add(docLayer);
             }
             if (docLayer == null || !layerQueue.Any())
                 return docLayer;
-            return TraverseLayers(component, ref layerQueue, docLayer.Id, layerInfo);
+            return TraverseLayers(member, ref layerQueue, docLayer.Id);
         }
         static void TraverseAncestorLayers(Guid parentLayerId, ref List<Layer> ancestorLayers)
         {

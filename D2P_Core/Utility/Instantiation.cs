@@ -81,9 +81,16 @@ namespace D2P_Core.Utility
                     throw new Exception($"No class with type {componentType.TypeId} registered !");
 
                 var component = (T)Activator.CreateInstance(type);
+
                 component.ID = grpObj.Id;
 
-                //var compType = Objects.GetComponentTypeFromObject(grpObj);
+                component.TypeId = componentType.TypeId;
+                component.TypeName = componentType.TypeName;
+                component.LayerColor = componentType.LayerColor;
+                component.LabelSize = componentType.LabelSize;
+
+                component.ShortName = (grpObj as TextObject).TextGeometry.PlainText;
+                component.Plane = (grpObj as TextObject).TextGeometry.Plane;
 
                 return component;
             }

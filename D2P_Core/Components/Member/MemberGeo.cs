@@ -129,14 +129,17 @@ namespace D2P_Core.Components.Member
 
             Attributes.RemoveFromAllGroups();
             Attributes.AddToGroup(Component.GroupIndex);
+            Attributes.Name = Component.Name;
             var memberLayer = Layers.CreateLayer(this);
             Attributes.LayerIndex = memberLayer.Index;
 
             if (_geometry == null) return;
+
             Objects.DeleteObjects(this);
             foreach (var geometry in Geometry)
             {
-                Settings.ActiveDoc.Objects.Add(geometry, Attributes);
+                var id = Settings.ActiveDoc.Objects.Add(geometry, Attributes);
+                Attributes.ObjectId = id; // TODO: Refactoring ? Only needed for label right now
             }
         }
         public void Delete()

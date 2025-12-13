@@ -13,7 +13,7 @@ namespace D2P_GrasshopperTools.Core
         public override Color LayerColor { get; set; }
         public override double LabelSize { get; set; }
 
-        protected override void Init() { }
+        protected override void Init() { base.Init(); }
         public override object Clone() => new GHComponent(this);
 
         private GHComponent(IComponentBase other) : base(other) { }

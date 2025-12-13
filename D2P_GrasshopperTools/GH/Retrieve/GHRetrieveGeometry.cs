@@ -53,10 +53,10 @@ namespace D2P_GrasshopperTools.GH.Retrieve
                 return;
             }
 
-            var layerIdx = Layers.FindLayerIndexByFullPath(component, layerName);
+            var layer = Layers.FindLayer(component, layerName, out int layersFound);
+            var layerIdx = layer?.Index ?? -1;
             if (layerIdx < 0)
             {
-                layerIdx = Layers.FindLayer(component, layerName, out int layersFound)?.Index ?? -1;
                 if (layerIdx < 0)
                 {
                     var msg = $"Layer {layerName} not found !";

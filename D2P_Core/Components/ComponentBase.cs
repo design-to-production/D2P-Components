@@ -1,4 +1,5 @@
-﻿using D2P_Core.Interfaces;
+﻿using D2P_Core.Components.Member;
+using D2P_Core.Interfaces;
 using D2P_Core.Utility;
 using Rhino.DocObjects;
 using Rhino.Geometry;
@@ -14,11 +15,21 @@ namespace D2P_Core.Components
     {
         protected Dictionary<string, IMember> _members = new Dictionary<string, IMember>();
 
+        public IMember<TextEntity> Label { get; set; }
+
         public Guid ID { get; set; }
         public int GroupIndex { get; protected set; }
-        public string ShortName { get; protected set; }
         public string Name => TypeId + Settings.TypeDelimiter + ShortName;
-        public Plane Plane { get; }
+        public string ShortName
+        {
+            get => Label.Geometry.FirstOrDefault().PlainText;
+            set => Label.Geometry.FirstOrDefault().PlainText = value;
+        }
+        public Plane Plane
+        {
+            get => Label.Geometry.FirstOrDefault().Plane;
+            set => Label.Geometry.FirstOrDefault().Plane = value;
+        }
 
         public abstract string TypeId { get; set; }
         public abstract string TypeName { get; set; }
@@ -36,8 +47,14 @@ namespace D2P_Core.Components
             get => Members.SelectMany(m => m.Geometry);
         }
 
-        protected abstract void Init();
         public abstract object Clone();
+        protected virtual void Init()
+        {
+            Label = new MemberGeo<TextEntity>(nameof(Label), this, null, new LayerInfo("", LayerColor));
+            var label = TextEntity.Create("", Plane.WorldXY, Settings.DimensionStyle, false, 0, 0);
+            label.TextHeight = LabelSize;
+            Label.SetGeometry(label);
+        }
 
         public ComponentBase() { Init(); }
         public ComponentBase(string name, Plane plane) : this()
@@ -45,12 +62,13 @@ namespace D2P_Core.Components
             ShortName = name;
             Plane = plane;
         }
-        protected ComponentBase(IComponentBase other)
+        protected ComponentBase(IComponentBase other) : this()
         {
             TypeId = other.TypeId;
             TypeName = other.TypeName;
             LayerColor = other.LayerColor;
             LabelSize = other.LabelSize;
+            Label = other.Label.Clone() as IMember<TextEntity>;
             Members = other.Members.Select(m => m.Clone() as IMember);
         }
 
@@ -78,11 +96,7 @@ namespace D2P_Core.Components
                     p.Name != nameof(ParentMember) &&
                     p.Name != nameof(Members))
                 .Select(p => p.GetValue(this))
-                .OfType<IMember>()
-                .Select(m =>
-                {
-                    return m;
-                });
+                .OfType<IMember>();
         }
 
         public bool Transform(Transform xform)
@@ -103,27 +117,29 @@ namespace D2P_Core.Components
         public virtual void Delete() => Objects.DeleteComponent(this);
         public virtual void Commit()
         {
-            if (!Exists()) Create();
+            if (!Exists())
+            {
+                if (!Utility.Group.GetGroupIndex(this, out int grpIdx))
+                    grpIdx = Utility.Group.AddGroup();
+                GroupIndex = grpIdx;
+
+                var componentLayer = Layers.FindComponentTypeRootLayer(this);
+                if (componentLayer == null || componentLayer.Index == 0)
+                    componentLayer = Layers.CreateComponentTypeLayer(this);
+
+                var attributes = new ObjectAttributes() { Name = Name, LayerIndex = componentLayer.Index };
+                attributes.RemoveFromAllGroups();
+                attributes.AddToGroup(GroupIndex);
+
+                var label = Label.Geometry.FirstOrDefault();
+                ID = Settings.ActiveDoc.Objects.AddText(label, attributes);
+            }
+
             foreach (var member in Members)
+            {
+                if (member.Name == nameof(Label)) continue;
                 member.Commit();
-        }
-        void Create()
-        {
-            if (!Utility.Group.GetGroupIndex(this, out int grpIdx))
-                grpIdx = Utility.Group.AddGroup();
-            GroupIndex = grpIdx;
-
-            var componentLayer = Layers.FindComponentTypeRootLayer(this);
-            if (componentLayer == null || componentLayer.Index == 0)
-                componentLayer = Layers.CreateComponentTypeLayer(this);
-
-            var label = TextEntity.Create(ShortName, Plane, Settings.DimensionStyle, false, 0, 0);
-            label.TextHeight = LabelSize;
-            var attributes = new ObjectAttributes() { Name = Name, LayerIndex = componentLayer.Index };
-            attributes.RemoveFromAllGroups();
-            attributes.AddToGroup(GroupIndex);
-
-            ID = Settings.ActiveDoc.Objects.AddText(label, attributes);
+            }
         }
     }
 }
