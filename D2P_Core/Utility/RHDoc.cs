@@ -54,7 +54,7 @@ namespace D2P_Core.Utility
 
         static void UpdateComponentSublayerColors(IComponentBase component)
         {
-            var layerInfos = component.Members.Select(m => m.LayerInfo);
+            var layerInfos = component.AllMembers.Select(m => m.LayerInfo);
             foreach (var layerInfo in layerInfos)
             {
                 var rhLayer = Layers.FindLayer(component, layerInfo.RawLayerName, out int _);

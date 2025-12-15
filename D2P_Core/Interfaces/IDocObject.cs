@@ -1,11 +1,10 @@
-﻿using System;
-
-namespace D2P_Core.Interfaces
+﻿namespace D2P_Core.Interfaces
 {
-    public interface IDocObject : ICloneable
+    public interface IDocObject<T>
     {
         bool Exists();
         void Delete();
         void Commit();
+        T Duplicate();
     }
 }

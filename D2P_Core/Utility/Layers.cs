@@ -116,7 +116,6 @@ namespace D2P_Core.Utility
         //    return TraverseLayers(component, ref layerNames, rootLayer.Id);
         //}
 
-
         public static Layer FindComponentLayerByType(string type)
         {
             var layerNames = Settings.ActiveDoc.Layers.Where(l => !l.IsReference).Select(l => l.Name);
@@ -130,7 +129,9 @@ namespace D2P_Core.Utility
         {
             bool condition(Layer layer) => includeReferenced || !layer.IsReference;
             var layerFound = Settings.ActiveDoc.Layers
-                .FirstOrDefault(l => condition(l) && l.Name == layerName && l.FullPath.StartsWith(Settings.RootLayerName));
+                .FirstOrDefault(l => condition(l) &&
+                l.Name == layerName &&
+                l.FullPath.StartsWith(Settings.RootLayerName));
             if (layerFound == null)
                 return null;
             return layerFound;

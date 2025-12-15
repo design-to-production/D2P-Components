@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace D2P_Core.Interfaces
 {
-    public interface IComponentBase : IComponentType, IDocObject
+    public interface IComponentBase : IMemberCollection, IComponentType, IDocObject<IComponentBase>
     {
         IMember<TextEntity> Label { get; }
 
@@ -14,8 +14,6 @@ namespace D2P_Core.Interfaces
         string ShortName { get; set; }
         Plane Plane { get; set; }
 
-        IMember ParentMember { get; set; }
-        IEnumerable<IMember> Members { get; }
         IEnumerable<GeometryBase> Geometry { get; }
 
         IMember this[string name] { get; set; }

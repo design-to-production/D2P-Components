@@ -52,7 +52,7 @@ namespace D2P_Core.Utility
         //}
         public static IEnumerable<T> ObjectsByLayer<T>(IComponentBase component, int layerIdx) where T : GeometryBase
         {
-            return component.Members
+            return component.AllMembers
                 .FirstOrDefault(m => m.Attributes.LayerIndex == layerIdx)
                 .Geometry
                 .OfType<T>();

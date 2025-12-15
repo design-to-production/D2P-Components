@@ -1,4 +1,5 @@
 ﻿using D2P_Core.Components.Member;
+using D2P_Core.Extensions;
 using D2P_Core.Interfaces;
 using D2P_Core.Utility;
 using Rhino.DocObjects;
@@ -7,16 +8,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 
 namespace D2P_Core.Components
 {
-    public abstract class ComponentBase : IComponentBase
+    public abstract class ComponentBase : MemberCollection, IComponentBase
     {
-        protected Dictionary<string, IMember> _members = new Dictionary<string, IMember>();
-
-        public IMember<TextEntity> Label { get; set; }
-
         public Guid ID { get; set; }
         public int GroupIndex { get; protected set; }
         public string Name => TypeId + Settings.TypeDelimiter + ShortName;
@@ -36,24 +32,13 @@ namespace D2P_Core.Components
         public abstract Color LayerColor { get; set; }
         public abstract double LabelSize { get; set; }
 
-        public IMember ParentMember { get; set; }
-        public IEnumerable<IMember> Members
-        {
-            get => _members.Values.Concat(FindMembers());
-            set => _members = value.ToDictionary(m => m.Name, m => m);
-        }
-        public IEnumerable<GeometryBase> Geometry
-        {
-            get => Members.SelectMany(m => m.Geometry);
-        }
+        public IEnumerable<GeometryBase> Geometry => AllMembers.SelectMany(m => m.Geometry);
+        public IMember<TextEntity> Label { get; private set; }
 
-        public abstract object Clone();
+        public abstract IComponentBase Duplicate();
         protected virtual void Init()
         {
-            Label = new MemberGeo<TextEntity>(nameof(Label), this, null, new LayerInfo("", LayerColor));
-            var label = TextEntity.Create("", Plane.WorldXY, Settings.DimensionStyle, false, 0, 0);
-            label.TextHeight = LabelSize;
-            Label.SetGeometry(label);
+            Label = new MemberGeo<TextEntity>(nameof(Label), this, new LayerInfo("", LayerColor));
         }
 
         public ComponentBase() { Init(); }
@@ -68,35 +53,7 @@ namespace D2P_Core.Components
             TypeName = other.TypeName;
             LayerColor = other.LayerColor;
             LabelSize = other.LabelSize;
-            Label = other.Label.Clone() as IMember<TextEntity>;
-            Members = other.Members.Select(m => m.Clone() as IMember);
-        }
-
-        public IMember this[string name]
-        {
-            get
-            {
-                _members.TryGetValue(name, out var v);
-                return v ?? null;
-            }
-            set
-            {
-                if (value == null) return;
-                _members[name] = value;
-            }
-        }
-        private IEnumerable<IMember> FindMembers()
-        {
-            return GetType()
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                .Where(p =>
-                    p.CanRead &&
-                    p.GetIndexParameters().Length == 0 &&
-                    typeof(IMember).IsAssignableFrom(p.PropertyType) &&
-                    p.Name != nameof(ParentMember) &&
-                    p.Name != nameof(Members))
-                .Select(p => p.GetValue(this))
-                .OfType<IMember>();
+            DynamicMembers = other.DynamicMembers.Duplicate();
         }
 
         public bool Transform(Transform xform)
@@ -109,9 +66,6 @@ namespace D2P_Core.Components
             }
             return result;
         }
-
-        //public abstract IComponentBase ParentMember { get; }
-        //public abstract IEnumerable<IComponentBase> ChildMembers { get; }
 
         public virtual bool Exists() => Settings.ActiveDoc.Objects.FindId(ID) != null;
         public virtual void Delete() => Objects.DeleteComponent(this);
@@ -135,9 +89,8 @@ namespace D2P_Core.Components
                 ID = Settings.ActiveDoc.Objects.AddText(label, attributes);
             }
 
-            foreach (var member in Members)
+            foreach (var member in AllMembers)
             {
-                if (member.Name == nameof(Label)) continue;
                 member.Commit();
             }
         }

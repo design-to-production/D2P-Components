@@ -91,6 +91,7 @@ namespace D2P_GrasshopperTools.GH.Utility
                     if (existingComponents.Any())
                         Objects.DeleteComponents(existingComponents);
                 }
+
                 component.Commit();
             }
 

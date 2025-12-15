@@ -60,6 +60,7 @@ namespace D2P_GrasshopperTools.GH.Create
 
             var name = Guid.NewGuid().ToString();
             var member = new MemberGeo(name, null, parent, layerInfo);
+            member.SetGeometry(geometry);
 
             DA.SetData(0, member);
         }
