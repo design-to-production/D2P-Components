@@ -7,6 +7,7 @@ namespace D2P_Core.Interfaces
     public interface IMember : IMemberCollection, IDocObject<IMember>
     {
         string Name { get; set; }
+        bool ReplaceExisting { get; set; }
         IComponentBase Component { get; set; }
 
         ILayerInfo LayerInfo { get; set; }
@@ -20,5 +21,7 @@ namespace D2P_Core.Interfaces
     public interface IMember<T> : IMember where T : GeometryBase
     {
         new IEnumerable<T> Geometry { get; }
+        new IMember<T> Duplicate();
+
     }
 }

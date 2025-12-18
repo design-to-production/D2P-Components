@@ -91,8 +91,8 @@ namespace D2P_Core.Utility
         {
             var layer = Layers.FindLayer(member);
             return DeleteObjects(member.Component, layer);
-
         }
+
 
         // Delete Components
         public static int DeleteComponent(IComponentBase component)

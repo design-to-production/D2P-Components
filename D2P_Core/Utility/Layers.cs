@@ -30,16 +30,15 @@ namespace D2P_Core.Utility
         }
         public static Layer CreateLayer(IMember member)
         {
-            var component = member.Component;
             var layerName = ComposeMemberLayerName(member);
             var layerSegments = new Queue<string>(layerName
                 .Split(Settings.LayerNameDelimiter)
                 .Where(s => !string.IsNullOrEmpty(s))
             );
 
-            var componentLayer = FindComponentTypeRootLayer(component);
+            var componentLayer = FindComponentTypeRootLayer(member.Component);
             if (componentLayer == null || componentLayer.Index == 0)
-                componentLayer = CreateComponentTypeLayer(component);
+                componentLayer = CreateComponentTypeLayer(member.Component);
 
             return TraverseLayers(member, ref layerSegments, componentLayer.Id);
         }
@@ -78,10 +77,7 @@ namespace D2P_Core.Utility
 
         public static Layer FindLayer(IMember member)
         {
-            var component = member.Component;
-            var layerName = ComposeComponentLayerName(component, member);
-            var componentLayers = GetComponentLayers(component);
-            return componentLayers.FirstOrDefault(l => !l.IsReference && l.Name == layerName);
+            return FindLayer(member.Component, member.LayerInfo.RawLayerName, out int layersFound);
         }
         public static Layer FindLayer(IComponentBase component, string rawLayerName, out int layersFound)
         {

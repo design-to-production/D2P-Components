@@ -2,6 +2,7 @@
 using D2P_Core.Utility;
 using Rhino.DocObjects;
 using Rhino.Geometry;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace D2P_Core.Components.Member
         protected IEnumerable<T> _geometry;
 
         public string Name { get; set; }
+        public bool ReplaceExisting { get; set; } = true;
         public IComponentBase Component { get; set; }
 
         public ILayerInfo LayerInfo { get; set; }
@@ -34,13 +36,13 @@ namespace D2P_Core.Components.Member
 
         public MemberGeo(string name, IComponentBase component, ILayerInfo layerInfo)
         {
-            Name = name;
+            Name = name ?? Guid.NewGuid().ToString();
             Component = component;
             LayerInfo = layerInfo;
         }
         public MemberGeo(string name, IComponentBase component, string layerName, Color layerColor)
             : this(name, component, new LayerInfo(layerName, layerColor)) { }
-        protected MemberGeo(IMember other, IComponentBase newComponent)
+        protected MemberGeo(IMember other)
         {
             Name = other.Name;
             ParentMember = other.ParentMember;
@@ -50,9 +52,7 @@ namespace D2P_Core.Components.Member
                 .Select(g => g.Duplicate())
                 .OfType<T>()
             );
-            Attributes = other.Attributes.Duplicate();
             DynamicMembers = other.DynamicMembers.Select(m => m.Duplicate());
-            Component = newComponent;  // TODO: Anti pattern ? 
         }
 
         public void SetGeometry(T geometry) => SetGeometry(new[] { geometry });
@@ -63,6 +63,9 @@ namespace D2P_Core.Components.Member
 
         public void Commit()
         {
+            if (Component == null || !Component.Exists())
+                return;
+
             UpdateDoc();
             foreach (var childMember in AllMembers)
             {
@@ -71,8 +74,6 @@ namespace D2P_Core.Components.Member
         }
         private void UpdateDoc()
         {
-            if (Component == null || !Component.Exists()) return;
-
             Attributes.RemoveFromAllGroups();
             Attributes.AddToGroup(Component.GroupIndex);
             Attributes.Name = Component.Name;
@@ -81,6 +82,7 @@ namespace D2P_Core.Components.Member
 
             //if (_geometry == null) return;
             // TODO: Replace Members of existing component instead of recreating it completely
+            //if (ReplaceExisting)
 
             Objects.DeleteObjects(this);
             foreach (var geometry in Geometry)
@@ -98,9 +100,14 @@ namespace D2P_Core.Components.Member
         {
             throw new System.NotImplementedException();
         }
-        public IMember Duplicate()
+
+        public IMember<T> Duplicate()
         {
-            return new MemberGeo<T>(this, Component);
+            return new MemberGeo<T>(this);
+        }
+        IMember IDocObject<IMember>.Duplicate()
+        {
+            return Duplicate();
         }
     }
 

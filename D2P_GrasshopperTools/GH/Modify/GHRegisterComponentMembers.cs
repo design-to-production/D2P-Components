@@ -58,12 +58,11 @@ namespace D2P_GrasshopperTools.GH.Modify
                 return;
             }
 
-            var componentClone = (IComponentBase)component.Clone();
+            var componentClone = component.Duplicate();
             foreach (var member in componentMembers)
             {
                 member.Component = componentClone;
-                var key = Guid.NewGuid().ToString();
-                componentClone[key] = member;
+                componentClone[member.Name] = member;
             }
 
             _components.Add(componentClone);

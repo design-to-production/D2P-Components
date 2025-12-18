@@ -22,7 +22,7 @@ namespace D2P_Core.Utility
             var namingCondition = $"*{Settings.TypeDelimiter}{parentName}";
             var objEnumSettings = Constants.ObjectEnumeratorSettings(namingCondition);
             var rhObjects = Settings.ActiveDoc.Objects.GetObjectList(objEnumSettings);
-            var parents = Instantiation.InstancesFromObjects(rhObjects);
+            var parents = Instantiation.InstancesFromObjects(rhObjects.ToList());
             parentsFound = parents.Count();
             return parents.FirstOrDefault();
         }
@@ -36,7 +36,7 @@ namespace D2P_Core.Utility
                 .Where(rhObj => !rhObj.Name.Contains(Settings.JointDelimiter));
             if (filterTypes != null && filterTypes.Any())
                 rhObjects = rhObjects.Where(rhObj => filterTypes.Contains(rhObj.Name.Split(Settings.TypeDelimiter)[0]));
-            var children = Instantiation.InstancesFromObjects(rhObjects);
+            var children = Instantiation.InstancesFromObjects(rhObjects.ToList());
             return children;
         }
 
@@ -54,7 +54,7 @@ namespace D2P_Core.Utility
                 .Where(rhObj => reg.IsMatch(rhObj.Name));
             if (filterTypes != null && filterTypes.Any())
                 rhObjects = rhObjects.Where(rhObj => filterTypes.Contains(rhObj.Name.Split(Settings.TypeDelimiter)[0]));
-            var joints = Instantiation.InstancesFromObjects(rhObjects);
+            var joints = Instantiation.InstancesFromObjects(rhObjects.ToList());
             return joints;
         }
 

@@ -12,7 +12,7 @@ namespace D2P_Core.Components
         public LayerInfo() { }
         public LayerInfo(string rawLayerName, Color layerColor)
         {
-            RawLayerName = rawLayerName;
+            RawLayerName = rawLayerName ?? string.Empty;
             LayerColor = layerColor;
         }
     }

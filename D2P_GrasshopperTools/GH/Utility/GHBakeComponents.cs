@@ -5,7 +5,6 @@ using Rhino;
 using Rhino.DocObjects;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace D2P_GrasshopperTools.GH.Utility
@@ -85,12 +84,14 @@ namespace D2P_GrasshopperTools.GH.Utility
             {
                 if (component == null) continue;
 
-                if (_replaceExisting)
-                {
-                    var existingComponents = Instantiation.InstancesByName(component);
-                    if (existingComponents.Any())
-                        Objects.DeleteComponents(existingComponents);
-                }
+                //if (_replaceExisting)
+                //{
+                //    var existingComponents = Instantiation.InstancesByName(component);
+                //    if (existingComponents.Any())
+                //    {
+                //        Objects.DeleteComponents(existingComponents);
+                //    }
+                //}
 
                 component.Commit();
             }

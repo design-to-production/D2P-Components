@@ -12,5 +12,13 @@ namespace D2P_Core.Extensions
                 yield return member.Duplicate();
             }
         }
+        public static void SetComponent(this IEnumerable<IMember> members, IComponentBase component)
+        {
+            foreach (var member in members)
+            {
+                member.Component = component;
+                member.AllMembers.SetComponent(component);
+            }
+        }
     }
 }

@@ -14,7 +14,9 @@ namespace D2P_Core.Utility
         public static IEnumerable<IComponentBase> InstancesByName(string name)
         {
             var objEnumSettings = Constants.ObjectEnumeratorSettings(name);
-            var rhObjects = Settings.ActiveDoc.Objects.GetObjectList(objEnumSettings).Where(rhObj => rhObj.Attributes.GroupCount > 0);
+            var rhObjects = Settings.ActiveDoc.Objects
+                .GetObjectList(objEnumSettings)
+                .Where(rhObj => rhObj.Attributes.GroupCount > 0);
             return InstancesFromObjects(rhObjects);
         }
         public static IEnumerable<IComponentBase> InstancesByName(IComponentBase component)
@@ -28,7 +30,8 @@ namespace D2P_Core.Utility
             var nameFilter = $"{type}{Settings.TypeDelimiter}*";
             var objEnumSettings = Constants.ObjectEnumeratorSettings(nameFilter);
             var reg = new Regex(filterOptions.RegexPattern);
-            var rhObjects = Settings.ActiveDoc.Objects.GetObjectList(objEnumSettings)
+            var rhObjects = Settings.ActiveDoc.Objects
+                .GetObjectList(objEnumSettings)
                 .Where(rhObj => reg.IsMatch(rhObj.Name) == !filterOptions.ReversePattern);
             return InstancesFromObjects(rhObjects);
         }

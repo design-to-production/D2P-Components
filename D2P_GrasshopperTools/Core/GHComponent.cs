@@ -13,6 +13,7 @@ namespace D2P_GrasshopperTools.Core
         public override Color LayerColor { get; set; }
         public override double LabelSize { get; set; }
 
+        public GHComponent() : base() { }
         protected GHComponent(IComponentBase other) : base(other) { }
         public GHComponent(IComponentType type, string name, Plane plane)
             : base(name, plane)

@@ -13,8 +13,8 @@ namespace D2P_Core.Components
 {
     public abstract class ComponentBase : MemberCollection, IComponentBase
     {
-        public Guid ID { get; set; }
-        public int GroupIndex { get; protected set; }
+        public Guid ID { get; set; } = Guid.Empty;
+        public int GroupIndex { get; protected set; } = -1;
         public string Name => TypeId + Settings.TypeDelimiter + ShortName;
         public string ShortName
         {
@@ -44,8 +44,9 @@ namespace D2P_Core.Components
         public ComponentBase() { Init(); }
         public ComponentBase(string name, Plane plane) : this()
         {
-            ShortName = name;
-            Plane = plane;
+            var label = TextEntity.Create(name, plane, Settings.DimensionStyle, false, 0, 0);
+            label.TextHeight = LabelSize;
+            Label.SetGeometry(label);
         }
         protected ComponentBase(IComponentBase other) : this()
         {
@@ -53,9 +54,9 @@ namespace D2P_Core.Components
             TypeName = other.TypeName;
             LayerColor = other.LayerColor;
             LabelSize = other.LabelSize;
+            Label = other.Label.Duplicate();
             DynamicMembers = other.DynamicMembers.Duplicate();
         }
-
         public bool Transform(Transform xform)
         {
             var result = true;
@@ -71,7 +72,8 @@ namespace D2P_Core.Components
         public virtual void Delete() => Objects.DeleteComponent(this);
         public virtual void Commit()
         {
-            if (!Exists())
+            var exists = Exists();
+            if (!exists)
             {
                 if (!Utility.Group.GetGroupIndex(this, out int grpIdx))
                     grpIdx = Utility.Group.AddGroup();
@@ -82,14 +84,19 @@ namespace D2P_Core.Components
                     componentLayer = Layers.CreateComponentTypeLayer(this);
 
                 var attributes = new ObjectAttributes() { Name = Name, LayerIndex = componentLayer.Index };
-                attributes.RemoveFromAllGroups();
                 attributes.AddToGroup(GroupIndex);
 
                 var label = Label.Geometry.FirstOrDefault();
                 ID = Settings.ActiveDoc.Objects.AddText(label, attributes);
             }
+            else
+            {
+                Label.Commit();
+                ID = Label.Attributes.ObjectId;
+            }
 
-            foreach (var member in AllMembers)
+            AllMembers.SetComponent(this);
+            foreach (var member in AllMembers.Where(m => m.Name != nameof(Label)))
             {
                 member.Commit();
             }

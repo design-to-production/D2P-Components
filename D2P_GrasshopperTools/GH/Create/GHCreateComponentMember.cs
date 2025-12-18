@@ -59,7 +59,8 @@ namespace D2P_GrasshopperTools.GH.Create
             DA.GetData(3, ref parent);
 
             var name = Guid.NewGuid().ToString();
-            var member = new MemberGeo(name, null, parent, layerInfo);
+            var member = new MemberGeo(name, null, layerInfo);
+            member.ParentMember = parent;
             member.SetGeometry(geometry);
 
             DA.SetData(0, member);
