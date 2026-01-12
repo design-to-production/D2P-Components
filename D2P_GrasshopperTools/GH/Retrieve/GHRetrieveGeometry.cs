@@ -2,11 +2,10 @@
 using D2P_Core.Utility;
 using Grasshopper.Kernel;
 using System;
+using System.Linq;
 
-namespace D2P_GrasshopperTools.GH.Retrieve
-{
-    public class GHRetrieveGeometry : GHComponentBase
-    {
+namespace D2P_GrasshopperTools.GH.Retrieve {
+    public class GHRetrieveGeometry : GHComponentBase {
         /// <summary>
         /// Initializes a new instance of the Component_LayerObjects class.
         /// </summary>
@@ -46,25 +45,23 @@ namespace D2P_GrasshopperTools.GH.Retrieve
             DA.GetData(0, ref component);
             DA.GetData(1, ref layerName);
 
-            if (component == null)
-            {
+            if (component == null) {
                 var msg = $"Component is null !";
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
                 return;
             }
 
-            var layer = Layers.FindLayer(component, layerName, out int layersFound);
+            var member = component.AllMembers
+                .FirstOrDefault(m => m.LayerInfo.RawLayerName == layerName);
+            var layer = Layers.FindLayer(member, out int layersFound);
             var layerIdx = layer?.Index ?? -1;
-            if (layerIdx < 0)
-            {
-                if (layerIdx < 0)
-                {
+            if (layerIdx < 0) {
+                if (layerIdx < 0) {
                     var msg = $"Layer {layerName} not found !";
                     AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
                     return;
                 }
-                if (layersFound > 1)
-                {
+                if (layersFound > 1) {
                     var msg = $"Found {layersFound} layers with name {layerName}, specify full path !";
                     AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
                     return;
@@ -78,10 +75,8 @@ namespace D2P_GrasshopperTools.GH.Retrieve
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
+        protected override System.Drawing.Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:                
                 return Properties.Resources.GH_RetrieveComponentObjects;
             }
@@ -90,8 +85,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("33B9B431-3939-4574-BD76-D54E872B1558"); }
         }
     }

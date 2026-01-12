@@ -7,18 +7,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace D2P_Core.Utility
-{
-    public static class Layers
-    {
+namespace D2P_Core.Utility {
+    public static class Layers {
         // Create Layer
         public static Layer CreateLayer(IComponentBase component)
         {
             if (!FindRootLayer(out Layer rootLayer))
                 rootLayer = CreateRootLayer();
             var layerName = ComposeComponentTypeLayerName(component);
-            var componentLayer = new Layer()
-            {
+            var componentLayer = new Layer() {
                 Id = Guid.NewGuid(),
                 ParentLayerId = rootLayer.Id,
                 Name = layerName,
@@ -44,8 +41,7 @@ namespace D2P_Core.Utility
         }
         public static Layer CreateRootLayer()
         {
-            if (!FindRootLayer(out Layer rootLayer))
-            {
+            if (!FindRootLayer(out Layer rootLayer)) {
                 var rootLayerIdx = Settings.ActiveDoc.Layers.Add(Settings.RootLayerName, Settings.RootLayerColor);
                 rootLayer = Settings.ActiveDoc.Layers.FindIndex(rootLayerIdx);
             }
@@ -56,8 +52,7 @@ namespace D2P_Core.Utility
             if (!FindRootLayer(out Layer rootLayer))
                 rootLayer = CreateRootLayer();
             var layerName = ComposeComponentTypeLayerName(component);
-            var componentLayer = new Layer()
-            {
+            var componentLayer = new Layer() {
                 Id = Guid.NewGuid(),
                 ParentLayerId = rootLayer.Id,
                 Name = layerName,
@@ -77,16 +72,22 @@ namespace D2P_Core.Utility
 
         public static Layer FindLayer(IMember member)
         {
-            return FindLayer(member.Component, member.LayerInfo.RawLayerName, out int layersFound);
+            var layer = FindLayer(member, out int layersFound);
+            return layersFound != 1 ? null : layer;
         }
-        public static Layer FindLayer(IComponentBase component, string rawLayerName, out int layersFound)
+        public static Layer FindLayer(IMember member, out int layersFound)
         {
+            if (member?.Component == null) {
+                layersFound = 0;
+                return null;
+            }
             string layerName = string.Empty;
-            if (string.IsNullOrEmpty(rawLayerName))
-                layerName = ComposeComponentTypeLayerName(component);
-            else layerName = ComposeComponentLayerName(component, rawLayerName);
-            var componentLayers = GetComponentLayers(component);
-            var matchedLayers = componentLayers.Where(l => !l.IsReference && l.Name == layerName);
+            if (string.IsNullOrEmpty(member.LayerInfo.RawLayerName))
+                layerName = ComposeComponentTypeLayerName(member?.Component);
+            else layerName = ComposeFullLayerPath(member);
+            var componentLayers = GetComponentLayers(member.Component);
+            var matchedLayers = componentLayers
+                .Where(l => !l.IsReference && l.FullPath == layerName); // TODO: Compare FULL LayerName !!!
             layersFound = matchedLayers.Count();
             if (matchedLayers.Count() > 1 || !matchedLayers.Any())
                 return null;
@@ -96,22 +97,6 @@ namespace D2P_Core.Utility
         {
             return Settings.ActiveDoc.Layers.FindIndex(layerIndex);
         }
-
-        //public static int FindLayerIndexByFullPath(IComponentBase component, string rawLayerName)
-        //{
-        //    return FindLayerByFullPath(component, rawLayerName)?.Index ?? -1;
-        //}
-        //public static Layer FindLayerByFullPath(IComponentBase component, string rawLayerName)
-        //{
-        //    var layerNames = new Queue<string>(rawLayerName.Split(Settings.LayerNameDelimiter)
-        //        .Where(s => !string.IsNullOrEmpty(s)));
-        //    if (!layerNames.Any())
-        //        return null;
-
-        //    var rootLayer = FindComponentTypeRootLayer(component);
-        //    return TraverseLayers(component, ref layerNames, rootLayer.Id);
-        //}
-
         public static Layer FindComponentLayerByType(string type)
         {
             var layerNames = Settings.ActiveDoc.Layers.Where(l => !l.IsReference).Select(l => l.Name);
@@ -175,15 +160,6 @@ namespace D2P_Core.Utility
         {
             return $"{component.TypeId}{Settings.LayerDelimiter}{rawLayerName.Split(Settings.LayerNameDelimiter).LastOrDefault()}";
         }
-        public static string ComposeComponentLayerName(IComponentBase component, IMember member)
-        {
-            var typeId = component.TypeId;
-            var layerDelimiter = Settings.LayerDelimiter;
-            var layerName = member.LayerInfo.RawLayerName
-                .Split(Settings.LayerNameDelimiter)
-                .LastOrDefault();
-            return $"{typeId}{layerDelimiter}{layerName}";
-        }
 
         public static string ComposeComponentTypeLayerName(IComponentType componentType)
         {
@@ -194,15 +170,31 @@ namespace D2P_Core.Utility
             return $"{type} {Settings.LayerDescriptionDelimiter} {description}";
         }
 
+        public static string ComposeFullLayerPath(IMember member)
+        {
+            var layerPath = string.Empty;
+            composeLayerPath(member, ref layerPath);
+            var typeLayer = ComposeComponentTypeLayerName(member.Component);
+            var rootLayerName = Settings.RootLayerName;
+            return $"{rootLayerName}::{typeLayer}::{layerPath}";
+        }
         public static string ComposeFullLayerPath(string layerName, Guid parentLayerId)
         {
             var parentLayerPath = Settings.ActiveDoc.Layers.FindId(parentLayerId)?.FullPath;
             return parentLayerPath != null ? $"{parentLayerPath}::{layerName}" : string.Empty;
         }
+        static void composeLayerPath(IMember member, ref string layerPath)
+        {
+            layerPath = layerPath.Insert(0, $"{member.LayerInfo.RawLayerName}");
+            if (member.ParentMember == null)
+                return;
+            layerPath = layerPath.Insert(0, "::");
+            composeLayerPath(member.ParentMember, ref layerPath);
+        }
+
         public static string DecomposeLayerName(IComponentBase component, string layerName)
         {
-            if (IsComponentTypeRootLayer(component, layerName))
-            {
+            if (IsComponentTypeRootLayer(component, layerName)) {
                 var idx = layerName.IndexOf(Settings.LayerDescriptionDelimiter);
                 return layerName.Substring(idx);
             }
@@ -224,6 +216,12 @@ namespace D2P_Core.Utility
 
             var layerDelimiter = Settings.LayerNameDelimiter;
             return $"{parentLayerName}{layerDelimiter}{layerDelimiter}{layerName}";
+        }
+
+        // Get Layer Infos
+        public static string GetRawLayerName(Layer layer)
+        {
+            return layer.Name.Split(Settings.LayerDelimiter).LastOrDefault();
         }
 
         // Get Component Infos
@@ -297,14 +295,15 @@ namespace D2P_Core.Utility
             if (string.IsNullOrEmpty(member.LayerInfo.RawLayerName))
                 return FindComponentTypeRootLayer(member.Component);
 
+            var parentLayer = Settings.ActiveDoc.Layers.FindId(parentLayerId);
+            if (parentLayer == null) return null;
+
             var layerName = ComposeComponentLayerName(member.Component, layerQueue.Dequeue());
-            var layerPath = ComposeFullLayerPath(layerName, parentLayerId);
+            var layerPath = $"{parentLayer.FullPath}::{layerName}";
             var docLayerIdx = Settings.ActiveDoc.Layers.FindByFullPath(layerPath, -1);
             var docLayer = Settings.ActiveDoc.Layers.FindIndex(docLayerIdx);
-            if (docLayer == null && member.LayerInfo != null)
-            {
-                docLayer = new Layer()
-                {
+            if (docLayer == null && member.LayerInfo != null) {
+                docLayer = new Layer() {
                     Name = layerName,
                     Id = Guid.NewGuid(),
                     ParentLayerId = parentLayerId,
@@ -330,8 +329,7 @@ namespace D2P_Core.Utility
             childLayers.Add(layer);
             var children = layer.GetChildren();
             if (children == null) return;
-            foreach (var childLayer in children)
-            {
+            foreach (var childLayer in children) {
                 TraverseChildLayers(childLayer.Id, ref childLayers);
             }
         }

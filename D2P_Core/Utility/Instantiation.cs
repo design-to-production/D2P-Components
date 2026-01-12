@@ -1,15 +1,14 @@
 ﻿using D2P_Core.Components;
 using D2P_Core.Interfaces;
 using Rhino.DocObjects;
+using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace D2P_Core.Utility
-{
-    public static class Instantiation
-    {
+namespace D2P_Core.Utility {
+    public static class Instantiation {
         // Instance By Name
         public static IEnumerable<IComponentBase> InstancesByName(string name)
         {
@@ -18,10 +17,6 @@ namespace D2P_Core.Utility
                 .GetObjectList(objEnumSettings)
                 .Where(rhObj => rhObj.Attributes.GroupCount > 0);
             return InstancesFromObjects(rhObjects);
-        }
-        public static IEnumerable<IComponentBase> InstancesByName(IComponentBase component)
-        {
-            return InstancesByName(component.Name);
         }
 
         // Instance By Type
@@ -54,8 +49,7 @@ namespace D2P_Core.Utility
                 .SelectMany(id => Objects.GetObjectGroupIDs(id))
                 .ToHashSet();
 
-            foreach (var grpIdx in grpIndices)
-            {
+            foreach (var grpIdx in grpIndices) {
                 var component = InstanceFromGroup<T>(grpIdx);
                 components.Add(component);
             }
@@ -72,36 +66,34 @@ namespace D2P_Core.Utility
         public static T InstanceFromGroup<T>(int grpIdx) where T : class, IComponentBase
         {
             var grpObjects = Objects.ObjectsByGroup(grpIdx);
-            foreach (var grpObj in grpObjects)
-            {
-                if (grpObj.GetType() != typeof(TextObject))
-                    continue;
-                if (!grpObj.Name.Contains((grpObj as TextObject).TextGeometry.PlainText))
+            foreach (var txtLabel in grpObjects.OfType<TextObject>()) {
+                if (!txtLabel.Name.Contains(txtLabel.TextGeometry.PlainText))
                     continue;
 
-                var componentType = Objects.GetComponentTypeFromObject(grpObj);
+                var componentType = Objects.GetComponentTypeFromObject(txtLabel);
                 if (!ComponentTable.TryGetValue(componentType.TypeId, out var type))
                     throw new Exception($"No class with type {componentType.TypeId} registered !");
 
                 var component = (T)Activator.CreateInstance(type);
-                component.ID = grpObj.Id;
 
-                //if (component.Label)
-                //{
-                //    //var label = TextEntity.Create("", Plane.WorldXY, Settings.DimensionStyle, false, 0, 0);
-                //    //label.TextHeight = LabelSize;
-                //    //Label.SetGeometry(label);
-                //}
-
-                // TODO: Refactoring => Fill when exists !
+                // TODO: Refactoring initialization
+                component.ID = txtLabel.Id;
+                component.GroupIndex = grpIdx;
 
                 component.TypeId = componentType.TypeId;
                 component.TypeName = componentType.TypeName;
                 component.LayerColor = componentType.LayerColor;
                 component.LabelSize = componentType.LabelSize;
 
-                component.ShortName = (grpObj as TextObject).TextGeometry.PlainText;
-                component.Plane = (grpObj as TextObject).TextGeometry.Plane;
+                var label = TextEntity.Create(
+                    txtLabel.TextGeometry.PlainText,
+                    txtLabel.TextGeometry.Plane,
+                    Settings.DimensionStyle, false, 0, 0);
+                label.TextHeight = txtLabel.TextGeometry.TextHeight;
+                component.Label.SetGeometry(label);
+
+                var members = Members.FindMembers(component);
+                component.DynamicMembers = members;
 
                 return component;
             }
@@ -112,8 +104,7 @@ namespace D2P_Core.Utility
         public static IComponentBase InstanceFromObject(RhinoObject obj)
         {
             var grpIndices = Objects.GetObjectGroupIDs(obj.Id);
-            foreach (var grpIdx in grpIndices)
-            {
+            foreach (var grpIdx in grpIndices) {
                 var component = InstanceFromGroup(grpIdx);
                 if (component == null) continue;
                 return component;
@@ -123,8 +114,7 @@ namespace D2P_Core.Utility
         public static T InstanceFromObject<T>(RhinoObject obj) where T : class, IComponentBase
         {
             var grpIndices = Objects.GetObjectGroupIDs(obj.Id);
-            foreach (var grpIdx in grpIndices)
-            {
+            foreach (var grpIdx in grpIndices) {
                 var component = InstanceFromGroup<T>(grpIdx);
                 if (component == null) continue;
                 return component;

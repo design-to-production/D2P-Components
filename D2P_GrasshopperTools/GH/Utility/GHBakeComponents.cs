@@ -7,10 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace D2P_GrasshopperTools.GH.Utility
-{
-    public class GHBakeComponents : GHComponentPreview
-    {
+namespace D2P_GrasshopperTools.GH.Utility {
+    public class GHBakeComponents : GHComponentPreview {
         bool _replaceExisting = true;
         bool _purgeEmptyLayers = false;
 
@@ -80,19 +78,14 @@ namespace D2P_GrasshopperTools.GH.Utility
         {
             RHDoc.UpdateComponentLayerColors(_components);
 
-            foreach (var component in _components)
-            {
+            foreach (var component in _components) {
                 if (component == null) continue;
 
-                //if (_replaceExisting)
-                //{
-                //    var existingComponents = Instantiation.InstancesByName(component);
-                //    if (existingComponents.Any())
-                //    {
-                //        Objects.DeleteComponents(existingComponents);
-                //    }
-                //}
-
+                // TODO: Refactoring Replacement Logic
+                var existingComponents = Instantiation.InstancesByName(component);
+                foreach (var existing in existingComponents) {
+                    existing.Delete();
+                }
                 component.Commit();
             }
 
@@ -103,10 +96,8 @@ namespace D2P_GrasshopperTools.GH.Utility
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
+        protected override System.Drawing.Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:                
                 return Properties.Resources.GH_BakeComponents;
             }
@@ -115,8 +106,7 @@ namespace D2P_GrasshopperTools.GH.Utility
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("B991E1EE-5839-474B-8F0C-338077BB7B5C"); }
         }
     }

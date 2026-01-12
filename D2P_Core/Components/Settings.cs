@@ -2,10 +2,8 @@
 using Rhino.DocObjects;
 using System.Drawing;
 
-namespace D2P_Core.Components
-{
-    public static class Settings
-    {
+namespace D2P_Core.Components {
+    public static class Settings {
         // Docs
         public static RhinoDoc ActiveDoc { get; set; } = RhinoDoc.ActiveDoc;
 

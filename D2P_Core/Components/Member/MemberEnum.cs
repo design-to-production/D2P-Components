@@ -4,14 +4,12 @@ using System;
 using System.Drawing;
 using System.Linq;
 
-namespace D2P_Core.Components.Member
-{
-    public class MemberEnum<Q> : MemberGeo<TextDot> where Q : struct, Enum
-    {
+namespace D2P_Core.Components.Member {
+    public class MemberEnum<Q> : MemberGeo<TextDot> where Q : struct, Enum {
         public Q EnumValue { get => GetEnum(); set => SetEnum(value); }
 
-        public MemberEnum(string name, IComponentBase component, IMember parent, string layerName, Color layerColor)
-            : base(name, component, layerName, layerColor) { }
+        public MemberEnum(IComponentBase component, string layerName, Color layerColor)
+            : base(component, layerName, layerColor) { }
 
         private Q GetEnum()
         {

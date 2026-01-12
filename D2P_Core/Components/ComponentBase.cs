@@ -9,20 +9,16 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace D2P_Core.Components
-{
-    public abstract class ComponentBase : MemberCollection, IComponentBase
-    {
+namespace D2P_Core.Components {
+    public abstract class ComponentBase : MemberCollection, IComponentBase {
         public Guid ID { get; set; } = Guid.Empty;
-        public int GroupIndex { get; protected set; } = -1;
+        public int GroupIndex { get; set; }
         public string Name => TypeId + Settings.TypeDelimiter + ShortName;
-        public string ShortName
-        {
+        public string ShortName {
             get => Label.Geometry.FirstOrDefault().PlainText;
             set => Label.Geometry.FirstOrDefault().PlainText = value;
         }
-        public Plane Plane
-        {
+        public Plane Plane {
             get => Label.Geometry.FirstOrDefault().Plane;
             set => Label.Geometry.FirstOrDefault().Plane = value;
         }
@@ -38,7 +34,7 @@ namespace D2P_Core.Components
         public abstract IComponentBase Duplicate();
         protected virtual void Init()
         {
-            Label = new MemberGeo<TextEntity>(nameof(Label), this, new LayerInfo("", LayerColor));
+            Label = new MemberGeo<TextEntity>(this, "", LayerColor);
         }
 
         public ComponentBase() { Init(); }
@@ -60,8 +56,7 @@ namespace D2P_Core.Components
         public bool Transform(Transform xform)
         {
             var result = true;
-            foreach (var geometry in Geometry)
-            {
+            foreach (var geometry in Geometry) {
                 if (!geometry.Transform(xform))
                     result = false;
             }
@@ -72,34 +67,36 @@ namespace D2P_Core.Components
         public virtual void Delete() => Objects.DeleteComponent(this);
         public virtual void Commit()
         {
-            var exists = Exists();
-            if (!exists)
-            {
-                if (!Utility.Group.GetGroupIndex(this, out int grpIdx))
-                    grpIdx = Utility.Group.AddGroup();
-                GroupIndex = grpIdx;
+            var existing = Instantiation.InstancesByName(Name);
+            Objects.DeleteComponents(existing);
 
-                var componentLayer = Layers.FindComponentTypeRootLayer(this);
-                if (componentLayer == null || componentLayer.Index == 0)
-                    componentLayer = Layers.CreateComponentTypeLayer(this);
-
-                var attributes = new ObjectAttributes() { Name = Name, LayerIndex = componentLayer.Index };
-                attributes.AddToGroup(GroupIndex);
-
-                var label = Label.Geometry.FirstOrDefault();
-                ID = Settings.ActiveDoc.Objects.AddText(label, attributes);
+            if (!Exists()) {
+                Create();
             }
-            else
-            {
+            else {
                 Label.Commit();
-                ID = Label.Attributes.ObjectId;
             }
 
             AllMembers.SetComponent(this);
-            foreach (var member in AllMembers.Where(m => m.Name != nameof(Label)))
-            {
+            foreach (var member in AllMembers.Where(m => !Members.IsComponentLabel(this, m))) {
                 member.Commit();
             }
+        }
+        void Create()
+        {
+            if (!Utility.Group.GetGroupIndex(this, out int grpIdx))
+                grpIdx = Utility.Group.AddGroup();
+            GroupIndex = grpIdx;
+
+            var componentLayer = Layers.FindComponentTypeRootLayer(this);
+            if (componentLayer == null || componentLayer.Index == 0)
+                componentLayer = Layers.CreateComponentTypeLayer(this);
+
+            var attributes = new ObjectAttributes() { Name = Name, LayerIndex = componentLayer.Index };
+            attributes.AddToGroup(GroupIndex);
+
+            var label = Label.Geometry.FirstOrDefault();
+            ID = Settings.ActiveDoc.Objects.AddText(label, attributes);
         }
     }
 }

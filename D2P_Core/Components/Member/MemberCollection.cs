@@ -1,27 +1,23 @@
 ﻿using D2P_Core.Interfaces;
+using D2P_Core.Utility;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace D2P_Core.Components.Member
-{
-    public abstract class MemberCollection : IMemberCollection
-    {
+namespace D2P_Core.Components.Member {
+    public abstract class MemberCollection : IMemberCollection {
         private Dictionary<string, IMember> _dynamicMembers = new Dictionary<string, IMember>();
 
         public IMember ParentMember { get; set; }
 
-        public IEnumerable<IMember> AllMembers
-        {
+        public IEnumerable<IMember> AllMembers {
             get => StaticMembers.Concat(DynamicMembers);
         }
-        public IEnumerable<IMember> DynamicMembers
-        {
+        public IEnumerable<IMember> DynamicMembers {
             get => _dynamicMembers.Values;
-            set => _dynamicMembers = value.ToDictionary(m => m.Name, m => m);
+            set => _dynamicMembers = value.ToDictionary(m => Layers.ComposeFullLayerPath(m), m => m);
         }
-        public IEnumerable<IMember> StaticMembers
-        {
+        public IEnumerable<IMember> StaticMembers {
             get => GetType()
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
                 .Where(p =>
@@ -33,15 +29,12 @@ namespace D2P_Core.Components.Member
                 .OfType<IMember>();
         }
 
-        public IMember this[string name]
-        {
-            get
-            {
+        public IMember this[string name] {
+            get {
                 _dynamicMembers.TryGetValue(name, out var v);
                 return v ?? null;
             }
-            set
-            {
+            set {
                 if (value == null) return;
                 _dynamicMembers[name] = value;
             }

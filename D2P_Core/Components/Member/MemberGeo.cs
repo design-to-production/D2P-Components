@@ -2,50 +2,44 @@
 using D2P_Core.Utility;
 using Rhino.DocObjects;
 using Rhino.Geometry;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace D2P_Core.Components.Member
-{
-    public class MemberGeo<T> : MemberCollection, IMember<T> where T : GeometryBase
-    {
+namespace D2P_Core.Components.Member {
+    public class MemberGeo<T> : MemberCollection, IMember<T> where T : GeometryBase {
         protected IEnumerable<T> _geometry;
 
-        public string Name { get; set; }
         public bool ReplaceExisting { get; set; } = true;
         public IComponentBase Component { get; set; }
 
         public ILayerInfo LayerInfo { get; set; }
         public ObjectAttributes Attributes { get; set; } = new ObjectAttributes();
-        public IEnumerable<T> Geometry
-        {
-            get
-            {
+        public IEnumerable<T> Geometry {
+            get {
                 if (_geometry != null)
                     return _geometry;
                 var layer = Layers.FindLayer(this);
                 if (layer == null)
                     return Enumerable.Empty<T>();
-                return Objects.ObjectsByLayer<T>(Component, layer.Index);
+                return Objects.GeometryByLayer<T>(Component, layer.Index);
             }
             set => _geometry = value;
         }
         IEnumerable<GeometryBase> IMember.Geometry { get => Geometry; }
 
-        public MemberGeo(string name, IComponentBase component, ILayerInfo layerInfo)
+        public MemberGeo(IComponentBase component, ILayerInfo layerInfo)
         {
-            Name = name ?? Guid.NewGuid().ToString();
             Component = component;
             LayerInfo = layerInfo;
         }
-        public MemberGeo(string name, IComponentBase component, string layerName, Color layerColor)
-            : this(name, component, new LayerInfo(layerName, layerColor)) { }
+        public MemberGeo(IComponentBase component, string rawLayerName, Color layerColor)
+            : this(component, new LayerInfo(rawLayerName, layerColor))
+        { }
         protected MemberGeo(IMember other)
         {
-            Name = other.Name;
             ParentMember = other.ParentMember;
+            Component = other.Component;
             LayerInfo = other.LayerInfo;
             SetGeometry(
                 other.Geometry
@@ -66,9 +60,21 @@ namespace D2P_Core.Components.Member
             if (Component == null || !Component.Exists())
                 return;
 
+            //if (Members.IsComponentLabel(this)) {
+            //    var layer = Layers.FindLayer(this);
+            //    var rhinoObjects = Objects.ObjectsByLayer(Component, layer.Index);
+            //    var label = rhinoObjects.FirstOrDefault(rhObj => rhObj.Geometry.GetType() == typeof(TextEntity));
+            //    var newLabel = Geometry.FirstOrDefault() as TextEntity;
+            //    Settings.ActiveDoc.Objects.Replace(label.Id, newLabel);
+            //    Attributes = label.Attributes;
+            //    Component.ID = Attributes.ObjectId;
+            //}
+
             UpdateDoc();
-            foreach (var childMember in AllMembers)
-            {
+
+            foreach (var childMember in AllMembers) {
+                childMember.ParentMember = this;
+                childMember.Component = Component;
                 childMember.Commit();
             }
         }
@@ -85,8 +91,7 @@ namespace D2P_Core.Components.Member
             //if (ReplaceExisting)
 
             Objects.DeleteObjects(this);
-            foreach (var geometry in Geometry)
-            {
+            foreach (var geometry in Geometry) {
                 var id = Settings.ActiveDoc.Objects.Add(geometry, Attributes);
                 Attributes.ObjectId = id; // TODO: Refactoring ? Only needed for label right now
             }
@@ -105,16 +110,15 @@ namespace D2P_Core.Components.Member
         {
             return new MemberGeo<T>(this);
         }
+
         IMember IDocObject<IMember>.Duplicate()
         {
             return Duplicate();
         }
     }
 
-    public class MemberGeo : MemberGeo<GeometryBase>
-    {
-        public MemberGeo(string name, IComponentBase component, ILayerInfo layerInfo)
-            : base(name, component, layerInfo)
-        { }
+    public class MemberGeo : MemberGeo<GeometryBase> {
+        public MemberGeo(IComponentBase component, ILayerInfo layerInfo)
+            : base(component, layerInfo) { }
     }
 }

@@ -8,10 +8,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace D2P_GrasshopperTools.GH
-{
-    public abstract class GHVariableParameterComponent : GHComponentPreview, IGH_VariableParameterComponent
-    {
+namespace D2P_GrasshopperTools.GH {
+    public abstract class GHVariableParameterComponent : GHComponentPreview, IGH_VariableParameterComponent {
         protected Dictionary<string, Type> _properties = new Dictionary<string, Type>();
 
         protected GHVariableParameterComponent(string name, string shortname, string description, string category, string subcategory)
@@ -24,17 +22,14 @@ namespace D2P_GrasshopperTools.GH
         {
             var outTrees = new List<GH_Structure<IGH_Goo>>();
             var typesDictionary = new Dictionary<string, int>();
-            for (int i = 0; i < _properties.Count; i++)
-            {
+            for (int i = 0; i < _properties.Count; i++) {
                 typesDictionary.Add(_properties.Keys.ElementAt(i), i);
                 outTrees.Add(new GH_Structure<IGH_Goo>());
             }
 
-            for (int p = 0; p < componentTree.PathCount; p++)
-            {
+            for (int p = 0; p < componentTree.PathCount; p++) {
                 var listData = componentTree.Branches[p];
-                for (int i = 0; i < listData.Count; i++)
-                {
+                for (int i = 0; i < listData.Count; i++) {
                     var compWrapper = new GH_ObjectWrapper(listData[i]);
                     var component = compWrapper.Value as IComponentBase;
                     var typeIdx = typesDictionary[component.TypeId];
@@ -43,8 +38,7 @@ namespace D2P_GrasshopperTools.GH
                 }
             }
 
-            for (int i = 0; i < outTrees.Count; i++)
-            {
+            for (int i = 0; i < outTrees.Count; i++) {
                 DA.SetDataTree(i, outTrees[i]);
             }
 
@@ -55,10 +49,8 @@ namespace D2P_GrasshopperTools.GH
             var countMatch = _properties.Count == Params.Output.Count;
             if (!countMatch) return true;
 
-            foreach (var name in _properties)
-            {
-                if (!Params.Output.Select(p => p.NickName).Any(n => n == name.Key))
-                {
+            foreach (var name in _properties) {
+                if (!Params.Output.Select(p => p.NickName).Any(n => n == name.Key)) {
                     return true;
                 }
             }
@@ -69,20 +61,15 @@ namespace D2P_GrasshopperTools.GH
         {
             var paramCount = _properties.Count;
             if (paramCount == 0) return;
-            if (OutputMismatch())
-            {
-                if (Params.Output.Count < paramCount)
-                {
-                    while (Params.Output.Count < paramCount)
-                    {
+            if (OutputMismatch()) {
+                if (Params.Output.Count < paramCount) {
+                    while (Params.Output.Count < paramCount) {
                         var new_param = CreateParameter(GH_ParameterSide.Output, Params.Output.Count);
                         Params.RegisterOutputParam(new_param);
                     }
                 }
-                else if (Params.Output.Count > paramCount)
-                {
-                    while (Params.Output.Count > paramCount)
-                    {
+                else if (Params.Output.Count > paramCount) {
+                    while (Params.Output.Count > paramCount) {
                         Params.UnregisterOutputParameter(Params.Output[Params.Output.Count - 1]);
                     }
                 }
@@ -122,8 +109,7 @@ namespace D2P_GrasshopperTools.GH
         {
             if (_properties == null) return;
             var names = _properties.Keys;
-            for (var i = 0; i < Params.Output.Count; i++)
-            {
+            for (var i = 0; i < Params.Output.Count; i++) {
                 if (i > names.Count - 1) return;
                 var name = names.ElementAt(i);
                 var type = _properties[name];
@@ -132,12 +118,10 @@ namespace D2P_GrasshopperTools.GH
                 Params.Output[i].NickName = $"{name}";
                 Params.Output[i].Description = $"Component TypeId {name}";
                 Params.Output[i].MutableNickName = false;
-                if (type.IsAssignableFrom(typeof(IEnumerable)))
-                {
+                if (type.IsAssignableFrom(typeof(IEnumerable))) {
                     Params.Output[i].Access = GH_ParamAccess.list;
                 }
-                else
-                {
+                else {
                     Params.Output[i].Access = GH_ParamAccess.item;
 
                 }
@@ -149,8 +133,7 @@ namespace D2P_GrasshopperTools.GH
             base.ClearData();
             _properties?.Clear();
             if (Params == null || !Params.Any()) return;
-            foreach (var ghParam in Params)
-            {
+            foreach (var ghParam in Params) {
                 ghParam?.ClearData();
             }
         }

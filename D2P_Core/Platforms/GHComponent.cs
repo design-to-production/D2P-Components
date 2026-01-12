@@ -4,10 +4,8 @@ using Rhino.Geometry;
 using System.Drawing;
 
 
-namespace D2P_GrasshopperTools.Core
-{
-    public class GHComponent : ComponentBase
-    {
+namespace D2P_Core.Platforms {
+    public class GHComponent : ComponentBase {
         public override string TypeId { get; set; }
         public override string TypeName { get; set; }
         public override Color LayerColor { get; set; }

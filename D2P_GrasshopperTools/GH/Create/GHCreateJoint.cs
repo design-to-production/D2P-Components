@@ -1,15 +1,13 @@
 ﻿using D2P_Core.Components;
-using D2P_GrasshopperTools.Core;
+using D2P_Core.Platforms;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace D2P_GrasshopperTools.GH.Create
-{
-    public class GHCreateJoint : GHComponentPreview
-    {
+namespace D2P_GrasshopperTools.GH.Create {
+    public class GHCreateJoint : GHComponentPreview {
         /// <summary>
         /// Initializes a new instance of the GHCreateJoint class.
         /// </summary>
@@ -54,14 +52,12 @@ namespace D2P_GrasshopperTools.GH.Create
 
             var componentNames = components.Select(c => c?.ShortName ?? string.Empty);
             var name = string.Join(Settings.JointDelimiter.ToString(), componentNames);
-            if (!componentNames.Any() || componentNames.Contains(string.Empty))
-            {
+            if (!componentNames.Any() || componentNames.Contains(string.Empty)) {
                 var msg = $"Invalid Joint Name {name} !";
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
                 return;
             }
-            else if (componentNames.Count() == 1)
-            {
+            else if (componentNames.Count() == 1) {
                 var msg = $"Please provide more than one component to create a joint !";
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
                 return;
@@ -76,10 +72,8 @@ namespace D2P_GrasshopperTools.GH.Create
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
+        protected override System.Drawing.Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:
                 return Properties.Resources.GH_CreateJoint;
             }
@@ -88,8 +82,7 @@ namespace D2P_GrasshopperTools.GH.Create
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("D7B9D83D-4C26-412D-A860-7B56A8C6A755"); }
         }
     }

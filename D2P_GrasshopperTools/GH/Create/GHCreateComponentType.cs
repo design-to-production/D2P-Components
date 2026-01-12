@@ -1,13 +1,11 @@
 ﻿using D2P_Core.Components;
-using D2P_GrasshopperTools.Core;
+using D2P_Core.Platforms;
 using Grasshopper.Kernel;
 using System;
 using System.Drawing;
 
-namespace D2P_GrasshopperTools.GH.Create
-{
-    public class GHCreateComponentType : GHComponentBase
-    {
+namespace D2P_GrasshopperTools.GH.Create {
+    public class GHCreateComponentType : GHComponentBase {
         /// <summary>
         /// Initializes a new instance of the Layers_CreateLayer class.
         /// </summary>
@@ -56,11 +54,9 @@ namespace D2P_GrasshopperTools.GH.Create
             DA.GetData(2, ref labelSize);
             DA.GetData(3, ref layerColor);
 
-            if (string.IsNullOrEmpty(typeName))
-            {
+            if (string.IsNullOrEmpty(typeName)) {
                 var componentLayer = D2P_Core.Utility.Layers.FindComponentLayerByType(typeID);
-                if (componentLayer == null)
-                {
+                if (componentLayer == null) {
                     var msg = $"Layer of type {typeID} does not exist in the RhinoDoc yet. Cannot auto-generate layer description !";
                     AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
                     return;
@@ -80,10 +76,8 @@ namespace D2P_GrasshopperTools.GH.Create
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override Bitmap Icon
-        {
-            get
-            {
+        protected override Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:                
                 return Properties.Resources.GH_CreateComponentType;
             }
@@ -92,8 +86,7 @@ namespace D2P_GrasshopperTools.GH.Create
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("574EBA51-8F4D-4B0C-B4C9-A5AD7476876F"); }
         }
     }

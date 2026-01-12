@@ -6,10 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace D2P_Core.Utility
-{
-    public static class Objects
-    {
+namespace D2P_Core.Utility {
+    public static class Objects {
         // Get Type Infos
         public static ComponentType GetComponentTypeFromObject(RhinoObject rhObj)
         {
@@ -22,69 +20,57 @@ namespace D2P_Core.Utility
         }
 
         // Objects By Layer
-        //public static IEnumerable<T> ObjectsByLayer<T>(IMember member)
-        //{
-
-        //}
-
-        //public static IEnumerable<T> ObjectsByLayer<T>(IComponentBase component, int layerIdx, LayerScope layerScope) where T : GeometryBase
-        //{
-        //    IEnumerable<T> objectsByLayer(int idx)
-        //    {
-        //        var objLayers = component.AttributeCollection.Where(keyVal => keyVal.Value.LayerIndex == idx).Select(kv => kv.Key);
-        //        return component.GeometryCollection.Where(kv => objLayers.Contains(kv.Key) && (kv.Value != null)).Select(kv => kv.Value as T);
-        //    }
-
-        //    switch (layerScope)
-        //    {
-        //        case LayerScope.CurrentOnly:
-        //            return objectsByLayer(layerIdx);
-        //        case LayerScope.IncludeChildren:
-        //            var objects = new List<T>();
-        //            foreach (var idx in Layers.GetChildLayerIndices(layerIdx))
-        //            {
-        //                objects.AddRange(objectsByLayer(idx));
-        //            }
-        //            return objects;
-        //        default:
-        //            return Enumerable.Empty<T>();
-        //    }
-        //}
-        public static IEnumerable<T> ObjectsByLayer<T>(IComponentBase component, int layerIdx) where T : GeometryBase
+        public static IEnumerable<RhinoObject> ObjectsByLayer(IComponentBase component, int layerIdx)
         {
-            return component.AllMembers
-                .FirstOrDefault(m => m.Attributes.LayerIndex == layerIdx)
-                .Geometry
-                .OfType<T>();
+            return ObjectsByGroup(component.GroupIndex)
+                .Where(rh => rh.Attributes.LayerIndex == layerIdx);
         }
-        public static IEnumerable<GeometryBase> ObjectsByLayer(IComponentBase component, int layerIdx) => ObjectsByLayer<GeometryBase>(component, layerIdx);
         public static IEnumerable<RhinoObject> ObjectsByLayer(Layer layer)
         {
             return Settings.ActiveDoc.Objects.FindByLayer(layer);
         }
 
+        // Geometry By Layer
+        public static IEnumerable<T> GeometryByLayer<T>(IComponentBase component, int layerIdx) where T : GeometryBase
+        {
+            return ObjectsByLayer(component, layerIdx)
+                .Select(rhObj => rhObj.Geometry)
+                .OfType<T>();
+        }
+        public static IEnumerable<GeometryBase> GeometryByLayer(IComponentBase component, int layerIdx)
+        {
+            return GeometryByLayer<GeometryBase>(component, layerIdx);
+        }
+        public static IEnumerable<T> GeometryByLayer<T>(IEnumerable<IMember> members, int layerIdx) where T : GeometryBase
+        {
+            // TODO: Refactor and make SURE that components without initialized members return objects !!
+            return members
+                .FirstOrDefault(m => m.Attributes.LayerIndex == layerIdx)
+                .Geometry
+                .OfType<T>();
+        }
+        public static IEnumerable<GeometryBase> GeometryByLayer(IEnumerable<IMember> members, int layerIdx)
+        {
+            return GeometryByLayer<GeometryBase>(members, layerIdx);
+        }
+
+
         // Objects By Group
         public static IEnumerable<RhinoObject> ObjectsByGroup(int grpIdx) => Settings.ActiveDoc.Groups.GroupMembers(grpIdx);
-        public static IEnumerable<RhinoObject> ObjectsByGroup(int grpIdx, Layer layer) => ObjectsByGroup(grpIdx).Where(rh => rh.Attributes.LayerIndex == layer?.Index);
+
 
         // Delete Objects
         public static int DeleteObjects(IComponentBase component, Layer layer)
         {
+            //TODO: Handle layer == null
+            if (component == null || layer == null)
+                return 0;
             if (!Group.GetGroupIndex(component, out int grpIdx))
                 return 0;
-            var rhObjects = ObjectsByGroup(grpIdx, layer);
+            var rhObjects = ObjectsByLayer(component, layer.Index);
             if (rhObjects == null)
                 return 0;
             var objectIds = rhObjects.Select(rh => rh.Id);
-            return Settings.ActiveDoc.Objects.Delete(objectIds, true);
-        }
-        public static int DeleteObjects(IComponentBase component)
-        {
-            if (!Group.GetGroupIndex(component, out int grpIdx))
-                return 0;
-            var objectIds = ObjectsByGroup(grpIdx)
-                .Select(rh => rh.Id)
-                .Where(id => id != component.ID);
             return Settings.ActiveDoc.Objects.Delete(objectIds, true);
         }
         public static int DeleteObjects(IMember member)

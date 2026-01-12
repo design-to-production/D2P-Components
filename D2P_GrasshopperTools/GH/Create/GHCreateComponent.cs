@@ -1,13 +1,11 @@
 ﻿using D2P_Core.Components;
-using D2P_GrasshopperTools.Core;
+using D2P_Core.Platforms;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 using System;
 
-namespace D2P_GrasshopperTools.GH.Create
-{
-    public class GHCreateComponent : GHComponentPreview
-    {
+namespace D2P_GrasshopperTools.GH.Create {
+    public class GHCreateComponent : GHComponentPreview {
         /// <summary>
         /// Initializes a new instance of the CreateComponent class.
         /// </summary>
@@ -65,10 +63,8 @@ namespace D2P_GrasshopperTools.GH.Create
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
+        protected override System.Drawing.Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:                
                 return Properties.Resources.GH_CreateComponent;
             }
@@ -77,8 +73,7 @@ namespace D2P_GrasshopperTools.GH.Create
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("9ABC0992-CC25-47B8-8CAC-BC3D84AA0FD4"); }
         }
     }
