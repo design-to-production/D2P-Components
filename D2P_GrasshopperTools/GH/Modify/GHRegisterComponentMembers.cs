@@ -1,14 +1,13 @@
 ﻿using D2P_Core.Components.Member;
 using D2P_Core.Interfaces;
+using D2P_Core.Utility;
 using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace D2P_GrasshopperTools.GH.Modify
-{
-    public class GHRegisterComponentMembers : GHComponentPreview
-    {
+namespace D2P_GrasshopperTools.GH.Modify {
+    public class GHRegisterComponentMembers : GHComponentPreview {
         bool _replaceExisting = true;
 
         /// <summary>
@@ -51,18 +50,17 @@ namespace D2P_GrasshopperTools.GH.Modify
             DA.GetData(0, ref component);
             DA.GetDataList(1, componentMembers);
 
-            if (component == null)
-            {
+            if (component == null) {
                 var msg = $"Component is null !";
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
                 return;
             }
 
             var componentClone = component.Duplicate();
-            foreach (var member in componentMembers)
-            {
+            foreach (var member in componentMembers) {
                 member.Component = componentClone;
-                componentClone[member.Name] = member;
+                var path = Layers.ComposeFullLayerPath(member);
+                componentClone[path] = member;
             }
 
             _components.Add(componentClone);
@@ -84,10 +82,8 @@ namespace D2P_GrasshopperTools.GH.Modify
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
+        protected override System.Drawing.Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:                
                 return Properties.Resources.GH_RegisterComponentObjects;
             }
@@ -96,8 +92,7 @@ namespace D2P_GrasshopperTools.GH.Modify
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("D373D60F-4EDB-40D7-92F9-E2C446B8CC95"); }
         }
     }

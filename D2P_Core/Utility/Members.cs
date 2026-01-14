@@ -11,8 +11,17 @@ namespace D2P_Core.Utility {
     public static class Members {
         public static IList<IMember> FindMembers(IComponentBase component)
         {
+            var layerTree = new Dictionary<string, IMember>();
             var componentLayers = Layers.GetComponentLayers(component);
-            return componentLayers.Select(layer => MemberFromLayer(component, layer)).ToList();
+            foreach (var layer in componentLayers) {
+                var member = MemberFromLayer(component, layer);
+                var layerSegments = layer.FullPath.Split(':');
+                foreach (var layerSegment in layerSegments) {
+
+                }
+            }
+
+            return layerTree.Values.ToList();
         }
 
         public static IMember MemberFromLayer(IComponentBase component, Layer layer)

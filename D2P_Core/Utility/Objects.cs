@@ -60,7 +60,7 @@ namespace D2P_Core.Utility {
 
 
         // Delete Objects
-        public static int DeleteObjects(IComponentBase component, Layer layer)
+        public static int DeleteObjects(IComponentBase component, Layer layer, bool recursive = false)
         {
             //TODO: Handle layer == null
             if (component == null || layer == null)
@@ -71,8 +71,18 @@ namespace D2P_Core.Utility {
             if (rhObjects == null)
                 return 0;
             var objectIds = rhObjects.Select(rh => rh.Id);
-            return Settings.ActiveDoc.Objects.Delete(objectIds, true);
+            var nDeleted = Settings.ActiveDoc.Objects.Delete(objectIds, true);
+
+            if (recursive) {
+                var sublayers = Layers.GetChildLayers(layer);
+                foreach (var sublayer in sublayers) {
+                    nDeleted += DeleteObjects(component, sublayer, recursive);
+                }
+            }
+
+            return nDeleted;
         }
+
         public static int DeleteObjects(IMember member)
         {
             var layer = Layers.FindLayer(member);

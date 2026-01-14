@@ -2,10 +2,8 @@
 using System;
 using System.Collections.Generic;
 
-namespace D2P_Core.Interfaces
-{
-    public interface IComponentBase : IMemberCollection, IComponentType, IDocObject<IComponentBase>
-    {
+namespace D2P_Core.Interfaces {
+    public interface IComponentBase : IMemberCollection, IComponentType, IDocObject<IComponentBase> {
         IMember<TextEntity> Label { get; }
 
         Guid ID { get; set; }
@@ -16,7 +14,7 @@ namespace D2P_Core.Interfaces
 
         IEnumerable<GeometryBase> Geometry { get; }
 
-        IMember this[string name] { get; set; }
+        //IMember this[string name] { get; set; }
 
         bool Transform(Transform xform);
     }

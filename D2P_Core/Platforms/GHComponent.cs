@@ -26,6 +26,5 @@ namespace D2P_Core.Platforms {
         {
             return new GHComponent(this);
         }
-
     }
 }

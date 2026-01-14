@@ -1,7 +1,6 @@
 ﻿using D2P_Core.Components;
 using D2P_Core.Interfaces;
 using Rhino.DocObjects;
-using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,15 +84,11 @@ namespace D2P_Core.Utility {
                 component.LayerColor = componentType.LayerColor;
                 component.LabelSize = componentType.LabelSize;
 
-                var label = TextEntity.Create(
-                    txtLabel.TextGeometry.PlainText,
-                    txtLabel.TextGeometry.Plane,
-                    Settings.DimensionStyle, false, 0, 0);
-                label.TextHeight = txtLabel.TextGeometry.TextHeight;
+                var label = txtLabel.TextGeometry;
                 component.Label.SetGeometry(label);
 
-                var members = Members.FindMembers(component);
-                component.DynamicMembers = members;
+                //var members = Members.FindMembers(component);
+                //component.DynamicMembers = members;
 
                 return component;
             }

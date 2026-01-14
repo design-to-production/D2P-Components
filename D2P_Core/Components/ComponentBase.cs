@@ -31,13 +31,14 @@ namespace D2P_Core.Components {
         public IEnumerable<GeometryBase> Geometry => AllMembers.SelectMany(m => m.Geometry);
         public IMember<TextEntity> Label { get; private set; }
 
+        protected virtual void Init() { }
         public abstract IComponentBase Duplicate();
-        protected virtual void Init()
+
+        public ComponentBase()
         {
             Label = new MemberGeo<TextEntity>(this, "", LayerColor);
+            Init();
         }
-
-        public ComponentBase() { Init(); }
         public ComponentBase(string name, Plane plane) : this()
         {
             var label = TextEntity.Create(name, plane, Settings.DimensionStyle, false, 0, 0);
@@ -68,14 +69,14 @@ namespace D2P_Core.Components {
         public virtual void Commit()
         {
             var existing = Instantiation.InstancesByName(Name);
-            Objects.DeleteComponents(existing);
+            Objects.DeleteComponents(existing.Where(c => c.ID != ID));
 
             if (!Exists()) {
                 Create();
             }
-            else {
-                Label.Commit();
-            }
+            //else {
+            //    Label.Commit();
+            //}
 
             AllMembers.SetComponent(this);
             foreach (var member in AllMembers.Where(m => !Members.IsComponentLabel(this, m))) {

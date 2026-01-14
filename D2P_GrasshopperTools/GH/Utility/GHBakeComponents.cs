@@ -82,7 +82,7 @@ namespace D2P_GrasshopperTools.GH.Utility {
                 if (component == null) continue;
 
                 // TODO: Refactoring Replacement Logic
-                var existingComponents = Instantiation.InstancesByName(component);
+                var existingComponents = Instantiation.InstancesByName(component.Name);
                 foreach (var existing in existingComponents) {
                     existing.Delete();
                 }

@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace D2P_Core.Components.Member {
     public abstract class MemberCollection : IMemberCollection {
-        private Dictionary<string, IMember> _dynamicMembers = new Dictionary<string, IMember>();
+        protected Dictionary<string, IMember> _dynamicMembers = new Dictionary<string, IMember>();
 
         public IMember ParentMember { get; set; }
 
@@ -29,15 +29,16 @@ namespace D2P_Core.Components.Member {
                 .OfType<IMember>();
         }
 
-        public IMember this[string name] {
-            get {
-                _dynamicMembers.TryGetValue(name, out var v);
-                return v ?? null;
-            }
-            set {
-                if (value == null) return;
-                _dynamicMembers[name] = value;
-            }
-        }
+
+        //public IMember this[string name] {
+        //    get {
+        //        _dynamicMembers.TryGetValue(name, out var v);
+        //        return v ?? null;
+        //    }
+        //    set {
+        //        if (value == null) return;
+        //        _dynamicMembers[name] = value;
+        //    }
+        //}
     }
 }

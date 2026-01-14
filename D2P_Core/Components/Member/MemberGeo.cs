@@ -86,12 +86,10 @@ namespace D2P_Core.Components.Member {
             var memberLayer = Layers.CreateLayer(this);
             Attributes.LayerIndex = memberLayer.Index;
 
-            //if (_geometry == null) return;
-            // TODO: Replace Members of existing component instead of recreating it completely
-            //if (ReplaceExisting)
+            if (_geometry == null) return;
+            else Delete();
 
-            Objects.DeleteObjects(this);
-            foreach (var geometry in Geometry) {
+            foreach (var geometry in _geometry) {
                 var id = Settings.ActiveDoc.Objects.Add(geometry, Attributes);
                 Attributes.ObjectId = id; // TODO: Refactoring ? Only needed for label right now
             }
@@ -99,11 +97,15 @@ namespace D2P_Core.Components.Member {
 
         public bool Exists()
         {
-            throw new System.NotImplementedException();
+            return Geometry.Any();
         }
         public void Delete()
         {
-            throw new System.NotImplementedException();
+            var layer = Layers.FindLayer(this);
+            Objects.DeleteObjects(Component, layer, true);
+            foreach (var member in AllMembers) {
+                member.Delete();
+            }
         }
 
         public IMember<T> Duplicate()
@@ -114,6 +116,18 @@ namespace D2P_Core.Components.Member {
         IMember IDocObject<IMember>.Duplicate()
         {
             return Duplicate();
+        }
+
+        public IMember this[string name] {
+            get {
+                _dynamicMembers.TryGetValue(name, out var v);
+                return v ?? null;
+            }
+            set {
+                if (value == null) return;
+                value.ParentMember = this;
+                _dynamicMembers[name] = value;
+            }
         }
     }
 

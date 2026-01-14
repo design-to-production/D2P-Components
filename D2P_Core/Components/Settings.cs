@@ -2,6 +2,7 @@
 using Rhino.DocObjects;
 using System.Drawing;
 
+
 namespace D2P_Core.Components {
     public static class Settings {
         // Docs
@@ -12,7 +13,7 @@ namespace D2P_Core.Components {
         public static Color RootLayerColor { get; set; } = Color.FromArgb(220, 75, 58);
 
         // Style        
-        public static string DimensionStyleName { get; set; } = ActiveDoc.DimStyles.Current.Name;
+        public static string DimensionStyleName => ActiveDoc.DimStyles.Current.Name;
         public static DimensionStyle DimensionStyle => ActiveDoc.DimStyles.FindName(DimensionStyleName) ?? ActiveDoc.DimStyles.Current;
 
         // Delimiter

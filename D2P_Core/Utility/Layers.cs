@@ -178,14 +178,14 @@ namespace D2P_Core.Utility {
             var rootLayerName = Settings.RootLayerName;
             return $"{rootLayerName}::{typeLayer}::{layerPath}";
         }
-        public static string ComposeFullLayerPath(string layerName, Guid parentLayerId)
-        {
-            var parentLayerPath = Settings.ActiveDoc.Layers.FindId(parentLayerId)?.FullPath;
-            return parentLayerPath != null ? $"{parentLayerPath}::{layerName}" : string.Empty;
-        }
         static void composeLayerPath(IMember member, ref string layerPath)
         {
-            layerPath = layerPath.Insert(0, $"{member.LayerInfo.RawLayerName}");
+            var layerNames = member.LayerInfo.RawLayerName.Split(':')
+                .Where(name => !string.IsNullOrEmpty(name))
+                .Select(name => $"{member.Component.TypeId}{Settings.LayerDelimiter}{name}");
+            var result = string.Join("::", layerNames);
+
+            layerPath = layerPath.Insert(0, result);
             if (member.ParentMember == null)
                 return;
             layerPath = layerPath.Insert(0, "::");
@@ -278,7 +278,7 @@ namespace D2P_Core.Utility {
                 return Enumerable.Empty<Layer>();
             var childLayers = new List<Layer>();
             TraverseChildLayers(rootId, ref childLayers);
-            return childLayers;
+            return childLayers.Where(l => l.Id != rootId);
         }
         public static IEnumerable<Layer> GetChildLayers(int layerIdx)
         {

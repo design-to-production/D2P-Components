@@ -6,10 +6,8 @@ using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 
-namespace D2P_GrasshopperTools.GH.Create
-{
-    public class GHCreateComponentMember : GHComponentBase
-    {
+namespace D2P_GrasshopperTools.GH.Create {
+    public class GHCreateComponentMember : GHComponentBase {
         /// <summary>
         /// Initializes a new instance of the Geometry_AddToComponent class.
         /// </summary>
@@ -58,8 +56,7 @@ namespace D2P_GrasshopperTools.GH.Create
             DA.GetData(2, ref attributes);
             DA.GetData(3, ref parent);
 
-            var name = Guid.NewGuid().ToString();
-            var member = new MemberGeo(name, null, layerInfo);
+            var member = new MemberGeo(null, layerInfo);
             member.ParentMember = parent;
             member.SetGeometry(geometry);
 
@@ -69,10 +66,8 @@ namespace D2P_GrasshopperTools.GH.Create
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
+        protected override System.Drawing.Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:
                 return Properties.Resources.GH_CreateComponentObjects;
             }
@@ -81,8 +76,7 @@ namespace D2P_GrasshopperTools.GH.Create
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("05FD312F-0797-4543-8605-90E42DB7F2E3"); }
         }
     }
