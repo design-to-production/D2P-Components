@@ -4,13 +4,14 @@ using Rhino.DocObjects;
 using Rhino.Geometry;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 namespace D2P_GrasshopperTools.GH {
     public abstract class GHComponentPreview : GHComponentBase {
 
         protected BoundingBox _box;
         protected List<IComponentBase> _components = new List<IComponentBase>();
+        private List<GeometryBase> _geometries = new List<GeometryBase>();
+
         public override BoundingBox ClippingBox => _box;
 
         protected GHComponentPreview(string name, string shortname, string description, string category, string subcategory)
@@ -19,21 +20,21 @@ namespace D2P_GrasshopperTools.GH {
 
         protected override void BeforeSolveInstance()
         {
+            base.BeforeSolveInstance();
             _components.Clear();
+            _geometries.Clear();
+            _box = BoundingBox.Empty;
         }
+
         protected override void AfterSolveInstance()
         {
-            _box = BoundingBox.Empty;
-            foreach (var geo in _components.SelectMany(c => c?.Geometry)) {
-                if (geo == null)
-                    continue;
-                var bbox = geo.GetBoundingBox(false);
-                _box.Union(bbox);
-            }
-            var sphere = new Sphere(_box.Center, 1000);
-            _box.Union(sphere.BoundingBox);
-
-            _box.Transform(Transform.Scale(_box.Center, 1.2));
+            base.AfterSolveInstance();
+            //_geometries = _components
+            //  .Where(c => c != null)
+            //  .SelectMany(comp => comp.Geometry)
+            //  .Where(geo => geo != null)
+            //  .ToList();
+            _box = ComputeClippingBox(_geometries);
         }
 
         public override void DrawViewportWires(IGH_PreviewArgs args)
@@ -44,10 +45,9 @@ namespace D2P_GrasshopperTools.GH {
             var selected = Attributes.Selected;
             var fill = selected ? args.WireColour_Selected : args.WireColour;
             var edge = fill.GetBrightness() < 0.3 ? Color.White : Color.Black;
-            var renderTypes = new[] { ObjectType.Annotation, ObjectType.Curve, ObjectType.TextDot };
-            var geometry = _components.Where(c => c != null).SelectMany(comp => comp.Geometry);
-            geometry = geometry.Where(geo => geo != null && renderTypes.Contains(geo.ObjectType));
-            foreach (var geo in geometry) {
+            //var renderTypes = new[] { ObjectType.Annotation, ObjectType.Curve, ObjectType.TextDot };
+
+            foreach (var geo in _geometries) {
                 switch (geo.ObjectType) {
                     case ObjectType.Annotation:
                         args.Display.DrawAnnotation(geo as AnnotationBase, fill);
@@ -59,7 +59,6 @@ namespace D2P_GrasshopperTools.GH {
                         args.Display.DrawDot(geo as TextDot, fill, edge, edge);
                         break;
                     default:
-                        System.Diagnostics.Debug.WriteLine(geo.ObjectType);
                         break;
                 }
             }
@@ -71,10 +70,9 @@ namespace D2P_GrasshopperTools.GH {
 
             var selected = Attributes.Selected;
             var fill = selected ? args.ShadeMaterial_Selected : args.ShadeMaterial;
-            var renderTypes = new[] { ObjectType.Brep, ObjectType.Extrusion };
-            var geometry = _components.Where(c => c != null).SelectMany(comp => comp.Geometry);
-            geometry = geometry.Where(geo => geo != null && renderTypes.Contains(geo.ObjectType));
-            foreach (var geo in geometry) {
+            //var renderTypes = new[] { ObjectType.Brep, ObjectType.Extrusion };
+
+            foreach (var geo in _geometries) {
                 switch (geo.ObjectType) {
                     case ObjectType.Brep:
                         args.Display.DrawBrepShaded(geo as Brep, fill);
@@ -83,10 +81,28 @@ namespace D2P_GrasshopperTools.GH {
                         args.Display.DrawBrepShaded((geo as Extrusion).ToBrep(), fill);
                         break;
                     default:
-                        System.Diagnostics.Debug.WriteLine(geo.ObjectType);
                         break;
                 }
             }
+        }
+
+        static BoundingBox ComputeClippingBox(IEnumerable<GeometryBase> geometry)
+        {
+            var box = BoundingBox.Empty;
+            foreach (var geo in geometry) {
+                if (geo == null)
+                    continue;
+                var bb = geo.GetBoundingBox(false);
+                if (!bb.IsValid)
+                    continue;
+                box.Union(bb);
+            }
+
+            if (box.IsValid) {
+                box.Inflate(1000.0);
+            }
+
+            return box;
         }
     }
 }

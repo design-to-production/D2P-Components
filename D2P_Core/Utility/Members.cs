@@ -26,6 +26,22 @@ namespace D2P_Core.Utility {
             return createMembers(tree);
         }
 
+        // ULTRA SLOW !!
+        public static IEnumerable<GeometryBase> GetAllMemberGeometries(IComponentBase component)
+        {
+            return component.AllMembers.SelectMany(m => GetAllMemberGeometries(m));
+        }
+        public static IList<GeometryBase> GetAllMemberGeometries(IMember member)
+        {
+            var geometries = new List<GeometryBase>();
+            geometries.AddRange(member.Geometry);
+            foreach (var child in member.AllMembers) {
+                if (!child.Geometry.Any()) continue;
+                var childGeo = GetAllMemberGeometries(child);
+                geometries.AddRange(childGeo);
+            }
+            return geometries;
+        }
 
         public static IMember MemberFromLayer(IComponentBase component, Layer layer)
         {
