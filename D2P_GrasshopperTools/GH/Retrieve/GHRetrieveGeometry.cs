@@ -2,7 +2,6 @@
 using D2P_Core.Utility;
 using Grasshopper.Kernel;
 using System;
-using System.Linq;
 
 namespace D2P_GrasshopperTools.GH.Retrieve {
     public class GHRetrieveGeometry : GHComponentBase {
@@ -13,8 +12,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve {
           : base("RetrieveGeometry", "RetrieveGeo",
               "Retrieves geometry of a component-instance",
               "D2P", "02 Retrieve")
-        {
-        }
+        { }
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -51,8 +49,18 @@ namespace D2P_GrasshopperTools.GH.Retrieve {
                 return;
             }
 
-            var member = component.AllMembers
-                .FirstOrDefault(m => m.LayerInfo.RawLayerName == layerName);
+            var member = component.FindMember(layerName, out int membersFound);
+            if (member == null) {
+                var msg = $"Member with LayerName '{layerName}' not found !";
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
+                return;
+            }
+            else if (membersFound > 1) {
+                var msg = $"Found {membersFound} members with layerName {layerName}, specify full path !";
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
+                return;
+            }
+
             var layer = Layers.FindLayer(member, out int layersFound);
             var layerIdx = layer?.Index ?? -1;
             if (layerIdx < 0) {
@@ -67,9 +75,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve {
                     return;
                 }
             }
-
-            var geometries = Objects.ObjectsByLayer(component, layerIdx);
-            DA.SetDataList(0, geometries);
+            DA.SetDataList(0, member.Geometry);
         }
 
         /// <summary>

@@ -5,10 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace D2P_GrasshopperTools.GH.Modify
-{
-    public class GHTransform : GHComponentPreview
-    {
+namespace D2P_GrasshopperTools.GH.Modify {
+    public class GHTransform : GHComponentPreview {
         /// <summary>
         /// Initializes a new instance of the TransformComponent class.
         /// </summary>
@@ -16,8 +14,7 @@ namespace D2P_GrasshopperTools.GH.Modify
           : base("TransformComponent", "XformComp",
               "Transforms a component and all geometries inside",
               "D2P", "03 Modify")
-        {
-        }
+        { }
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -53,19 +50,16 @@ namespace D2P_GrasshopperTools.GH.Modify
 
             _components = components.Select(comp => comp.Duplicate()).ToList();
 
-            if (_components.Count != sourcePlanes.Count && sourcePlanes.Count != 0)
-            {
+            if (_components.Count != sourcePlanes.Count && sourcePlanes.Count != 0) {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Less source planes than components provided");
                 return;
             }
-            if (_components.Count > targetPlanes.Count && targetPlanes.Count != 1)
-            {
+            if (_components.Count > targetPlanes.Count && targetPlanes.Count != 1) {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Less target planes than components provided");
                 return;
             }
 
-            for (var i = 0; i < _components.Count; ++i)
-            {
+            for (var i = 0; i < _components.Count; ++i) {
                 var plane0 = sourcePlanes.Count > 0 ? sourcePlanes[i] : _components[i].Plane;
                 var planeIdx = targetPlanes.Count == 1 ? 0 : i;
                 var xform = Transform.PlaneToPlane(plane0, targetPlanes[planeIdx]);
@@ -78,10 +72,8 @@ namespace D2P_GrasshopperTools.GH.Modify
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
+        protected override System.Drawing.Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:                
                 return Properties.Resources.GH_Transform;
             }
@@ -90,8 +82,7 @@ namespace D2P_GrasshopperTools.GH.Modify
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("7CC23555-75E9-4846-B658-BD12FC4B0277"); }
         }
     }

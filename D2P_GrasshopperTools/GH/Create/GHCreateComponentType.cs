@@ -13,8 +13,7 @@ namespace D2P_GrasshopperTools.GH.Create {
           : base("CreateComponentType", "ComponentType",
               "Creates a component type which can be used to define components of that specific type",
               "D2P", "01 Create")
-        {
-        }
+        { }
 
         /// <summary>
         /// Registers all the input parameters for this component.

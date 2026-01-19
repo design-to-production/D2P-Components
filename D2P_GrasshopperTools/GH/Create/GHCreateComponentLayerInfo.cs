@@ -3,10 +3,8 @@ using Grasshopper.Kernel;
 using System;
 using System.Drawing;
 
-namespace D2P_GrasshopperTools.GH.Create
-{
-    public class GHCreateComponentLayerInfo : GHComponentBase
-    {
+namespace D2P_GrasshopperTools.GH.Create {
+    public class GHCreateComponentLayerInfo : GHComponentBase {
         /// <summary>
         /// Initializes a new instance of the GH_CreateComponentLayerInfo class.
         /// </summary>
@@ -14,8 +12,7 @@ namespace D2P_GrasshopperTools.GH.Create
           : base("CreateLayerInfo", "LayerInfo",
               "Creates a layer-information which can be applied to a component together with geometry",
               "D2P", "01 Create")
-        {
-        }
+        { }
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -54,10 +51,8 @@ namespace D2P_GrasshopperTools.GH.Create
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override Bitmap Icon
-        {
-            get
-            {
+        protected override Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:                
                 return Properties.Resources.GH_CreateLayerObject;
             }
@@ -66,8 +61,7 @@ namespace D2P_GrasshopperTools.GH.Create
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("BA650D9F-3F81-4E2B-9500-4F403C6DD4B3"); }
         }
     }

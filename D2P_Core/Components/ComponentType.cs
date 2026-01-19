@@ -4,10 +4,8 @@ using Rhino;
 using Rhino.DocObjects;
 using System.Drawing;
 
-namespace D2P_Core.Components
-{
-    public class ComponentType : IComponentType
-    {
+namespace D2P_Core.Components {
+    public class ComponentType : IComponentType {
         public string TypeId { get; set; }
         public string TypeName { get; set; }
         public double LabelSize { get; set; }

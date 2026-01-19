@@ -15,8 +15,7 @@ namespace D2P_GrasshopperTools.GH.Create {
           : base("CreateComponentMember", "Member",
               "Creates a component-member composed of geometry and a layer-information",
               "D2P", "01 Create")
-        {
-        }
+        { }
 
         /// <summary>
         /// Registers all the input parameters for this component.

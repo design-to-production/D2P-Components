@@ -3,10 +3,8 @@ using D2P_Core.Utility;
 using Grasshopper.Kernel;
 using System;
 
-namespace D2P_GrasshopperTools.GH.Retrieve
-{
-    public class GHRetrieveParent : GHComponentPreview
-    {
+namespace D2P_GrasshopperTools.GH.Retrieve {
+    public class GHRetrieveParent : GHComponentPreview {
         /// <summary>
         /// Initializes a new instance of the Component_RetrieveParentComponent class.
         /// </summary>
@@ -14,8 +12,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve
           : base("RetrieveParentComponent", "ParentMember",
               "Retrieves the parent component of a given input component. E.g. If the component-instance is named “aa.01”, “aa.02”, “aa.03”, ... the parent-instance is named “aa”",
               "D2P", "02 Retrieve")
-        {
-        }
+        { }
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -42,22 +39,19 @@ namespace D2P_GrasshopperTools.GH.Retrieve
             IComponentBase component = null;
             DA.GetData(0, ref component);
 
-            if (component == null)
-            {
+            if (component == null) {
                 var msg = $"Component is null !";
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
                 return;
             }
 
             var parent = Components.GetParentComponent(component, out int parentsFound);
-            if (parent == null)
-            {
+            if (parent == null) {
                 var msg = $"ParentMember of component {component.Name} not found !";
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, msg);
                 return;
             }
-            if (parentsFound > 1)
-            {
+            if (parentsFound > 1) {
                 var msg = $"Found {parentsFound} parents for component {component.Name} !";
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
                 return;
@@ -70,10 +64,8 @@ namespace D2P_GrasshopperTools.GH.Retrieve
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
+        protected override System.Drawing.Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:                
                 return Properties.Resources.GH_RetrieveParent;
             }
@@ -82,8 +74,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("92F56E9E-C2DA-4ADE-9D04-061A6F88C739"); }
         }
     }

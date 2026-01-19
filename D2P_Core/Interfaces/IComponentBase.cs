@@ -14,8 +14,6 @@ namespace D2P_Core.Interfaces {
 
         IEnumerable<GeometryBase> Geometry { get; }
 
-        //IMember this[string name] { get; set; }
-
         bool Transform(Transform xform);
     }
 }

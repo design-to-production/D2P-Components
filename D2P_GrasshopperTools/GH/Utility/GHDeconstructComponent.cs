@@ -3,10 +3,8 @@ using D2P_Core.Interfaces;
 using Grasshopper.Kernel;
 using System;
 
-namespace D2P_GrasshopperTools.GH.Utility
-{
-    public class GHDeconstructComponent : GHComponentPreview
-    {
+namespace D2P_GrasshopperTools.GH.Utility {
+    public class GHDeconstructComponent : GHComponentPreview {
         /// <summary>
         /// Initializes a new instance of the DeconstructComponent class.
         /// </summary>
@@ -14,8 +12,7 @@ namespace D2P_GrasshopperTools.GH.Utility
           : base("DeconstructComponent", "DeComp",
               "Deconstructs a component",
               "D2P", "04 Utility")
-        {
-        }
+        { }
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -57,10 +54,8 @@ namespace D2P_GrasshopperTools.GH.Utility
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
+        protected override System.Drawing.Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:                
                 return Properties.Resources.GH_DeconstructComponent;
             }
@@ -69,8 +64,7 @@ namespace D2P_GrasshopperTools.GH.Utility
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("E11BE526-496C-45EA-8A8F-12A313858EE7"); }
         }
     }

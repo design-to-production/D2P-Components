@@ -14,9 +14,7 @@ namespace D2P_GrasshopperTools.GH {
 
         protected GHVariableParameterComponent(string name, string shortname, string description, string category, string subcategory)
         : base(name, shortname, description, category, subcategory)
-        {
-
-        }
+        { }
 
         protected void SetDataTrees(IGH_DataAccess DA, GH_Structure<IGH_Goo> componentTree)
         {

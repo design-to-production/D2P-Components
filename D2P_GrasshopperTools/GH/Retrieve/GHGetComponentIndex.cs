@@ -3,10 +3,8 @@ using D2P_Core.Interfaces;
 using Grasshopper.Kernel;
 using System;
 
-namespace D2P_GrasshopperTools.GH.Retrieve
-{
-    public class GHGetComponentIndex : GH_Component
-    {
+namespace D2P_GrasshopperTools.GH.Retrieve {
+    public class GHGetComponentIndex : GH_Component {
         /// <summary>
         /// Initializes a new instance of the GHGetComponentIndex class.
         /// </summary>
@@ -14,8 +12,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve
           : base("GetComponentIndex", "IndexOf",
               "Gets the index of a component within a joint name",
               "D2P", "02 Retrieve")
-        {
-        }
+        { }
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -47,7 +44,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve
             DA.GetData(1, ref component);
 
             var connectedComponents = joint?.ShortName.Split(Settings.JointDelimiter);
-            var index = Array.IndexOf(connectedComponents, (component as IComponentBase)?.ShortName);
+            var index = Array.IndexOf(connectedComponents, component?.ShortName);
 
             if (index >= 0)
                 DA.SetData(0, index);
@@ -57,10 +54,8 @@ namespace D2P_GrasshopperTools.GH.Retrieve
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
+        protected override System.Drawing.Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:                
                 return Properties.Resources.GH_GetComponentIndex;
             }
@@ -69,8 +64,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("2EC3FD54-CC42-40C0-BAE4-9EC8ECB0C761"); }
         }
     }

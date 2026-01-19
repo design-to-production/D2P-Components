@@ -2,10 +2,8 @@
 using Grasshopper.Kernel;
 using System;
 
-namespace D2P_GrasshopperTools.GH.Utility
-{
-    public class GHDeconstructComponentType : GHComponentBase
-    {
+namespace D2P_GrasshopperTools.GH.Utility {
+    public class GHDeconstructComponentType : GHComponentBase {
         /// <summary>
         /// Initializes a new instance of the GH_DeconstructComponentType class.
         /// </summary>
@@ -52,10 +50,8 @@ namespace D2P_GrasshopperTools.GH.Utility
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
+        protected override System.Drawing.Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:                
                 return Properties.Resources.GH_DeconstructComponentType;
             }
@@ -64,8 +60,7 @@ namespace D2P_GrasshopperTools.GH.Utility
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("7848642D-3659-42D2-912D-0C12683849E7"); }
         }
     }

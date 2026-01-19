@@ -3,10 +3,8 @@ using Rhino.DocObjects;
 using System;
 using System.Drawing;
 
-namespace D2P_GrasshopperTools.GH.Create
-{
-    public class GHCreateObjectAttributes : GHComponentBase
-    {
+namespace D2P_GrasshopperTools.GH.Create {
+    public class GHCreateObjectAttributes : GHComponentBase {
         /// <summary>
         /// Initializes a new instance of the GH_CreateObjectAttributes class.
         /// </summary>
@@ -14,8 +12,7 @@ namespace D2P_GrasshopperTools.GH.Create
           : base("CreateObjectAttributes", "Attributes",
               "A simple GH component to create basic RhinoObjectAttributes",
               "D2P", "01 Create")
-        {
-        }
+        { }
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -47,8 +44,7 @@ namespace D2P_GrasshopperTools.GH.Create
 
             var colorSource = (ObjectColorSource)(int)colorSourceDouble;
 
-            var objectAttributes = new ObjectAttributes()
-            {
+            var objectAttributes = new ObjectAttributes() {
                 ObjectColor = objectColor,
                 ColorSource = colorSource,
             };
@@ -59,10 +55,8 @@ namespace D2P_GrasshopperTools.GH.Create
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override Bitmap Icon
-        {
-            get
-            {
+        protected override Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:
                 return Properties.Resources.GH_ObjectAttributes;
             }
@@ -71,8 +65,7 @@ namespace D2P_GrasshopperTools.GH.Create
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("AA51B317-EC23-4E00-80FA-AD45BEDD1724"); }
         }
     }

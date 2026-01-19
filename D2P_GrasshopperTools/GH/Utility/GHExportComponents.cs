@@ -5,10 +5,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
-namespace D2P_GrasshopperTools.GH.Utility
-{
-    public class GHExportComponents : GHComponentPreview
-    {
+namespace D2P_GrasshopperTools.GH.Utility {
+    public class GHExportComponents : GHComponentPreview {
         bool _run = false;
         bool _exportOneFile = true;
 
@@ -35,8 +33,7 @@ namespace D2P_GrasshopperTools.GH.Utility
         /// Registers all the output parameters for this component.
         /// </summary>
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
-        {
-        }
+        { }
 
         /// <summary>
         /// This is the method that actually does the work.
@@ -57,25 +54,20 @@ namespace D2P_GrasshopperTools.GH.Utility
             if (!directory.Exists)
                 return;
 
-            if (_exportOneFile)
-            {
-                var saveFileDialog = new SaveFileDialog
-                {
+            if (_exportOneFile) {
+                var saveFileDialog = new SaveFileDialog {
                     Filter = "3dm files (*.3dm)|*3dm",
                     InitialDirectory = directoryPath
                 };
 
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
+                if (saveFileDialog.ShowDialog() == DialogResult.OK) {
                     var fileName = Path.GetFileNameWithoutExtension(saveFileDialog.FileName);
                     IO.ExportWithHeadless(_components, directoryPath, fileName);
                 }
                 else return;
             }
-            else
-            {
-                foreach (var component in _components)
-                {
+            else {
+                foreach (var component in _components) {
                     IO.ExportWithHeadless(component, directory.FullName);
                 }
             }
@@ -97,10 +89,8 @@ namespace D2P_GrasshopperTools.GH.Utility
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
+        protected override System.Drawing.Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:                
                 return Properties.Resources.GH_ExportComponent;
             }
@@ -109,8 +99,7 @@ namespace D2P_GrasshopperTools.GH.Utility
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("A4A283D0-CC4E-4111-A482-4590266BA18B"); }
         }
     }

@@ -8,10 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace D2P_GrasshopperTools.GH.Stream
-{
-    public class GHStreamComponentsByType : GHVariableParameterComponent
-    {
+namespace D2P_GrasshopperTools.GH.Stream {
+    public class GHStreamComponentsByType : GHVariableParameterComponent {
         bool reverseRegex = false;
 
         /// <summary>
@@ -21,8 +19,7 @@ namespace D2P_GrasshopperTools.GH.Stream
           : base("StreamComponentsByType", "StreamByType",
               "Stream component-instances from the Rhino document by providing a type-id. Sorts them by their type-ids and automatically populates the output parameters",
               "D2P", "00 Stream")
-        {
-        }
+        { }
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -37,8 +34,7 @@ namespace D2P_GrasshopperTools.GH.Stream
         /// Registers all the output parameters for this component.
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
-        {
-        }
+        { }
 
         /// <summary>
         /// This is the method that actually does the work.
@@ -52,13 +48,11 @@ namespace D2P_GrasshopperTools.GH.Stream
             DA.GetDataList(1, filterList);
 
             var componentTrees = new Dictionary<string, DataTree<IComponentBase>>();
-            foreach (var componentType in componentTypes)
-            {
+            foreach (var componentType in componentTypes) {
                 var typeID = (componentType?.Value as IComponentType)?.TypeId ?? componentType?.Value?.ToString();
                 _properties.Add(typeID, typeof(Enumerable));
                 componentTrees.Add(typeID, new DataTree<IComponentBase>());
-                for (int i = 0; i < filterList.Count; i++)
-                {
+                for (int i = 0; i < filterList.Count; i++) {
                     var filterOptions = new FilterOptions() { RegexPattern = filterList[i], ReversePattern = reverseRegex };
                     var components = D2P_Core.Utility.Instantiation.InstancesByType(typeID, filterOptions);
                     componentTrees[typeID].EnsurePath(i);
@@ -69,16 +63,13 @@ namespace D2P_GrasshopperTools.GH.Stream
 
             if (OutputMismatch() && DA.Iteration == 0)
                 OnPingDocument().ScheduleSolution(5, d => CreateOutputParams(false));
-            else
-            {
-                foreach (var kv in componentTrees)
-                {
+            else {
+                foreach (var kv in componentTrees) {
                     var paramIdx = Params.Output.FindIndex(x => x.Name == kv.Key);
                     DA.SetDataTree(paramIdx, kv.Value);
                 }
             }
         }
-
 
         protected override void AppendAdditionalComponentMenuItems(ToolStripDropDown menu)
         {
@@ -96,10 +87,8 @@ namespace D2P_GrasshopperTools.GH.Stream
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
+        protected override System.Drawing.Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:
                 return Properties.Resources.GH_TypeStream;
             }
@@ -108,8 +97,7 @@ namespace D2P_GrasshopperTools.GH.Stream
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("DF586BB3-8A71-4383-9B00-4B624876CE8D"); }
         }
     }

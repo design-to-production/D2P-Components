@@ -4,16 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace D2P_GrasshopperTools.GH.Stream
-{
-    public class GHStreamComponents : GHComponentPreview
-    {
+namespace D2P_GrasshopperTools.GH.Stream {
+    public class GHStreamComponents : GHComponentPreview {
         public GHStreamComponents()
           : base("StreamComponents", "Stream",
               "Stream component-instances from rhino by providing their GUIDs",
               "D2P", "00 Stream")
-        {
-        }
+        { }
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -49,10 +46,8 @@ namespace D2P_GrasshopperTools.GH.Stream
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
+        protected override System.Drawing.Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:                
                 return Properties.Resources.GH_Stream;
             }
@@ -61,8 +56,7 @@ namespace D2P_GrasshopperTools.GH.Stream
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("1BA23CA4-39F5-4BC7-B7F9-54FFD973BBA5"); }
         }
     }

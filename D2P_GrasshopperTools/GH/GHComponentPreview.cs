@@ -6,30 +6,25 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace D2P_GrasshopperTools.GH
-{
-    public abstract class GHComponentPreview : GHComponentBase
-    {
+namespace D2P_GrasshopperTools.GH {
+    public abstract class GHComponentPreview : GHComponentBase {
 
         protected BoundingBox _box;
         protected List<IComponentBase> _components = new List<IComponentBase>();
+        public override BoundingBox ClippingBox => _box;
 
         protected GHComponentPreview(string name, string shortname, string description, string category, string subcategory)
         : base(name, shortname, description, category, subcategory)
         { }
 
-        public override BoundingBox ClippingBox => _box;
-
         protected override void BeforeSolveInstance()
         {
             _components.Clear();
         }
-
         protected override void AfterSolveInstance()
         {
             _box = BoundingBox.Empty;
-            foreach (var geo in _components.SelectMany(c => c?.Geometry))
-            {
+            foreach (var geo in _components.SelectMany(c => c?.Geometry)) {
                 if (geo == null)
                     continue;
                 var bbox = geo.GetBoundingBox(false);
@@ -52,10 +47,8 @@ namespace D2P_GrasshopperTools.GH
             var renderTypes = new[] { ObjectType.Annotation, ObjectType.Curve, ObjectType.TextDot };
             var geometry = _components.Where(c => c != null).SelectMany(comp => comp.Geometry);
             geometry = geometry.Where(geo => geo != null && renderTypes.Contains(geo.ObjectType));
-            foreach (var geo in geometry)
-            {
-                switch (geo.ObjectType)
-                {
+            foreach (var geo in geometry) {
+                switch (geo.ObjectType) {
                     case ObjectType.Annotation:
                         args.Display.DrawAnnotation(geo as AnnotationBase, fill);
                         break;
@@ -71,7 +64,6 @@ namespace D2P_GrasshopperTools.GH
                 }
             }
         }
-
         public override void DrawViewportMeshes(IGH_PreviewArgs args)
         {
             if (Hidden || Locked)
@@ -82,10 +74,8 @@ namespace D2P_GrasshopperTools.GH
             var renderTypes = new[] { ObjectType.Brep, ObjectType.Extrusion };
             var geometry = _components.Where(c => c != null).SelectMany(comp => comp.Geometry);
             geometry = geometry.Where(geo => geo != null && renderTypes.Contains(geo.ObjectType));
-            foreach (var geo in geometry)
-            {
-                switch (geo.ObjectType)
-                {
+            foreach (var geo in geometry) {
+                switch (geo.ObjectType) {
                     case ObjectType.Brep:
                         args.Display.DrawBrepShaded(geo as Brep, fill);
                         break;

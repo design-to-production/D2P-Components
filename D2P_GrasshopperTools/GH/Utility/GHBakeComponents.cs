@@ -19,8 +19,7 @@ namespace D2P_GrasshopperTools.GH.Utility {
           : base("BakeComponents", "BakeComp",
               "Bake component-instances to the Rhino document",
               "D2P", "04 Utility")
-        {
-        }
+        { }
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -36,8 +35,7 @@ namespace D2P_GrasshopperTools.GH.Utility {
         /// Registers all the output parameters for this component.
         /// </summary>
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
-        {
-        }
+        { }
 
         /// <summary>
         /// This is the method that actually does the work.

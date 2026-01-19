@@ -5,10 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace D2P_GrasshopperTools.GH.Retrieve
-{
-    public class GHRetrieveConnectedComponents : GHComponentPreview
-    {
+namespace D2P_GrasshopperTools.GH.Retrieve {
+    public class GHRetrieveConnectedComponents : GHComponentPreview {
         /// <summary>
         /// Initializes a new instance of the GH_RetrieveConnectedComponents class.
         /// </summary>
@@ -16,8 +14,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve
           : base("RetrieveConnectedComponents", "RetrieveConnected",
               "Retrieves all the components connected to the input components by a joint",
               "D2P", "02 Retrieve")
-        {
-        }
+        { }
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -48,23 +45,20 @@ namespace D2P_GrasshopperTools.GH.Retrieve
             DA.GetData(0, ref component);
             DA.GetDataList(1, filterTypes);
 
-            if (component == null)
-            {
+            if (component == null) {
                 var msg = $"Component is null !";
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
                 return;
             }
 
             var connectedComponents = Components.GetConnectedComponents(component, filterTypes);
-            if (connectedComponents == null || !connectedComponents.Any())
-            {
+            if (connectedComponents == null || !connectedComponents.Any()) {
                 var msg = $"Connected components of component {component.Name} not found !";
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, msg);
                 return;
             }
 
-            foreach (var comp in connectedComponents)
-            {
+            foreach (var comp in connectedComponents) {
                 if (!_components.Contains(comp))
                     _components.Add(comp);
             }
@@ -75,10 +69,8 @@ namespace D2P_GrasshopperTools.GH.Retrieve
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
+        protected override System.Drawing.Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:
                 return Properties.Resources.GH_RetrieveConnectedComponents;
             }
@@ -87,8 +79,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("320EC34C-DA24-4AFC-9491-E98CB4579FA1"); }
         }
     }

@@ -3,10 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace D2P_Core.Components
-{
-    public static class ComponentTable
-    {
+namespace D2P_Core.Components {
+    public static class ComponentTable {
         static Dictionary<string, Type> Table { get; } = new Dictionary<string, Type>();
 
         public static IEnumerable<string> Keys => Table.Keys;
@@ -14,8 +12,6 @@ namespace D2P_Core.Components
 
         public static void RegisterComponent<T>(string typeID) where T : class, IComponentBase
         {
-            if (Table.ContainsKey(typeID))
-                return;
             Table[typeID] = typeof(T);
         }
 

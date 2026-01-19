@@ -29,16 +29,26 @@ namespace D2P_Core.Components.Member {
                 .OfType<IMember>();
         }
 
+        public void SetMember(IMember member)
+        {
+            var key = Layers.ComposeFullLayerPath(member);
+            if (_dynamicMembers.ContainsKey(key))
+                _dynamicMembers.Remove(key);
+            _dynamicMembers.Add(key, member);
+        }
+        public void SetMembers(IEnumerable<IMember> members)
+        {
+            foreach (var member in members) {
+                SetMember(member);
+            }
+        }
 
-        //public IMember this[string name] {
-        //    get {
-        //        _dynamicMembers.TryGetValue(name, out var v);
-        //        return v ?? null;
-        //    }
-        //    set {
-        //        if (value == null) return;
-        //        _dynamicMembers[name] = value;
-        //    }
-        //}
+        public IMember FindMember(string layerName, out int membersFound)
+        {
+            var members = AllMembers.ToDictionary(m => Layers.ComposeFullLayerPath(m), m => m);
+            var matchedMembers = members.Where(m => m.Key.Contains(layerName));
+            membersFound = matchedMembers.Count();
+            return matchedMembers?.FirstOrDefault().Value;
+        }
     }
 }

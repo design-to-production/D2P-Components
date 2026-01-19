@@ -1,15 +1,12 @@
 ﻿using D2P_Core.Components.Member;
+using D2P_Core.Extensions;
 using D2P_Core.Interfaces;
-using D2P_Core.Utility;
 using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace D2P_GrasshopperTools.GH.Modify {
     public class GHRegisterComponentMembers : GHComponentPreview {
-        bool _replaceExisting = true;
-
         /// <summary>
         /// Initializes a new instance of the Component_AddGeometryWithLayer class.
         /// </summary>
@@ -17,8 +14,7 @@ namespace D2P_GrasshopperTools.GH.Modify {
           : base("RegisterComponentMembers", "RegisterMembers",
               "Registers geometry and attributes to an in-memory representation of a component instance",
               "D2P", "03 Modify")
-        {
-        }
+        { }
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -57,26 +53,11 @@ namespace D2P_GrasshopperTools.GH.Modify {
             }
 
             var componentClone = component.Duplicate();
-            foreach (var member in componentMembers) {
-                member.Component = componentClone;
-                var path = Layers.ComposeFullLayerPath(member);
-                componentClone[path] = member;
-            }
+            componentMembers.SetComponent(component);
+            componentClone.SetMembers(componentMembers);
 
             _components.Add(componentClone);
             DA.SetData(0, componentClone);
-        }
-
-        protected override void AppendAdditionalComponentMenuItems(ToolStripDropDown menu)
-        {
-            base.AppendAdditionalComponentMenuItems(menu);
-            Menu_AppendItem(menu, "Replace Existing", ClickOnReplaceExisting, true, _replaceExisting);
-        }
-
-        private void ClickOnReplaceExisting(object sender, EventArgs e)
-        {
-            _replaceExisting = !_replaceExisting;
-            ExpireSolution(true);
         }
 
         /// <summary>
