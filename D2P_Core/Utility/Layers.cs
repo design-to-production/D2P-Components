@@ -174,14 +174,19 @@ namespace D2P_Core.Utility {
         {
             var layerPath = string.Empty;
             composeLayerPath(member, ref layerPath);
-            var typeLayer = ComposeComponentTypeLayerName(member.Component);
-            var rootLayerName = Settings.RootLayerName;
-            return $"{rootLayerName}::{typeLayer}::{layerPath}";
+            var typeLayer = FindComponentTypeRootLayer(member.Component);
+            var typeLayerName = typeLayer.FullPath;
+            if (typeLayer == null) {
+                var composedTypeLayerName = ComposeComponentTypeLayerName(member.Component);
+                typeLayerName = $"{Settings.RootLayerName}::{composedTypeLayerName}";
+            }
+            return $"{typeLayerName}::{layerPath}";
         }
         static void composeLayerPath(IMember member, ref string layerPath)
         {
             var layerNames = member.LayerInfo.RawLayerName.Split(':')
                 .Where(name => !string.IsNullOrEmpty(name))
+                .Select(name => name.Replace($"{member.Component.TypeId}{Settings.LayerDelimiter}", ""))
                 .Select(name => $"{member.Component.TypeId}{Settings.LayerDelimiter}{name}");
             var result = string.Join("::", layerNames);
 
@@ -219,6 +224,10 @@ namespace D2P_Core.Utility {
         }
 
         // Get Layer Infos
+        public static LayerInfo GetLayerInfo(Layer layer)
+        {
+            return new LayerInfo(GetRawLayerName(layer), layer.Color);
+        }
         public static string GetRawLayerName(Layer layer)
         {
             return layer.Name.Split(Settings.LayerDelimiter).LastOrDefault();

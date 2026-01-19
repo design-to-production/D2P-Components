@@ -70,8 +70,10 @@ namespace D2P_Core.Utility {
                     continue;
 
                 var componentType = Objects.GetComponentTypeFromObject(txtLabel);
-                if (!ComponentTable.TryGetValue(componentType.TypeId, out var type))
-                    throw new Exception($"No class with type {componentType.TypeId} registered !");
+                ComponentTable.TryGetValue(componentType.TypeId, out var type);
+                if (type == null) type = typeof(Component);
+                //if (!ComponentTable.TryGetValue(componentType.TypeId, out var type))
+                //    throw new Exception($"No class with type {componentType.TypeId} registered !");
 
                 var component = (T)Activator.CreateInstance(type);
 
@@ -87,8 +89,10 @@ namespace D2P_Core.Utility {
                 var label = txtLabel.TextGeometry;
                 component.Label.SetGeometry(label);
 
-                //var members = Members.FindMembers(component);
-                //component.DynamicMembers = members;
+                if (type == typeof(Component)) {
+                    var members = Members.FindMembers(component);
+                    component.SetMembers(members);
+                }
 
                 return component;
             }

@@ -9,20 +9,23 @@ using System.Linq;
 
 namespace D2P_Core.Utility {
     public static class Members {
-        public static IList<IMember> FindMembers(IComponentBase component)
+        public static IEnumerable<IMember> FindMembers(IComponentBase component)
         {
-            var layerTree = new Dictionary<string, IMember>();
-            var componentLayers = Layers.GetComponentLayers(component);
-            foreach (var layer in componentLayers) {
-                var member = MemberFromLayer(component, layer);
-                var layerSegments = layer.FullPath.Split(':');
-                foreach (var layerSegment in layerSegments) {
-
+            IEnumerable<IMember> createMembers(LayerNode node, IMember parent = null)
+            {
+                foreach (var n in node.Children) {
+                    var layerInfo = new LayerInfo(n.FullPath, n.Color);
+                    var member = new MemberGeo(component, layerInfo);
+                    var childMembers = createMembers(n, member);
+                    member.SetMembers(childMembers);
+                    member.ParentMember = parent;
+                    yield return member;
                 }
             }
-
-            return layerTree.Values.ToList();
+            var tree = LayerTreeBuilder.BuildTree(component);
+            return createMembers(tree);
         }
+
 
         public static IMember MemberFromLayer(IComponentBase component, Layer layer)
         {
