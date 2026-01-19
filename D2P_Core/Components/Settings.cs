@@ -16,6 +16,10 @@ namespace D2P_Core.Components {
         public static string DimensionStyleName => ActiveDoc.DimStyles.Current.Name;
         public static DimensionStyle DimensionStyle => ActiveDoc.DimStyles.FindName(DimensionStyleName) ?? ActiveDoc.DimStyles.Current;
 
+        // Tolerance
+        public static double Tolerance => ActiveDoc.ModelAbsoluteTolerance;
+        public static double AngleTolerance => ActiveDoc.ModelAngleToleranceDegrees;
+
         // Delimiter
         public static char TypeDelimiter { get; set; } = ':';
         public static char LayerDelimiter { get; set; } = '_';
