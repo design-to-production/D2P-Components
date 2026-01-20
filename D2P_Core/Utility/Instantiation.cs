@@ -53,7 +53,7 @@ namespace D2P_Core.Utility {
                 components.Add(component);
             }
 
-            components.Sort((x, y) => string.Compare(x.ShortName, y.ShortName));
+            //components.Sort((x, y) => string.Compare(x.ShortName, y.ShortName));
             return components;
         }
 
@@ -71,10 +71,8 @@ namespace D2P_Core.Utility {
 
                 var componentType = Objects.GetComponentTypeFromObject(txtLabel);
                 ComponentTable.TryGetValue(componentType.TypeId, out var type);
-                if (type == null) type = typeof(Component);
-                //if (!ComponentTable.TryGetValue(componentType.TypeId, out var type))
-                //    throw new Exception($"No class with type {componentType.TypeId} registered !");
 
+                if (type == null) type = typeof(Component);
                 var component = (T)Activator.CreateInstance(type);
 
                 // TODO: Refactoring initialization
