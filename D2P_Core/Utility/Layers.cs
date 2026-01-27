@@ -206,6 +206,7 @@ namespace D2P_Core.Utility {
             return layerName.Substring(layerName.IndexOf(Settings.LayerDelimiter));
         }
 
+        //DROP !!
         public static string ComposeMemberLayerName(IMember member)
         {
             if (member == null)

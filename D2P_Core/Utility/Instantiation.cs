@@ -64,12 +64,12 @@ namespace D2P_Core.Utility {
         }
         public static T InstanceFromGroup<T>(int grpIdx) where T : class, IComponentBase
         {
-            var grpObjects = Objects.ObjectsByGroup(grpIdx);
+            var grpObjects = Objects.ObjectsByGroup(grpIdx); // 14% (277)
             foreach (var txtLabel in grpObjects.OfType<TextObject>()) {
                 if (!txtLabel.Name.Contains(txtLabel.TextGeometry.PlainText))
                     continue;
 
-                var componentType = Objects.GetComponentTypeFromObject(txtLabel);
+                var componentType = Objects.GetComponentTypeFromObject(txtLabel); // 14% (270)
                 ComponentTable.TryGetValue(componentType.TypeId, out var type);
 
                 if (type == null) type = typeof(Component);
@@ -85,11 +85,11 @@ namespace D2P_Core.Utility {
                 component.LabelSize = componentType.LabelSize;
 
                 var label = txtLabel.TextGeometry;
-                component.Label.SetGeometry(label);
+                component.Label.SetObject(label);
 
                 if (type == typeof(Component)) {
-                    var members = Members.FindMembers(component);
-                    component.SetMembers(members);
+                    var members = Members.FindMembers(component); // 7% (130)
+                    component.SetMembers(members); // 34% (640)
                 }
 
                 return component;

@@ -41,18 +41,18 @@ namespace D2P_Core.Utility {
         {
             return GeometryByLayer<GeometryBase>(component, layerIdx);
         }
-        public static IEnumerable<T> GeometryByLayer<T>(IEnumerable<IMember> members, int layerIdx) where T : GeometryBase
-        {
-            // TODO: Refactor and make SURE that components without initialized members return objects !!
-            return members
-                .FirstOrDefault(m => m.Attributes.LayerIndex == layerIdx)
-                .Geometry
-                .OfType<T>();
-        }
-        public static IEnumerable<GeometryBase> GeometryByLayer(IEnumerable<IMember> members, int layerIdx)
-        {
-            return GeometryByLayer<GeometryBase>(members, layerIdx);
-        }
+        //public static IEnumerable<T> GeometryByLayer<T>(IEnumerable<IMember> members, int layerIdx) where T : GeometryBase
+        //{
+        //    // TODO: Refactor and make SURE that components without initialized members return objects !!
+        //    return members
+        //        .FirstOrDefault(m => m.Attributes.LayerIndex == layerIdx)
+        //        .Geometry
+        //        .OfType<T>();
+        //}
+        //public static IEnumerable<GeometryBase> GeometryByLayer(IEnumerable<IMember> members, int layerIdx)
+        //{
+        //    return GeometryByLayer<GeometryBase>(members, layerIdx);
+        //}
 
 
         // Objects By Group

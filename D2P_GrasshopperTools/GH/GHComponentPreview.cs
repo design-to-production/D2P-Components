@@ -4,7 +4,6 @@ using Rhino.DocObjects;
 using Rhino.Geometry;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 namespace D2P_GrasshopperTools.GH {
     public abstract class GHComponentPreview : GHComponentBase {
@@ -30,11 +29,9 @@ namespace D2P_GrasshopperTools.GH {
         protected override void AfterSolveInstance()
         {
             base.AfterSolveInstance();
-            _geometries = _components
-              .Where(c => c != null)
-              .SelectMany(comp => comp.Geometry)
-              .Where(geo => geo != null)
-              .ToList();
+            foreach (var comp in _components) {
+                _geometries.AddRange(comp.Geometry);
+            }
             _box = ComputeClippingBox(_geometries);
         }
 

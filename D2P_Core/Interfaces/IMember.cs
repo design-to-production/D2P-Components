@@ -3,20 +3,32 @@ using Rhino.Geometry;
 using System.Collections.Generic;
 
 namespace D2P_Core.Interfaces {
+
     public interface IMember : IMemberCollection, IDocObject<IMember> {
-        bool ReplaceExisting { get; set; }
         IComponentBase Component { get; set; }
 
         ILayerInfo LayerInfo { get; set; }
-        ObjectAttributes Attributes { get; set; }
+        IEnumerable<IBaseObject> BaseObjects { get; set; }
+
+        IEnumerable<ObjectAttributes> Attributes { get; }
         IEnumerable<GeometryBase> Geometry { get; }
 
-        void SetGeometry(GeometryBase geometry);
-        void SetGeometry(IEnumerable<GeometryBase> geometry);
+        void SetObject(IBaseObject baseObject);
+        void SetObject(GeometryBase geometry);
+        void SetObjects(IEnumerable<IBaseObject> baseObjects);
+        void SetObjects(IEnumerable<GeometryBase> geometries);
     }
 
     public interface IMember<T> : IMember where T : GeometryBase {
+        new IEnumerable<IBaseObject<T>> BaseObjects { get; set; }
+
         new IEnumerable<T> Geometry { get; }
+
+        void SetObject(IBaseObject<T> baseObject);
+        void SetObject(T geometry);
+        void SetObjects(IEnumerable<IBaseObject<T>> baseObjects);
+        void SetObjects(IEnumerable<T> geometries);
+
         new IMember<T> Duplicate();
     }
 }

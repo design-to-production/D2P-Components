@@ -50,7 +50,7 @@ namespace D2P_Core.Utility {
             var layerInfo = new LayerInfo(rawLayerName, layer.Color);
             var member = new MemberGeo(component, layerInfo);
             var geometry = Objects.GeometryByLayer(component, layer.Index);
-            member.SetGeometry(geometry);
+            member.SetObjects(geometry);
             return member;
         }
 

@@ -29,7 +29,7 @@ namespace D2P_Core.Components.Member {
                 .OfType<IMember>();
         }
 
-        public void SetMember(IMember member)
+        public virtual void SetMember(IMember member)
         {
             var key = Layers.ComposeFullLayerPath(member);
             if (_dynamicMembers.ContainsKey(key))
@@ -42,7 +42,6 @@ namespace D2P_Core.Components.Member {
                 SetMember(member);
             }
         }
-
         public IMember FindMember(string layerName, out int membersFound)
         {
             var members = AllMembers.ToDictionary(m => Layers.ComposeFullLayerPath(m), m => m);

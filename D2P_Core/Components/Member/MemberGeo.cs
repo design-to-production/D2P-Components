@@ -1,4 +1,6 @@
-﻿using D2P_Core.Interfaces;
+﻿using D2P_Core.Components.Primitives;
+using D2P_Core.Extensions;
+using D2P_Core.Interfaces;
 using D2P_Core.Utility;
 using Rhino.DocObjects;
 using Rhino.Geometry;
@@ -7,68 +9,94 @@ using System.Drawing;
 using System.Linq;
 
 namespace D2P_Core.Components.Member {
-    public class MemberGeo<T> : MemberCollection, IMember<T> where T : GeometryBase {
-        protected IEnumerable<T> _geometry;
 
-        public bool ReplaceExisting { get; set; } = true;
+
+
+    public class MemberGeo<T> : MemberGeo, IMember<T> where T : GeometryBase {
+        public new IEnumerable<T> Geometry => BaseObjects
+            .Where(o => o.Geometry is T)
+            .Select(o => (T)o.Geometry);
+
+        public new IEnumerable<IBaseObject<T>> BaseObjects {
+            get {
+                var baseObjects = base.BaseObjects;
+                var typedObjects = baseObjects.OfType<IBaseObject<T>>();
+                var untypedObjects = baseObjects
+                     .Where(o => o.Geometry is T && !(o is IBaseObject<T>))
+                     .Select(o => new BaseObject<T>((T)o.Geometry, o.Attributes));
+                return typedObjects.Concat(untypedObjects);
+            }
+            set => base.BaseObjects = value.Cast<IBaseObject>();
+        }
+
+        public MemberGeo(IComponentBase component, ILayerInfo layerInfo) : base(component, layerInfo) { }
+        public MemberGeo(IComponentBase component, string rawLayerName, Color layerColor)
+            : base(component, rawLayerName, layerColor) { }
+        protected MemberGeo(IMember<T> other) : base(other) { }
+
+        void IMember<T>.SetObject(IBaseObject<T> baseObject) => base.SetObject(baseObject);
+        void IMember<T>.SetObject(T geometry) => base.SetObject(geometry);
+        void IMember<T>.SetObjects(IEnumerable<IBaseObject<T>> baseObjects) => base.SetObjects(baseObjects.Cast<IBaseObject>());
+        void IMember<T>.SetObjects(IEnumerable<T> geometries) => base.SetObjects(geometries.Cast<GeometryBase>());
+
+        public new IMember<T> Duplicate() => new MemberGeo<T>(this);
+    }
+
+    public class MemberGeo : MemberCollection, IMember {
+        protected IEnumerable<IBaseObject> _objects;
+
         public IComponentBase Component { get; set; }
 
         public ILayerInfo LayerInfo { get; set; }
-        public ObjectAttributes Attributes { get; set; } = new ObjectAttributes();
-        public IEnumerable<T> Geometry {
+        public IEnumerable<ObjectAttributes> Attributes => BaseObjects.Select(o => o.Attributes);
+        public IEnumerable<GeometryBase> Geometry => BaseObjects.Select(o => o.Geometry);
+
+        public IEnumerable<IBaseObject> BaseObjects {
             get {
-                if (_geometry != null)
-                    return _geometry;
+                if (_objects != null) return _objects;
                 var layer = Layers.FindLayer(this);
                 if (layer == null)
-                    return Enumerable.Empty<T>();
-                return Objects.GeometryByLayer<T>(Component, layer.Index);
+                    return _objects = Enumerable.Empty<IBaseObject>();
+                return _objects = Objects.ObjectsByLayer(Component, layer.Index)
+                   .Select(obj => new BaseObject(obj))
+                   .ToList();
             }
-            set => _geometry = value;
+            set => _objects = value;
         }
-        IEnumerable<GeometryBase> IMember.Geometry { get => Geometry; }
-
         public MemberGeo(IComponentBase component, ILayerInfo layerInfo)
         {
             Component = component;
             LayerInfo = layerInfo;
         }
         public MemberGeo(IComponentBase component, string rawLayerName, Color layerColor)
-            : this(component, new LayerInfo(rawLayerName, layerColor))
-        { }
+            : this(component, new LayerInfo(rawLayerName, layerColor)) { }
         protected MemberGeo(IMember other)
         {
             ParentMember = other.ParentMember;
             Component = other.Component;
             LayerInfo = other.LayerInfo;
-            SetGeometry(
-                other.Geometry
-                .Select(g => g.Duplicate())
-                .OfType<T>()
-            );
-            DynamicMembers = other.DynamicMembers.Select(m => m.Duplicate());
+            SetObjects(other.BaseObjects.Select(baseObj => baseObj.Duplicate()).ToList());
+            DynamicMembers = other.DynamicMembers.Duplicate();
         }
 
-        public void SetGeometry(T geometry) => SetGeometry(new[] { geometry });
-        public void SetGeometry(IEnumerable<T> geometry) => _geometry = geometry;
-        void IMember.SetGeometry(GeometryBase geometry) => SetGeometry(geometry as T);
-        void IMember.SetGeometry(IEnumerable<GeometryBase> geometry) => SetGeometry(geometry as IEnumerable<T>);
+        public void SetObject(IBaseObject obj) => _objects = new[] { obj };
+        public void SetObjects(IEnumerable<IBaseObject> objects) => _objects = objects;
+        public void SetObject(GeometryBase geometry) => _objects = new[] { new BaseObject(geometry) };
+        public void SetObjects(IEnumerable<GeometryBase> geometry) => _objects = geometry.Select(g => new BaseObject(g)).ToList();
+        void IMember.SetObject(IBaseObject baseObject) => _objects = new[] { baseObject };
+        void IMember.SetObjects(IEnumerable<IBaseObject> baseObjects) => _objects = baseObjects;
 
+
+        public override void SetMember(IMember member)
+        {
+            member.ParentMember = this;
+            base.SetMember(member);
+        }
 
         public void Commit()
         {
             if (Component == null || !Component.Exists())
                 return;
-
-            //if (Members.IsComponentLabel(this)) {
-            //    var layer = Layers.FindLayer(this);
-            //    var rhinoObjects = Objects.ObjectsByLayer(Component, layer.Index);
-            //    var label = rhinoObjects.FirstOrDefault(rhObj => rhObj.Geometry.GetType() == typeof(TextEntity));
-            //    var newLabel = Geometry.FirstOrDefault() as TextEntity;
-            //    Settings.ActiveDoc.Objects.Replace(label.Id, newLabel);
-            //    Attributes = label.Attributes;
-            //    Component.ID = Attributes.ObjectId;
-            //}
 
             UpdateDoc();
 
@@ -80,25 +108,23 @@ namespace D2P_Core.Components.Member {
         }
         private void UpdateDoc()
         {
-            Attributes.RemoveFromAllGroups();
-            Attributes.AddToGroup(Component.GroupIndex);
-            Attributes.Name = Component.Name;
             var memberLayer = Layers.CreateLayer(this);
-            Attributes.LayerIndex = memberLayer.Index;
 
-            if (_geometry == null) return;
+            if (_objects == null) return;
             else Delete();
 
-            foreach (var geometry in _geometry) {
-                var id = Settings.ActiveDoc.Objects.Add(geometry, Attributes);
-                Attributes.ObjectId = id; // TODO: Refactoring ? Only needed for label right now
+            foreach (var obj in BaseObjects) {
+                obj.Attributes.RemoveFromAllGroups();
+                obj.Attributes.AddToGroup(Component.GroupIndex);
+                obj.Attributes.Name = Component.Name;
+                obj.Attributes.LayerIndex = memberLayer.Index;
+
+                var id = Settings.ActiveDoc.Objects.Add(obj.Geometry, obj.Attributes);
+                obj.Attributes.ObjectId = id;
             }
         }
 
-        public bool Exists()
-        {
-            return Geometry.Any();
-        }
+        public bool Exists() { return Geometry.Any(); }
         public void Delete()
         {
             var layer = Layers.FindLayer(this);
@@ -108,31 +134,11 @@ namespace D2P_Core.Components.Member {
             }
         }
 
-        public IMember<T> Duplicate()
+        public IMember Duplicate()
         {
-            return new MemberGeo<T>(this);
+            return new MemberGeo(this);
         }
 
-        IMember IDocObject<IMember>.Duplicate()
-        {
-            return Duplicate();
-        }
 
-        public IMember this[string name] {
-            get {
-                _dynamicMembers.TryGetValue(name, out var v);
-                return v ?? null;
-            }
-            set {
-                if (value == null) return;
-                value.ParentMember = this;
-                _dynamicMembers[name] = value;
-            }
-        }
-    }
-
-    public class MemberGeo : MemberGeo<GeometryBase> {
-        public MemberGeo(IComponentBase component, ILayerInfo layerInfo)
-            : base(component, layerInfo) { }
     }
 }

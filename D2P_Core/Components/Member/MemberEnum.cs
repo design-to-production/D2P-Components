@@ -21,7 +21,7 @@ namespace D2P_Core.Components.Member {
 
         public void SetEnum(Q value)
         {
-            SetGeometry(new TextDot(value.ToString(), Component.Plane.Origin));
+            SetObject(new TextDot(value.ToString(), Component.Plane.Origin));
         }
     }
 }

@@ -31,19 +31,23 @@ namespace D2P_Core.Components {
         public IEnumerable<GeometryBase> Geometry => AllMembers.SelectMany(m => m.Geometry);
         public IMember<TextEntity> Label { get; private set; }
 
-        protected virtual void Init() { }
+        protected virtual void Init()
+        {
+            Label = new MemberGeo<TextEntity>(this, "", LayerColor);
+        }
         public abstract IComponentBase Duplicate();
 
         public ComponentBase()
         {
-            Label = new MemberGeo<TextEntity>(this, "", LayerColor);
             Init();
+            var label = TextEntity.Create("", Plane.WorldXY, Settings.DimensionStyle, false, 0, 0);
+            label.TextHeight = LabelSize;
+            Label.SetObject(label);
         }
         public ComponentBase(string name, Plane plane) : this()
         {
-            var label = TextEntity.Create(name, plane, Settings.DimensionStyle, false, 0, 0);
-            label.TextHeight = LabelSize;
-            Label.SetGeometry(label);
+            Label.Geometry.First().PlainText = name;
+            Label.Geometry.First().Plane = plane;
         }
         protected ComponentBase(IComponentBase other) : this()
         {
@@ -74,9 +78,6 @@ namespace D2P_Core.Components {
             if (!Exists()) {
                 Create();
             }
-            //else {
-            //    Label.Commit();
-            //}
 
             AllMembers.SetComponent(this);
             foreach (var member in AllMembers.Where(m => !Members.IsComponentLabel(this, m))) {
