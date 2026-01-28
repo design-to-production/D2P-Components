@@ -1,4 +1,5 @@
 ﻿using D2P_Core.Interfaces;
+using D2P_Core.Utility;
 using Grasshopper.Kernel;
 using Rhino.DocObjects;
 using Rhino.Geometry;
@@ -30,7 +31,8 @@ namespace D2P_GrasshopperTools.GH {
         {
             base.AfterSolveInstance();
             foreach (var comp in _components) {
-                _geometries.AddRange(comp.Geometry);
+                var allGeo = Members.GetAllMemberGeometries(comp);
+                _geometries.AddRange(allGeo);
             }
             _box = ComputeClippingBox(_geometries);
         }

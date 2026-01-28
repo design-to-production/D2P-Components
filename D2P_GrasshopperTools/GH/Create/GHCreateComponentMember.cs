@@ -57,7 +57,7 @@ namespace D2P_GrasshopperTools.GH.Create {
 
             var member = new MemberGeo(null, layerInfo);
             member.ParentMember = parent;
-            member.SetGeometry(geometry);
+            member.SetObjects(geometry);
 
             DA.SetData(0, member);
         }

@@ -14,7 +14,8 @@ namespace D2P_Core.Utility {
             IEnumerable<IMember> createMembers(LayerNode node, IMember parent = null)
             {
                 foreach (var n in node.Children) {
-                    var layerInfo = new LayerInfo(n.FullPath, n.Color);
+                    var localPath = n.Name == "__root__" ? "" : n.Name;
+                    var layerInfo = new LayerInfo(localPath, n.Color);
                     var member = new MemberGeo(component, layerInfo);
                     var childMembers = createMembers(n, member);
                     member.SetMembers(childMembers);
@@ -26,7 +27,6 @@ namespace D2P_Core.Utility {
             return createMembers(tree);
         }
 
-        // ULTRA SLOW !!
         public static IEnumerable<GeometryBase> GetAllMemberGeometries(IComponentBase component)
         {
             return component.AllMembers.SelectMany(m => GetAllMemberGeometries(m));

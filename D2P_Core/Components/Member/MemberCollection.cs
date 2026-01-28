@@ -1,4 +1,5 @@
-﻿using D2P_Core.Interfaces;
+﻿using D2P_Core.Extensions;
+using D2P_Core.Interfaces;
 using D2P_Core.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,12 +43,15 @@ namespace D2P_Core.Components.Member {
                 SetMember(member);
             }
         }
-        public IMember FindMember(string layerName, out int membersFound)
+
+        public IMember FindMember(IComponentBase component, string layerName, out int membersFound)
         {
-            var members = AllMembers.ToDictionary(m => Layers.ComposeFullLayerPath(m), m => m);
-            var matchedMembers = members.Where(m => m.Key.Contains(layerName));
+            var allMembersFlattened = Members.FindMembers(component).Flatten();
+            var memberDict = allMembersFlattened.ToDictionary(m => Layers.ComposeMemberLayerName(m), m => m);
+            var matchedMembers = memberDict.Where(item => item.Key.Contains(layerName));
             membersFound = matchedMembers.Count();
             return matchedMembers?.FirstOrDefault().Value;
         }
+
     }
 }

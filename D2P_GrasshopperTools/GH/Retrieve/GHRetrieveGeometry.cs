@@ -49,7 +49,7 @@ namespace D2P_GrasshopperTools.GH.Retrieve {
                 return;
             }
 
-            var member = component.FindMember(layerName, out int membersFound);
+            var member = component.FindMember(component, layerName, out int membersFound);
             if (member == null) {
                 var msg = $"Member with LayerName '{layerName}' not found !";
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);

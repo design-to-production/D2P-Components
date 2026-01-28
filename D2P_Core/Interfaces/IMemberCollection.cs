@@ -11,6 +11,6 @@ namespace D2P_Core.Interfaces {
         void SetMember(IMember member);
         void SetMembers(IEnumerable<IMember> members);
 
-        IMember FindMember(string layerName, out int membersFound);
+        IMember FindMember(IComponentBase component, string layerName, out int membersFound);
     }
 }

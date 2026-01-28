@@ -51,7 +51,11 @@
 
             var root = new LayerNode("__root__", fullPath: "", parent: null);
             foreach (var layer in componentLayers) {
-                var raw = layer.FullPath.Replace(baseLayer.FullPath, "");
+                var raw = layer.FullPath
+                    .Replace($"{baseLayer.FullPath}::", "")
+                    .Replace($"{baseLayer.FullPath}", "")
+                    .Replace($"{component.TypeId}_", "");
+
                 if (string.IsNullOrWhiteSpace(raw))
                     continue;
 
@@ -64,8 +68,10 @@
 
                 var current = root;
                 current.Color = layer.Color;
-                foreach (var part in parts)
+                foreach (var part in parts) {
                     current = current.GetOrAddChild(part);
+                }
+
             }
             SortRecursive(root);
             return root;

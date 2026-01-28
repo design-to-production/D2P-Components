@@ -16,5 +16,18 @@ namespace D2P_Core.Extensions {
                 member.AllMembers.SetComponent(component);
             }
         }
+
+        public static IEnumerable<IMember> Flatten(this IEnumerable<IMember> members)
+        {
+            foreach (var member in members) {
+                yield return member;
+
+                if (member.AllMembers != null) {
+                    foreach (var child in member.AllMembers.Flatten()) {
+                        yield return child;
+                    }
+                }
+            }
+        }
     }
 }

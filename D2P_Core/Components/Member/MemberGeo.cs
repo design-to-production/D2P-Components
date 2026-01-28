@@ -9,9 +9,6 @@ using System.Drawing;
 using System.Linq;
 
 namespace D2P_Core.Components.Member {
-
-
-
     public class MemberGeo<T> : MemberGeo, IMember<T> where T : GeometryBase {
         public new IEnumerable<T> Geometry => BaseObjects
             .Where(o => o.Geometry is T)
@@ -30,8 +27,7 @@ namespace D2P_Core.Components.Member {
         }
 
         public MemberGeo(IComponentBase component, ILayerInfo layerInfo) : base(component, layerInfo) { }
-        public MemberGeo(IComponentBase component, string rawLayerName, Color layerColor)
-            : base(component, rawLayerName, layerColor) { }
+        public MemberGeo(IComponentBase component, string rawLayerName, Color layerColor) : base(component, rawLayerName, layerColor) { }
         protected MemberGeo(IMember<T> other) : base(other) { }
 
         void IMember<T>.SetObject(IBaseObject<T> baseObject) => base.SetObject(baseObject);
