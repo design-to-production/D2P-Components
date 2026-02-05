@@ -10,7 +10,7 @@ using System.Windows.Forms;
 namespace D2P_GrasshopperTools.GH.Utility {
     public class GHBakeComponents : GHComponentPreview {
         bool _replaceExisting = true;
-        bool _purgeEmptyLayers = false;
+        bool _purgeEmptyLayers = true;
 
         /// <summary>
         /// Initializes a new instance of the IO_BakeComponents class.

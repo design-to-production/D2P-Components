@@ -3,7 +3,12 @@ using System;
 using System.Collections.Generic;
 
 namespace D2P_Core.Interfaces {
-    public interface IComponentBase : IMemberCollection, IComponentType, IDocObject<IComponentBase> {
+    public interface IComponentBase :
+        IMemberCollection,
+        IComponentType,
+        IDocObject<IComponentBase>,
+        IComparable {
+
         IMember<TextEntity> Label { get; }
 
         Guid ID { get; set; }

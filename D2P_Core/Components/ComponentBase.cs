@@ -76,7 +76,7 @@ namespace D2P_Core.Components {
             Objects.DeleteComponents(existing.Where(c => c.ID != ID));
 
             if (!Exists()) {
-                Create();
+                create();
             }
 
             AllMembers.SetComponent(this);
@@ -84,7 +84,7 @@ namespace D2P_Core.Components {
                 member.Commit();
             }
         }
-        void Create()
+        void create()
         {
             if (!Utility.Group.GetGroupIndex(this, out int grpIdx))
                 grpIdx = Utility.Group.AddGroup();
@@ -99,6 +99,16 @@ namespace D2P_Core.Components {
 
             var label = Label.Geometry.FirstOrDefault();
             ID = Settings.ActiveDoc.Objects.AddText(label, attributes);
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj == null) return 1;
+
+            var other = obj as IComponentBase;
+            if (other != null)
+                return this.ShortName.CompareTo(other.ShortName);
+            else throw new ArgumentException("Object is not an IComponentBase");
         }
     }
 }

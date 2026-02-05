@@ -5,10 +5,8 @@ using Grasshopper.Kernel.Types;
 using System;
 using System.Linq;
 
-namespace D2P_GrasshopperTools.GH.Stream
-{
-    public class GHComponentGate : GHVariableParameterComponent
-    {
+namespace D2P_GrasshopperTools.GH.Stream {
+    public class GHComponentGate : GHVariableParameterComponent {
         /// <summary>
         /// Initializes a new instance of the Utility_RakeComponents class.
         /// </summary>
@@ -41,22 +39,19 @@ namespace D2P_GrasshopperTools.GH.Stream
                 return;
 
             _components = componentTree.Select(x => new GH_ObjectWrapper(x).Value as IComponentBase).ToList();
+            _components.Sort();
 
             var componentGroups = _components.GroupBy(comp => comp.TypeId);
-            if (DA.Iteration == 0)
-            {
+            if (DA.Iteration == 0) {
                 _properties = componentGroups.ToDictionary(grp => grp.First().TypeId, c => typeof(Enumerable));
             }
 
-            if (OutputMismatch() && DA.Iteration == 0)
-            {
-                OnPingDocument().ScheduleSolution(5, d =>
-                {
+            if (OutputMismatch() && DA.Iteration == 0) {
+                OnPingDocument().ScheduleSolution(5, d => {
                     CreateOutputParams(false);
                 });
             }
-            else
-            {
+            else {
                 SetDataTrees(DA, componentTree);
             }
         }
@@ -64,10 +59,8 @@ namespace D2P_GrasshopperTools.GH.Stream
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
+        protected override System.Drawing.Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:
                 return Properties.Resources.GH_ExplodeComponentStream;
             }
@@ -76,8 +69,7 @@ namespace D2P_GrasshopperTools.GH.Stream
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("C0E8C4D7-0B5F-49FF-9049-02FC0C5BC1B8"); }
         }
     }

@@ -175,7 +175,7 @@ namespace D2P_Core.Utility {
             var layerPath = string.Empty;
             composeLayerPath(member, ref layerPath);
             var typeLayer = FindComponentTypeRootLayer(member.Component);
-            var typeLayerName = typeLayer.FullPath;
+            var typeLayerName = typeLayer?.FullPath;
             if (typeLayer == null) {
                 var composedTypeLayerName = ComposeComponentTypeLayerName(member.Component);
                 typeLayerName = $"{Settings.RootLayerName}::{composedTypeLayerName}";

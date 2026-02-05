@@ -24,7 +24,7 @@
       <Value Profile="(Default)">-</Value>
     </Setting>
     <Setting Name="DefaultJointDelimiter" Type="System.Char" Scope="User">
-      <Value Profile="(Default)">+</Value>
+      <Value Profile="(Default)">x</Value>
     </Setting>
     <Setting Name="DefaultLayerNameDelimiter" Type="System.Char" Scope="User">
       <Value Profile="(Default)">:</Value>

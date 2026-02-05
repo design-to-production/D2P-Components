@@ -61,6 +61,8 @@ namespace D2P_GrasshopperTools.GH.Stream {
                 }
             }
 
+            _components.Sort();
+
             if (OutputMismatch() && DA.Iteration == 0)
                 OnPingDocument().ScheduleSolution(5, d => CreateOutputParams(false));
             else {

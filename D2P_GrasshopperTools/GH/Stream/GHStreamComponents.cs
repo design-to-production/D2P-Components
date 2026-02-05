@@ -39,6 +39,7 @@ namespace D2P_GrasshopperTools.GH.Stream {
             DA.GetDataList(0, ids);
 
             _components = Instantiation.InstancesFromObjects(ids).ToList();
+            _components.Sort();
 
             DA.SetDataList(0, _components);
         }

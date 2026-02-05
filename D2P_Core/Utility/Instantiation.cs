@@ -1,5 +1,6 @@
 ﻿using D2P_Core.Components;
 using D2P_Core.Interfaces;
+using D2P_Core.Platforms;
 using Rhino.DocObjects;
 using System;
 using System.Collections.Generic;
@@ -87,7 +88,12 @@ namespace D2P_Core.Utility {
                 var label = txtLabel.TextGeometry;
                 component.Label.SetObject(label);
 
-                if (type == typeof(Component)) {
+                var genericTypes = new HashSet<Type> {
+                    typeof(Component),
+                    typeof(GHComponent),
+                };
+
+                if (genericTypes.Contains(type)) {
                     var members = Members.FindMembers(component); // 7% (130)
                     component.SetMembers(members); // 34% (640)
                 }

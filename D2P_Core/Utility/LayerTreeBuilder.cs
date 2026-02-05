@@ -70,6 +70,7 @@
                 current.Color = layer.Color;
                 foreach (var part in parts) {
                     current = current.GetOrAddChild(part);
+                    current.Color = layer.Color;
                 }
 
             }

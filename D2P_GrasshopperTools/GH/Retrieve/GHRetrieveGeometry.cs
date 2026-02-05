@@ -1,10 +1,13 @@
 ﻿using D2P_Core.Interfaces;
-using D2P_Core.Utility;
 using Grasshopper.Kernel;
 using System;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace D2P_GrasshopperTools.GH.Retrieve {
     public class GHRetrieveGeometry : GHComponentBase {
+        private bool _getGeometryRecursive = true;
+
         /// <summary>
         /// Initializes a new instance of the Component_LayerObjects class.
         /// </summary>
@@ -49,33 +52,48 @@ namespace D2P_GrasshopperTools.GH.Retrieve {
                 return;
             }
 
-            var member = component.FindMember(component, layerName, out int membersFound);
-            if (member == null) {
+            var matchedMembers = component.FindMembers(component, layerName);
+            if (!matchedMembers.Any()) {
                 var msg = $"Member with LayerName '{layerName}' not found !";
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
                 return;
             }
-            else if (membersFound > 1) {
-                var msg = $"Found {membersFound} members with layerName {layerName}, specify full path !";
+            else if (matchedMembers.Count() > 1 && !_getGeometryRecursive) {
+                var msg = $"Found {matchedMembers.Count()} members with layerName {layerName}, specify full path !";
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
                 return;
             }
 
-            var layer = Layers.FindLayer(member, out int layersFound);
-            var layerIdx = layer?.Index ?? -1;
-            if (layerIdx < 0) {
-                if (layerIdx < 0) {
-                    var msg = $"Layer {layerName} not found !";
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
-                    return;
-                }
-                if (layersFound > 1) {
-                    var msg = $"Found {layersFound} layers with name {layerName}, specify full path !";
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
-                    return;
-                }
-            }
-            DA.SetDataList(0, member.Geometry);
+            //var layer = Layers.FindLayer(member, out int layersFound);
+            //var layerIdx = layer?.Index ?? -1;
+            //if (layerIdx < 0) {
+            //    if (layerIdx < 0) {
+            //        var msg = $"Layer {layerName} not found !";
+            //        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
+            //        return;
+            //    }
+            //    if (layersFound > 1) {
+            //        var msg = $"Found {layersFound} layers with name {layerName}, specify full path !";
+            //        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
+            //        return;
+            //    }
+            //}
+
+            var geometry = matchedMembers.SelectMany(m => m.Geometry);
+            DA.SetDataList(0, geometry);
+        }
+
+
+        protected override void AppendAdditionalComponentMenuItems(ToolStripDropDown menu)
+        {
+            base.AppendAdditionalComponentMenuItems(menu);
+            Menu_AppendItem(menu, "Get geometry recursively", ClickOnGetGeometryRecursively, true, _getGeometryRecursive);
+        }
+
+        private void ClickOnGetGeometryRecursively(object sender, EventArgs e)
+        {
+            _getGeometryRecursive = !_getGeometryRecursive;
+            ExpireSolution(true);
         }
 
         /// <summary>

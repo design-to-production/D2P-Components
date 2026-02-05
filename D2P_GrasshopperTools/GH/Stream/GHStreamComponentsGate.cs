@@ -3,10 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace D2P_GrasshopperTools.GH.Stream
-{
-    public class GHStreamComponentsGate : GHVariableParameterComponent
-    {
+namespace D2P_GrasshopperTools.GH.Stream {
+    public class GHStreamComponentsGate : GHVariableParameterComponent {
         public GHStreamComponentsGate()
           : base("StreamComponentsGate", "StreamGate",
               "Stream component-instances from the Rhino document by providing their GUIDs. Sorts them by their type-ids and automatically populates the output parameters",
@@ -39,24 +37,21 @@ namespace D2P_GrasshopperTools.GH.Stream
             DA.GetDataList(0, ids);
 
             _components = D2P_Core.Utility.Instantiation.InstancesFromObjects(ids).ToList();
+            _components.Sort();
+
             var componentGroups = _components.GroupBy(comp => comp.TypeId);
 
-            if (DA.Iteration == 0)
-            {
+            if (DA.Iteration == 0) {
                 _properties = componentGroups.ToDictionary(grp => grp.First().TypeId, c => typeof(Enumerable));
             }
 
-            if (OutputMismatch() && DA.Iteration == 0)
-            {
-                OnPingDocument().ScheduleSolution(5, d =>
-                {
+            if (OutputMismatch() && DA.Iteration == 0) {
+                OnPingDocument().ScheduleSolution(5, d => {
                     CreateOutputParams(false);
                 });
             }
-            else
-            {
-                foreach (var group in componentGroups)
-                {
+            else {
+                foreach (var group in componentGroups) {
                     var typeName = group.First().TypeId;
                     DA.SetDataList(typeName, group);
                 }
@@ -66,10 +61,8 @@ namespace D2P_GrasshopperTools.GH.Stream
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
+        protected override System.Drawing.Bitmap Icon {
+            get {
                 //You can add image files to your project resources and access them like this:                
                 return Properties.Resources.GH_StreamGate;
             }
@@ -78,8 +71,7 @@ namespace D2P_GrasshopperTools.GH.Stream
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid
-        {
+        public override Guid ComponentGuid {
             get { return new Guid("F1B5318B-1C06-4DA3-9E97-C4A3E16366D3"); }
         }
     }

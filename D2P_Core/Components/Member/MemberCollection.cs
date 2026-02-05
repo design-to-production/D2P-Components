@@ -43,15 +43,20 @@ namespace D2P_Core.Components.Member {
                 SetMember(member);
             }
         }
-
         public IMember FindMember(IComponentBase component, string layerName, out int membersFound)
+        {
+            var matchedMembers = FindMembers(component, layerName);
+            membersFound = matchedMembers.Count();
+            return matchedMembers?.FirstOrDefault();
+        }
+
+        public IEnumerable<IMember> FindMembers(IComponentBase component, string layerName)
         {
             var allMembersFlattened = Members.FindMembers(component).Flatten();
             var memberDict = allMembersFlattened.ToDictionary(m => Layers.ComposeMemberLayerName(m), m => m);
-            var matchedMembers = memberDict.Where(item => item.Key.Contains(layerName));
-            membersFound = matchedMembers.Count();
-            return matchedMembers?.FirstOrDefault().Value;
+            return memberDict
+                .Where(item => item.Key.Contains(layerName))
+                .Select(item => item.Value);
         }
-
     }
 }

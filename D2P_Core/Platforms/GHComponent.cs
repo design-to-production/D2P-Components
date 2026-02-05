@@ -2,6 +2,7 @@
 using D2P_Core.Interfaces;
 using Rhino.Geometry;
 using System.Drawing;
+using System.Linq;
 
 
 namespace D2P_Core.Platforms {
@@ -20,6 +21,7 @@ namespace D2P_Core.Platforms {
             TypeName = type.TypeName;
             LayerColor = type.LayerColor;
             LabelSize = type.LabelSize;
+            Label.Geometry.First().TextHeight = LabelSize;
         }
 
         public override IComponentBase Duplicate()
