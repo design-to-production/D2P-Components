@@ -13,8 +13,10 @@ namespace D2P.Core.Components {
         public static Color RootLayerColor { get; set; } = Color.FromArgb(220, 75, 58);
 
         // Style        
-        public static string DimensionStyleName => ActiveDoc.DimStyles.Current.Name;
+        public static string DimensionStyleName => "D2P";
+        public static string AngularDimensionStyleName => "D2P_ANGULAR";
         public static DimensionStyle DimensionStyle => ActiveDoc.DimStyles.FindName(DimensionStyleName) ?? ActiveDoc.DimStyles.Current;
+        public static DimensionStyle AngularDimensionStyle => ActiveDoc.DimStyles.FindName(AngularDimensionStyleName) ?? ActiveDoc.DimStyles.Current;
 
         // Tolerance
         public static double Tolerance => ActiveDoc.ModelAbsoluteTolerance;
@@ -28,5 +30,10 @@ namespace D2P.Core.Components {
         public static char LayerNameDelimiter { get; set; } = ':';
         public static char CountDelimiter { get; set; } = '#';
         public static char JointDelimiter { get; set; } = 'x';
+
+        public static void Update(RhinoDoc doc)
+        {
+            ActiveDoc = doc;
+        }
     }
 }

@@ -53,7 +53,6 @@ namespace D2P.Core.Utility {
                 var component = InstanceFromGroup<T>(grpIdx);
                 components.Add(component);
             }
-
             //components.Sort((x, y) => string.Compare(x.ShortName, y.ShortName));
             return components;
         }
@@ -74,7 +73,13 @@ namespace D2P.Core.Utility {
                 ComponentTable.TryGetValue(componentType.TypeId, out var type);
 
                 if (type == null) type = typeof(Component);
-                var component = (T)Activator.CreateInstance(type);
+                T component;
+                try {
+                    component = (T)Activator.CreateInstance(type);
+                }
+                catch {
+                    return null;
+                }
 
                 // TODO: Refactoring initialization
                 component.ID = txtLabel.Id;

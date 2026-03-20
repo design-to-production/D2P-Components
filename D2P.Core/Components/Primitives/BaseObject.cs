@@ -1,6 +1,7 @@
 ﻿using D2P.Core.Interfaces;
 using Rhino.DocObjects;
 using Rhino.Geometry;
+using System;
 
 namespace D2P.Core.Components.Primitives {
 
@@ -20,6 +21,7 @@ namespace D2P.Core.Components.Primitives {
     public class BaseObject : IBaseObject {
         public GeometryBase Geometry { get; set; }
         public ObjectAttributes Attributes { get; set; }
+        public Guid Id => Attributes.ObjectId;
 
         public BaseObject(RhinoObject rhObj) : this(rhObj.Geometry, rhObj.Attributes) { }
         public BaseObject(GeometryBase geometry) : this(geometry, new ObjectAttributes()) { }

@@ -4,16 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace D2P.Core.Utility
-{
-    public static class Components
-    {
+namespace D2P.Core.Utility {
+    public static class Components {
         // Get Parent Component
         public static IComponentBase GetParentComponent(IComponentBase component, out int parentsFound)
         {
             var parentNameSegments = component.ShortName.Split(Settings.NameDelimiter).ToList();
-            if (parentNameSegments.Count <= 1)
-            {
+            if (parentNameSegments.Count <= 1) {
                 parentsFound = 0;
                 return null;
             }
@@ -27,6 +24,11 @@ namespace D2P.Core.Utility
             return parents.FirstOrDefault();
         }
 
+        public static T GetParentComponent<T>(IComponentBase component, out int parentsFound) where T : class, IComponentBase
+        {
+            return GetParentComponent(component, out parentsFound) as T;
+        }
+
         // Get Child Components
         public static IEnumerable<IComponentBase> GetChildComponents(IComponentBase component, IEnumerable<string> filterTypes = null)
         {
@@ -38,6 +40,10 @@ namespace D2P.Core.Utility
                 rhObjects = rhObjects.Where(rhObj => filterTypes.Contains(rhObj.Name.Split(Settings.TypeDelimiter)[0]));
             var children = Instantiation.InstancesFromObjects(rhObjects.ToList());
             return children;
+        }
+        public static IEnumerable<T> GetChildComponents<T>(IComponentBase component) where T : class, IComponentBase
+        {
+            return GetChildComponents(component).OfType<T>();
         }
 
         // Get Joint Components

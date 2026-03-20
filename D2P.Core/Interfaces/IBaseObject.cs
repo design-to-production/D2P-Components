@@ -1,10 +1,12 @@
 ﻿using Rhino.DocObjects;
 using Rhino.Geometry;
+using System;
 
 namespace D2P.Core.Interfaces {
     public interface IBaseObject {
         GeometryBase Geometry { get; set; }
         ObjectAttributes Attributes { get; set; }
+        Guid Id { get; }
         IBaseObject Duplicate();
     }
 

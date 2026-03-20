@@ -5,7 +5,8 @@ using System.Drawing;
 using System.Linq;
 
 namespace D2P.Core.Components.Member {
-    public class MemberEnum<Q> : MemberGeo<TextDot> where Q : struct, Enum {
+
+    public class MemberEnum<Q> : Member<TextDot> where Q : struct, Enum {
         public Q EnumValue { get => GetEnum(); set => SetEnum(value); }
 
         public MemberEnum(IComponentBase component, string layerName, Color layerColor)

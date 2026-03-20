@@ -9,7 +9,7 @@ using System.Drawing;
 using System.Linq;
 
 namespace D2P.Core.Components.Member {
-    public class MemberGeo<T> : MemberGeo, IMember<T> where T : GeometryBase {
+    public class Member<T> : Member, IMember<T> where T : GeometryBase {
         public new IEnumerable<T> Geometry => BaseObjects
             .Where(o => o.Geometry is T)
             .Select(o => (T)o.Geometry);
@@ -26,19 +26,19 @@ namespace D2P.Core.Components.Member {
             set => base.BaseObjects = value.Cast<IBaseObject>();
         }
 
-        public MemberGeo(IComponentBase component, ILayerInfo layerInfo) : base(component, layerInfo) { }
-        public MemberGeo(IComponentBase component, string rawLayerName, Color layerColor) : base(component, rawLayerName, layerColor) { }
-        protected MemberGeo(IMember<T> other) : base(other) { }
+        public Member(IComponentBase component, ILayerInfo layerInfo) : base(component, layerInfo) { }
+        public Member(IComponentBase component, string rawLayerName, Color layerColor) : base(component, rawLayerName, layerColor) { }
+        protected Member(IMember<T> other) : base(other) { }
 
         void IMember<T>.SetObject(IBaseObject<T> baseObject) => base.SetObject(baseObject);
         void IMember<T>.SetObject(T geometry) => base.SetObject(geometry);
         void IMember<T>.SetObjects(IEnumerable<IBaseObject<T>> baseObjects) => base.SetObjects(baseObjects.Cast<IBaseObject>());
         void IMember<T>.SetObjects(IEnumerable<T> geometries) => base.SetObjects(geometries.Cast<GeometryBase>());
 
-        public new IMember<T> Duplicate() => new MemberGeo<T>(this);
+        public new IMember<T> Duplicate() => new Member<T>(this);
     }
 
-    public class MemberGeo : MemberCollection, IMember {
+    public class Member : MemberCollection, IMember {
         protected IEnumerable<IBaseObject> _objects;
 
         public IComponentBase Component { get; set; }
@@ -59,14 +59,14 @@ namespace D2P.Core.Components.Member {
             }
             set => _objects = value;
         }
-        public MemberGeo(IComponentBase component, ILayerInfo layerInfo)
+        public Member(IComponentBase component, ILayerInfo layerInfo)
         {
             Component = component;
             LayerInfo = layerInfo;
         }
-        public MemberGeo(IComponentBase component, string rawLayerName, Color layerColor)
+        public Member(IComponentBase component, string rawLayerName, Color layerColor)
             : this(component, new LayerInfo(rawLayerName, layerColor)) { }
-        protected MemberGeo(IMember other)
+        protected Member(IMember other)
         {
             ParentMember = other.ParentMember;
             Component = other.Component;
@@ -115,6 +115,7 @@ namespace D2P.Core.Components.Member {
                 obj.Attributes.Name = Component.Name;
                 obj.Attributes.LayerIndex = memberLayer.Index;
 
+                if (obj.Geometry == null) continue;
                 var id = Settings.ActiveDoc.Objects.Add(obj.Geometry, obj.Attributes);
                 obj.Attributes.ObjectId = id;
             }
@@ -132,7 +133,7 @@ namespace D2P.Core.Components.Member {
 
         public IMember Duplicate()
         {
-            return new MemberGeo(this);
+            return new Member(this);
         }
 
 

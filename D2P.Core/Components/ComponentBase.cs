@@ -33,7 +33,7 @@ namespace D2P.Core.Components {
 
         protected virtual void Init()
         {
-            Label = new MemberGeo<TextEntity>(this, "", LayerColor);
+            Label = new Member<TextEntity>(this, "", LayerColor);
         }
         public abstract IComponentBase Duplicate();
 

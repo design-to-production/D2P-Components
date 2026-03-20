@@ -16,7 +16,7 @@ namespace D2P.Core.Utility {
                 foreach (var n in node.Children) {
                     var localPath = n.Name == "__root__" ? "" : n.Name;
                     var layerInfo = new LayerInfo(localPath, n.Color);
-                    var member = new MemberGeo(component, layerInfo);
+                    var member = new Member(component, layerInfo);
                     var childMembers = createMembers(n, member);
                     member.SetMembers(childMembers);
                     member.ParentMember = parent;
@@ -48,7 +48,7 @@ namespace D2P.Core.Utility {
             var name = Guid.NewGuid().ToString();
             var rawLayerName = Layers.GetRawLayerName(layer);
             var layerInfo = new LayerInfo(rawLayerName, layer.Color);
-            var member = new MemberGeo(component, layerInfo);
+            var member = new Member(component, layerInfo);
             var geometry = Objects.GeometryByLayer(component, layer.Index);
             member.SetObjects(geometry);
             return member;
