@@ -6,7 +6,7 @@ namespace D2P.Core.Extensions {
         public static void Commit(this IEnumerable<IComponentBase> components)
         {
             foreach (var comp in components) {
-                comp.Commit();
+                comp.Commit(true);
             }
         }
     }

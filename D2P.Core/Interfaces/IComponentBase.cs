@@ -20,5 +20,6 @@ namespace D2P.Core.Interfaces {
         IEnumerable<GeometryBase> Geometry { get; }
 
         bool Transform(Transform xform);
+        void Cache();
     }
 }

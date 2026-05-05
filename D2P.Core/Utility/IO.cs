@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace D2P.Core.Utility
-{
-    public static class IO
-    {
+namespace D2P.Core.Utility {
+    public static class IO {
         public static void ExportWithHeadless(IEnumerable<IComponentBase> components, string directory, string fileName)
         {
             if (!components.Any())
@@ -15,9 +13,8 @@ namespace D2P.Core.Utility
 
             var currentDoc = Settings.ActiveDoc;
             Settings.ActiveDoc = RHDoc.CreateHeadless(currentDoc);
-            foreach (var component in components)
-            {
-                component.Commit();
+            foreach (var component in components) {
+                component.Commit(false);
             }
 
             var filePath = Path.Combine(directory, fileName);

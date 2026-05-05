@@ -2,7 +2,7 @@
     public interface IDocObject<T> {
         bool Exists();
         void Delete();
-        void Commit();
+        void Commit(bool deleteExisting);
         T Duplicate();
     }
 }

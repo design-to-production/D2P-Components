@@ -17,6 +17,8 @@ namespace D2P.Core.Interfaces {
         void SetObject(GeometryBase geometry);
         void SetObjects(IEnumerable<IBaseObject> baseObjects);
         void SetObjects(IEnumerable<GeometryBase> geometries);
+
+        void Cache();
     }
 
     public interface IMember<T> : IMember where T : GeometryBase {

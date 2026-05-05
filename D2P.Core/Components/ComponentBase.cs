@@ -70,10 +70,16 @@ namespace D2P.Core.Components {
 
         public virtual bool Exists() => Settings.ActiveDoc.Objects.FindId(ID) != null;
         public virtual void Delete() => Objects.DeleteComponent(this);
-        public virtual void Commit()
+        public virtual void Commit(bool deleteExisting = true)
         {
-            var existing = Instantiation.InstancesByName(Name);
-            Objects.DeleteComponents(existing.Where(c => c.ID != ID));
+            if (deleteExisting) {
+                //var existing = Instantiation.InstancesByName(Name); // 800 ticks            
+                //Objects.DeleteComponents(existingObjects.Where(obj => obj.Id != ID));
+                var existingObjects = Objects.ObjectsByName(Name, ObjectType.AnyObject)
+                    .Where(obj => !obj.GetGroupList().Contains(GroupIndex))
+                    .Select(obj => obj.Id);
+                Settings.ActiveDoc.Objects.Delete(existingObjects, true);
+            }
 
             if (!Exists()) {
                 create();
@@ -81,7 +87,7 @@ namespace D2P.Core.Components {
 
             AllMembers.SetComponent(this);
             foreach (var member in AllMembers.Where(m => !Members.IsComponentLabel(this, m))) {
-                member.Commit();
+                member.Commit(deleteExisting); // 600 ticks
             }
         }
         void create()
@@ -99,6 +105,13 @@ namespace D2P.Core.Components {
 
             var label = Label.Geometry.FirstOrDefault();
             ID = Settings.ActiveDoc.Objects.AddText(label, attributes);
+        }
+
+        public virtual void Cache()
+        {
+            foreach (var member in AllMembers) {
+                member.Cache();
+            }
         }
 
         public int CompareTo(object obj)

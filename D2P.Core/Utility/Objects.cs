@@ -19,6 +19,13 @@ namespace D2P.Core.Utility {
             return new ComponentType(typeID, typeName, labelSize, layerColor);
         }
 
+        // Objects By Name
+        public static IEnumerable<RhinoObject> ObjectsByName(string name, ObjectType objectTypeFilter)
+        {
+            var objEnumSettings = Constants.ObjectEnumeratorSettings(name, objectTypeFilter);
+            return Settings.ActiveDoc.Objects.GetObjectList(objEnumSettings);
+        }
+
         // Objects By Layer
         public static IEnumerable<RhinoObject> ObjectsByLayer(IComponentBase component, int layerIdx)
         {

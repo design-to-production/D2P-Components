@@ -47,9 +47,12 @@ namespace D2P.Core.Components.Member {
         public IEnumerable<ObjectAttributes> Attributes => BaseObjects.Select(o => o.Attributes);
         public IEnumerable<GeometryBase> Geometry => BaseObjects.Select(o => o.Geometry);
 
+        public void Cache() { }
+
         public IEnumerable<IBaseObject> BaseObjects {
             get {
-                if (_objects != null) return _objects;
+                if (_objects != null)
+                    return _objects;
                 var layer = Layers.FindLayer(this);
                 if (layer == null)
                     return _objects = Enumerable.Empty<IBaseObject>();
@@ -89,7 +92,7 @@ namespace D2P.Core.Components.Member {
             base.SetMember(member);
         }
 
-        public void Commit()
+        public void Commit(bool deleteExisting)
         {
             if (Component == null || !Component.Exists())
                 return;
@@ -99,7 +102,7 @@ namespace D2P.Core.Components.Member {
             foreach (var childMember in AllMembers) {
                 childMember.ParentMember = this;
                 childMember.Component = Component;
-                childMember.Commit();
+                childMember.Commit(deleteExisting);
             }
         }
         private void UpdateDoc()
