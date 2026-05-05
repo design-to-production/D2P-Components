@@ -55,7 +55,7 @@ namespace D2P.GHPlugin.GH.Create {
             DA.GetData(2, ref attributes);
             DA.GetData(3, ref parent);
 
-            var member = new MemberGeo(null, layerInfo);
+            var member = new Member(null, layerInfo);
             member.ParentMember = parent;
             member.SetObjects(geometry);
 

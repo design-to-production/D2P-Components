@@ -41,7 +41,7 @@ namespace D2P.GHPlugin.GH.Modify {
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             IComponentBase component = null;
-            var componentMembers = new List<MemberGeo>();
+            var componentMembers = new List<Member>();
 
             DA.GetData(0, ref component);
             DA.GetDataList(1, componentMembers);

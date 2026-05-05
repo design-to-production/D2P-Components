@@ -84,7 +84,7 @@ namespace D2P.GHPlugin.GH.Utility {
                 foreach (var existing in existingComponents) {
                     existing.Delete();
                 }
-                component.Commit();
+                component.Commit(_replaceExisting);
             }
 
             if (_purgeEmptyLayers)
