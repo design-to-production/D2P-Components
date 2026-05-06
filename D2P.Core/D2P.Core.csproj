@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	<TargetFrameworks>net7.0;net48</TargetFrameworks>	
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <NoWarn>NU1701;NETSDK1086</NoWarn>	
+  </PropertyGroup>
+
+	<PropertyGroup>
+	<Version>$(AssemblyVersion)</Version>
+	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>	
+	<SignAssembly>False</SignAssembly>	
+	<PackageProjectUrl></PackageProjectUrl>	
+	<PackageIcon>Logo.png</PackageIcon>	
+	<RepositoryUrl>https://github.com/design-to-production/D2P-Components</RepositoryUrl>	
+	<Authors>Design-to-Production GmbH</Authors>	
+	<Company>Design-to-Production GmbH</Company>	
+	<Description>D2P Components streamline parametric modeling in CAD applications, helping you manage complex data trees, reduce recomputations, and maintain a structured, scalable workflow from concept to fabrication. </Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\D2P.GHPlugin\Assets\Logo.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+	<PackageReference Include="RhinoCommon" Version="7.0.20314.3001" Condition="$(TargetFramework) == 'net48'" ExcludeAssets="runtime" />
+	<PackageReference Include="RhinoCommon" Version="8.0.23304.9001" Condition="!$(TargetFramework.StartsWith('net4'))" ExcludeAssets="runtime" />
+  </ItemGroup>
+
+</Project>

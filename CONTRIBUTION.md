@@ -17,9 +17,9 @@ In case you already installed this plugin via the package manager you need to un
 ##### Debug Configuration
 1. Build the solution with the ```Debug```  ```Any CPU``` configuration
 2. Start Rhino and run ```GrasshopperDeveloperSettings```
-3. Add ```**YOUR_REPOSITORY_DIRECTORY**\D2P-Components\D2P_GrasshopperTools\bin\Debug\net48\``` to the library folders
-4. Set the path to your Rhino installation in the the D2P_GrasshopperTools project settings under ```Debugging > General```
+3. Add ```**YOUR_REPOSITORY_DIRECTORY**\D2P-Components\D2P.GHPlugin\bin\Debug\net48\``` to the library folders
+4. Set the path to your Rhino installation in the the D2P.GHPlugin project settings under ```Debugging > General```
 By default it will try to start Rhino at ```C:\Program Files\Rhino 7\System\Rhino.exe```
-5. Start the Debugger for ```D2P_GrasshopperTools``` in Visual Studio (with ```Debug```  ```Any CPU```)
+5. Start the Debugger for ```D2P.GHPlugin``` in Visual Studio (with ```Debug```  ```Any CPU```)
 this will start Rhino and attach the debugging session to the Rhino process).
 6. After Rhino has been launched start Grasshopper and checkout the plugin tab ```D2P``` 

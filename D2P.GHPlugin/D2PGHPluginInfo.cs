@@ -1,0 +1,27 @@
+﻿using Grasshopper.Kernel;
+using System;
+using System.Drawing;
+
+namespace D2P.GHPlugin {
+    public class D2PGHPluginInfo : GH_AssemblyInfo {
+        public override string Name => "d2p-components";
+        public override string Version => "1.1.2";
+
+        //Return a 24x24 pixel bitmap to represent this GHA library.
+        public override Bitmap Icon => Properties.Resources.Logo;
+
+        //Return a short string describing the purpose of this GHA library.
+        public override string Description => "D2P Components streamline parametric modeling in Grasshopper, helping you manage complex data trees, reduce recomputations, and maintain a structured, scalable workflow from concept to fabrication.";
+
+        public override Guid Id => new Guid("94B5D1B5-5BC2-4D6F-B5B3-1FC7391668BA");
+
+        //Return a string identifying you or your company.
+        public override string AuthorName => "Design-To-Production";
+
+        //Return a string representing your preferred contact details.
+        public override string AuthorContact => "components@designtoproduction.com";
+
+        public D2PGHPluginInfo()
+        { }
+    }
+}
