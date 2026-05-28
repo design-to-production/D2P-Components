@@ -32,6 +32,7 @@ namespace D2P.GHPlugin.GH.Retrieve {
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddGeometryParameter("Geometry", "G", "The geometry of the defined layer and scope", GH_ParamAccess.list);
+            pManager.AddGenericParameter("GUID", "ID", "The geometry id of the defined layer and scope", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -64,23 +65,10 @@ namespace D2P.GHPlugin.GH.Retrieve {
                 return;
             }
 
-            //var layer = Layers.FindLayer(member, out int layersFound);
-            //var layerIdx = layer?.Index ?? -1;
-            //if (layerIdx < 0) {
-            //    if (layerIdx < 0) {
-            //        var msg = $"Layer {layerName} not found !";
-            //        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
-            //        return;
-            //    }
-            //    if (layersFound > 1) {
-            //        var msg = $"Found {layersFound} layers with name {layerName}, specify full path !";
-            //        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, msg);
-            //        return;
-            //    }
-            //}
-
-            var geometry = matchedMembers.SelectMany(m => m.Geometry);
+            var geometry = matchedMembers.SelectMany(m => m.BaseObjects.Select(b => b.Geometry));
+            var ids = matchedMembers.SelectMany(m => m.BaseObjects.Select(b => b.Id));
             DA.SetDataList(0, geometry);
+            DA.SetDataList(1, ids);
         }
 
 
