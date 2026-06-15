@@ -196,7 +196,7 @@ namespace D2P_Core
         public override string ToString()
         {
             //Type-ID, Name is in Name, (Parent), #Members or Elements
-            return $"{base.ToString()} - Name: \"{Name}\", Members: {GeometryCollection.Count}";
+            return $"{base.ToString()} [Name: \"{Name}\", Geometries: {GeometryCollection.Count}]";
         }
     }
 }

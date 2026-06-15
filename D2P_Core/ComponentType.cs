@@ -53,7 +53,7 @@ namespace D2P_Core
 
         public override string ToString()
         {
-            return $"{base.ToString()} - TypeID: \"{TypeID}\", Color: \"{LayerColor}\"";
+            return $"{base.ToString()} [TypeID: \"{TypeID}\", Color: \"{LayerColor}\"]";
         }
     }
 }

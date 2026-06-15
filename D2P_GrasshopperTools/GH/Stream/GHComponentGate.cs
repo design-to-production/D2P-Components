@@ -70,7 +70,7 @@ namespace D2P_GrasshopperTools.GH.Stream
             get
             {
                 //You can add image files to your project resources and access them like this:
-                return Properties.Resources.GH_ExplodeComponentStream;
+                return Properties.Resources.GH_ComponentGate;
             }
         }
 
