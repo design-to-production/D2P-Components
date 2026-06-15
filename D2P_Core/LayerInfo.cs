@@ -1,6 +1,7 @@
 ﻿using D2P_Core.Interfaces;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Xml.Linq;
 
 namespace D2P_Core
 {
@@ -14,6 +15,10 @@ namespace D2P_Core
         {
             RawLayerName = rawLayerName;
             LayerColor = layerColor;
+        }
+        public override string ToString()
+        {
+            return $"{base.ToString()} [Name: \"{RawLayerName}\", Color: {LayerColor}]";
         }
     }
 

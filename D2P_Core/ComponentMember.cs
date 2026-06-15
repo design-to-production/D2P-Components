@@ -2,6 +2,7 @@
 using Rhino.DocObjects;
 using Rhino.Geometry;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace D2P_Core
 {
@@ -17,5 +18,10 @@ namespace D2P_Core
         public ILayerInfo LayerInfo { get; set; }
         public IEnumerable<GeometryBase> GeometryBases { get; set; }
         public ObjectAttributes ObjectAttributes { get; set; }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()} [Layer: \"{LayerInfo.RawLayerName}\", Geometries: {GeometryBases.Count()}]";
+        }
     }
 }
