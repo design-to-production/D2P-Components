@@ -1,13 +1,12 @@
-﻿using Grasshopper.Kernel;
-using System;
+﻿using System;
 using System.Drawing;
 
-namespace D2P_GrasshopperTools
-{
-    public class D2PGrasshopperToolsInfo : GH_AssemblyInfo
-    {
+using Grasshopper.Kernel;
+
+namespace D2P_GrasshopperTools {
+    public class D2PGrasshopperToolsInfo : GH_AssemblyInfo {
         public override string Name => "d2p-components";
-        public override string Version => "1.1.2";
+        public override string Version => "1.1.3";
 
         //Return a 24x24 pixel bitmap to represent this GHA library.
         public override Bitmap Icon => Properties.Resources.Logo;
