@@ -142,7 +142,7 @@ namespace D2P_Core.Utility
         public static Layer GetComponentTypeRootLayer(RhinoObject obj, Settings settings, RhinoDoc doc = null)
         {
             doc = doc ?? RhinoDoc.ActiveDoc;
-            var objLayer = FindLayer(obj.Attributes.LayerIndex);
+            var objLayer = FindLayer(obj.Attributes.LayerIndex, doc);
             if (IsComponentTypeTopLayer(objLayer, settings))
                 return objLayer;
 
@@ -158,7 +158,7 @@ namespace D2P_Core.Utility
             return FindLayerByName(doc, componentTypeRootLayerName, componentType.Settings.RootLayerName);
         }
 
-        public static Guid GetComponentLayerID(IComponent component) => GetComponentTypeRootLayer(component)?.Id ?? Guid.Empty;
+        public static Guid GetComponentLayerID(IComponent component) => GetComponentTypeRootLayer(component, component.ActiveDoc)?.Id ?? Guid.Empty;
 
         public static string GetComponentTypeID(Layer componentLayer, Settings settings)
         {
@@ -176,7 +176,7 @@ namespace D2P_Core.Utility
         }
         public static string GetComponentTypeName(RhinoObject rhObj, Settings settings)
         {
-            var layer = GetComponentTypeRootLayer(rhObj, settings);
+            var layer = GetComponentTypeRootLayer(rhObj, settings, rhObj.Document);
             return GetComponentTypeName(layer, settings);
         }
         public static double GetComponentTypeLabelSize(Layer componentLayer, Settings settings)
@@ -193,7 +193,7 @@ namespace D2P_Core.Utility
         }
         public static Settings GetComponentTypeSettings(RhinoObject rhObj, Settings settings)
         {
-            var componentLayer = GetComponentTypeRootLayer(rhObj, settings);
+            var componentLayer = GetComponentTypeRootLayer(rhObj, settings, rhObj.Document);
             var compTypeSettings = settings.ShallowCopy();
             if (IsComponentTypeTopLayer(componentLayer, settings) && rhObj?.Geometry is TextEntity)
             {

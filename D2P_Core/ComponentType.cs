@@ -1,5 +1,6 @@
 ﻿using D2P_Core.Interfaces;
 using D2P_Core.Utility;
+using Rhino;
 using Rhino.DocObjects;
 using System.Drawing;
 //using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -42,8 +43,10 @@ namespace D2P_Core
             Settings = Layers.GetComponentTypeSettings(layer, settings);
         }
 
-        public ComponentType(TextObject textObj, Settings settings)
+        public ComponentType(TextObject textObj, Settings settings, RhinoDoc doc = null)
         {
+            doc = doc ?? RhinoDoc.ActiveDoc;
+
             TypeID = Objects.ComponentTypeIDFromObject(textObj, settings);
             TypeName = Objects.ComponentTypeNameFromObject(textObj, settings);
             LabelSize = textObj.TextGeometry.TextHeight;

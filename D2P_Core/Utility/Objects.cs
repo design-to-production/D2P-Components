@@ -2,6 +2,7 @@
 using Rhino;
 using Rhino.DocObjects;
 using Rhino.Geometry;
+using Rhino.UI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -19,7 +20,7 @@ namespace D2P_Core.Utility
 
         public static string ComponentTypeIDFromObject(RhinoObject obj, Settings settings) => obj.Name.Split(settings.TypeDelimiter).FirstOrDefault();
         public static string ComponentTypeNameFromObject(RhinoObject obj, Settings settings) => Layers.GetComponentTypeName(obj, settings);
-        public static Color ComponentTypeLayerColorFromObject(RhinoObject obj, Settings settings) => Layers.GetComponentTypeRootLayer(obj, settings).Color;
+        public static Color ComponentTypeLayerColorFromObject(RhinoObject obj, Settings settings) => Layers.GetComponentTypeRootLayer(obj, settings, obj.Document).Color;
 
         public static IEnumerable<T> ObjectsByLayer<T>(int layerIdx, IComponent component, LayerScope layerScope) where T : GeometryBase
         {
@@ -64,7 +65,7 @@ namespace D2P_Core.Utility
             return doc.Objects.FindByFilter(filter).Select(rhObj => rhObj.Id);
         }
 
-        public static IEnumerable<RhinoObject> ObjectsByGroup(int grpIdx, RhinoDoc doc) => doc.Groups.GroupMembers(grpIdx);
+        public static IEnumerable<RhinoObject> ObjectsByGroup(int grpIdx, RhinoDoc doc) => doc.Objects.FindByGroup(grpIdx);
         public static IEnumerable<RhinoObject> ObjectsByGroup(int grpIdx, Layer layer, RhinoDoc doc) => ObjectsByGroup(grpIdx, doc).Where(rh => rh.Attributes.LayerIndex == layer?.Index);
 
         public static int DeleteObjects(IComponent component, Layer layer)
