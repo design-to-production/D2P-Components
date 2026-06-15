@@ -1,13 +1,15 @@
-﻿using D2P.Core.Components.Member;
-using D2P.Core.Extensions;
-using D2P.Core.Interfaces;
-using D2P.Core.Utility;
-using Rhino.DocObjects;
-using Rhino.Geometry;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+
+using D2P.Core.Components.Member;
+using D2P.Core.Extensions;
+using D2P.Core.Interfaces;
+using D2P.Core.Utility;
+
+using Rhino.DocObjects;
+using Rhino.Geometry;
 
 namespace D2P.Core.Components {
     public abstract class ComponentBase : MemberCollection, IComponentBase {
@@ -76,7 +78,7 @@ namespace D2P.Core.Components {
                 //var existing = Instantiation.InstancesByName(Name); // 800 ticks            
                 //Objects.DeleteComponents(existingObjects.Where(obj => obj.Id != ID));
                 var existingObjects = Objects.ObjectsByName(Name, ObjectType.AnyObject)
-                    .Where(obj => !obj.GetGroupList().Contains(GroupIndex))
+                    .Where(obj => obj.GroupCount != 0 && !obj.GetGroupList().Contains(GroupIndex))
                     .Select(obj => obj.Id);
                 Settings.ActiveDoc.Objects.Delete(existingObjects, true);
             }

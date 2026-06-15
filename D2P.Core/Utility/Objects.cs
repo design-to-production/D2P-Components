@@ -1,10 +1,12 @@
-﻿using D2P.Core.Components;
-using D2P.Core.Interfaces;
-using Rhino.DocObjects;
-using Rhino.Geometry;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using D2P.Core.Components;
+using D2P.Core.Interfaces;
+
+using Rhino.DocObjects;
+using Rhino.Geometry;
 
 namespace D2P.Core.Utility {
     public static class Objects {
@@ -126,6 +128,11 @@ namespace D2P.Core.Utility {
         public static IEnumerable<int> GetObjectGroupIDs(Guid objectID)
         {
             var rhinoObject = Settings.ActiveDoc.Objects.Find(objectID);
+            if (rhinoObject == null || rhinoObject.GroupCount < 1) return new List<int>();
+            return rhinoObject.GetGroupList();
+        }
+        public static IEnumerable<int> GetObjectGroupIDs(RhinoObject rhinoObject)
+        {
             if (rhinoObject == null || rhinoObject.GroupCount < 1) return new List<int>();
             return rhinoObject.GetGroupList();
         }

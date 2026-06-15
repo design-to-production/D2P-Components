@@ -1,12 +1,14 @@
-﻿using D2P.Core;
-using D2P.Core.Interfaces;
-using Grasshopper;
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+
+using D2P.Core;
+using D2P.Core.Interfaces;
+
+using Grasshopper;
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
 
 namespace D2P.GHPlugin.GH.Stream {
     public class GHStreamComponentsByType : GHVariableParameterComponent {
@@ -50,6 +52,7 @@ namespace D2P.GHPlugin.GH.Stream {
             var componentTrees = new Dictionary<string, DataTree<IComponentBase>>();
             foreach (var componentType in componentTypes) {
                 var typeID = (componentType?.Value as IComponentType)?.TypeId ?? componentType?.Value?.ToString();
+                if (typeID == null) continue;
                 _properties.Add(typeID, typeof(Enumerable));
                 componentTrees.Add(typeID, new DataTree<IComponentBase>());
                 for (int i = 0; i < filterList.Count; i++) {

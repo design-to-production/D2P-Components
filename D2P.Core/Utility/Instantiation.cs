@@ -1,11 +1,13 @@
-﻿using D2P.Core.Components;
-using D2P.Core.Interfaces;
-using D2P.Core.Platforms;
-using Rhino.DocObjects;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+
+using D2P.Core.Components;
+using D2P.Core.Interfaces;
+using D2P.Core.Platforms;
+
+using Rhino.DocObjects;
 
 namespace D2P.Core.Utility {
     public static class Instantiation {
@@ -34,9 +36,7 @@ namespace D2P.Core.Utility {
         // Instances From Objects
         public static IEnumerable<IComponentBase> InstancesFromObjects(IEnumerable<RhinoObject> objects)
         {
-            return InstancesFromObjects(objects
-                .Where(obj => obj != null)
-                .Select(obj => obj.Id));
+            return InstancesFromObjects<IComponentBase>(objects);
         }
         public static IEnumerable<IComponentBase> InstancesFromObjects(IEnumerable<Guid> objectIds)
         {
@@ -44,18 +44,22 @@ namespace D2P.Core.Utility {
         }
         public static IEnumerable<T> InstancesFromObjects<T>(IEnumerable<Guid> objectIds) where T : class, IComponentBase
         {
+            return InstancesFromObjects<T>(objectIds);
+        }
+        public static IEnumerable<T> InstancesFromObjects<T>(IEnumerable<RhinoObject> rhObjects) where T : class, IComponentBase
+        {
             var components = new List<T>();
-            var grpIndices = objectIds
-                .SelectMany(id => Objects.GetObjectGroupIDs(id))
+            var grpIndices = rhObjects
+                .SelectMany(obj => obj.GetGroupList())
                 .ToHashSet();
-
             foreach (var grpIdx in grpIndices) {
                 var component = InstanceFromGroup<T>(grpIdx);
-                components.Add(component);
+                if (component != null)
+                    components.Add(component);
             }
-            //components.Sort((x, y) => string.Compare(x.ShortName, y.ShortName));
             return components;
         }
+
 
         // Instance From Group
         public static IComponentBase InstanceFromGroup(int grpIdx)

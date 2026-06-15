@@ -87,11 +87,10 @@ namespace D2P.Core.Utility {
             else layerName = ComposeFullLayerPath(member);
             var componentLayers = GetComponentLayers(member.Component);
             var matchedLayers = componentLayers
-                .Where(l => !l.IsReference && l.FullPath == layerName); // TODO: Compare FULL LayerName !!!
-            layersFound = matchedLayers.Count();
-            if (matchedLayers.Count() > 1 || !matchedLayers.Any())
-                return null;
-            return matchedLayers.First();
+                .Where(l => !l.IsReference && l.FullPath == layerName) // TODO: Compare FULL LayerName !!!
+                .ToList();
+            layersFound = matchedLayers.Count;
+            return layersFound == 1 ? matchedLayers[0] : null;
         }
         public static Layer FindLayer(int layerIndex)
         {

@@ -1,8 +1,10 @@
-﻿using D2P.Core.Interfaces;
-using Grasshopper.Kernel;
-using System;
+﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+
+using D2P.Core.Interfaces;
+
+using Grasshopper.Kernel;
 
 namespace D2P.GHPlugin.GH.Retrieve {
     public class GHRetrieveGeometry : GHComponentBase {
